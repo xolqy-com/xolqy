@@ -77,7 +77,7 @@ function svg(title, subtitle) {
 
 // --- Build the target list from real content ---------------------------------
 const targets = [
-  { slug: 'home', title: 'Privacy-first web analytics', subtitle: 'Cookieless. Lightweight. Yours. The simple alternative to Google Analytics.' },
+  { slug: 'home', title: 'Cookieless web analytics', subtitle: 'Privacy-first, lightweight, yours. The simple alternative to Google Analytics.' },
   { slug: 'default', title: 'Xolqy', subtitle: 'Cookieless, privacy-first web analytics.' },
 ];
 for (const [slug, p] of Object.entries(site.PAGES)) {

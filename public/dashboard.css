@@ -177,6 +177,21 @@ a:hover { text-decoration: underline; }
 .status-row .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
 .status-row .dot.ok { background: #22c55e; }
 
+/* ---------- FAQ (homepage) ---------- */
+.faq { margin-top: 2rem; }
+.faq-item {
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card);
+  padding: 0 1rem; margin-bottom: 0.6rem;
+}
+.faq-item summary {
+  cursor: pointer; padding: 0.9rem 0; font-weight: 600; list-style: none;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: '+'; color: var(--accent); font-size: 1.3rem; line-height: 1; }
+.faq-item[open] summary::after { content: '−'; }
+.faq-item p { color: #cfcfcf; margin: 0 0 1rem; }
+
 /* ---------- Site footer ---------- */
 .site-footer { border-top: 1px solid var(--line); margin-top: 4rem; padding: 3rem 1.5rem 2rem; }
 .footer-inner {

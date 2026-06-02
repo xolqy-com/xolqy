@@ -112,12 +112,13 @@ function headerHtml(): string {
 function shell(opts: {
   title: string; description: string; body: string;
   path: string; origin: string; ogSlug: string; ogType?: string;
-  jsonLd?: Record<string, unknown>[];
+  jsonLd?: Record<string, unknown>[]; keywords?: string;
 }): string {
   const title = `${opts.title} · Xolqy`;
   const desc = opts.description.replace(/"/g, '&quot;');
   const canonical = `${opts.origin}${opts.path}`;
   const ogImage = `${opts.origin}/og/${opts.ogSlug}.png`;
+  const keywordsTag = opts.keywords ? `\n  <meta name="keywords" content="${opts.keywords}" />` : '';
   // Base structured data on every page, plus any page-specific schema.
   const schema: Record<string, unknown>[] = [
     { '@context': 'https://schema.org', '@type': 'Organization', name: 'Xolqy', url: opts.origin, logo: `${opts.origin}/og/home.png`, sameAs: ['https://github.com/xolqy-com/xolqy'] },
@@ -131,7 +132,7 @@ function shell(opts: {
   <meta charset="utf-8" />
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="${desc}" />
+  <meta name="description" content="${desc}" />${keywordsTag}
   <link rel="canonical" href="${canonical}" />
   <meta property="og:site_name" content="Xolqy" />
   <meta property="og:title" content="${title}" />
@@ -187,15 +188,50 @@ const PINNED_INSTALL =
 // ----------------------------------------------------------------------------
 // Landing page
 export const LANDING_DESCRIPTION =
-  'Cookieless, GDPR-friendly, lightweight web analytics. Self-hostable on Cloudflare. Free to start.';
+  'Cookieless web analytics — a fast, GDPR-friendly alternative to Google Analytics with no cookies and no consent banner. <2KB script, scroll & engagement metrics, self-hostable on Cloudflare. Free up to 10k pageviews/mo.';
+
+const LANDING_KEYWORDS =
+  'cookieless analytics, cookieless web analytics, privacy-first analytics, google analytics alternative, GDPR analytics, no cookie banner, plausible alternative, self-hosted analytics, cloudflare analytics';
+
+// Homepage FAQ — single source for the visible section AND the FAQPage schema
+// (Google requires the answers to be visible on the page). These double as
+// quotable answers for AI assistants.
+type QA = [string, string];
+const HOME_FAQ: QA[] = [
+  ['Is Xolqy really cookieless?',
+   'Yes. Xolqy sets no cookies and stores no IP addresses. It counts daily unique visitors with a salted hash of IP + user-agent that rotates every midnight UTC, so nothing personal is stored.'],
+  ['Do I need a cookie consent banner?',
+   'For analytics, almost never. Because Xolqy uses no cookies and stores no personal data, most sites have no analytics reason for a consent banner. (Always confirm your own legal obligations.)'],
+  ['How does Xolqy count visitors without cookies?',
+   'It derives a short, daily-rotating salted hash on the server — enough to count unique visitors within a day, but useless for tracking anyone over time. The raw IP is never stored.'],
+  ['Is Xolqy GDPR compliant?',
+   'Xolqy is built privacy-first: no cookies, no IP storage, no cross-site tracking. Aggregate measurement relies on the site operator’s legitimate interest, and we publish a privacy policy, data policy, and DPA.'],
+  ['How is Xolqy different from Google Analytics?',
+   'It is far simpler and lighter: a <2KB cookieless script vs ~45KB, the numbers that matter on one screen instead of a reporting maze, no consent banner, and you can self-host so the data stays yours.'],
+  ['Is Xolqy free? Can I self-host it?',
+   'There is a free plan up to 10k pageviews/month, with paid tiers above that. Xolqy is also open source (AGPL) and runs on the Cloudflare free tier, so you can self-host it for free.'],
+];
+
+function faqSection(title: string, qa: QA[]): string {
+  const items = qa.map(([q, a]) => `<details class="faq-item"><summary>${q}</summary><p>${a}</p></details>`).join('');
+  return `<section class="prose faq"><h2>${title}</h2>${items}</section>`;
+}
+
+function faqSchema(qa: QA[]): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: qa.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  };
+}
 
 function landingBody(): string {
   return `
   <main class="landing-main">
     <section class="hero">
       <div class="hero-mark">X</div>
-      <h1>Privacy-first web analytics</h1>
-      <p class="hero-sub">Cookieless. Lightweight. Yours. The simple, GDPR-friendly alternative to Google Analytics — built on Cloudflare's global edge.</p>
+      <h1>Cookieless web analytics</h1>
+      <p class="hero-sub">Privacy-first, lightweight, and yours. The simple, GDPR-friendly alternative to Google Analytics — no cookies, no consent banner, built on Cloudflare's global edge.</p>
       <div class="hero-cta">
         <a class="btn-primary lg" href="/login">Get started free</a>
         <a class="btn-ghost lg" href="/vs-google-analytics">Why switch from GA?</a>
@@ -211,6 +247,7 @@ function landingBody(): string {
       <div class="feat"><b>Multi-site.</b> One account, every domain you own — or a super-admin view across all of them.</div>
       <div class="feat"><b>Yours.</b> Self-host on your own Cloudflare account, or let us run it. Your data stays your data.</div>
     </section>
+    <div class="page"><div class="page-inner">${faqSection('Frequently asked questions', HOME_FAQ)}</div></div>
     ${pageBody(cta('Ready to see your traffic the simple way?'))}
   </main>`;
 }
@@ -249,8 +286,9 @@ function pricingFaqSchema(): Record<string, unknown> {
 
 export function renderLanding(origin: string): string {
   return shell({
-    title: 'Privacy-first web analytics', description: LANDING_DESCRIPTION, body: landingBody(),
-    path: '/', origin, ogSlug: 'home', jsonLd: [softwareAppSchema(origin)],
+    title: 'Cookieless web analytics', description: LANDING_DESCRIPTION, body: landingBody(),
+    path: '/', origin, ogSlug: 'home', keywords: LANDING_KEYWORDS,
+    jsonLd: [softwareAppSchema(origin), faqSchema(HOME_FAQ)],
   });
 }
 
@@ -920,8 +958,19 @@ export function allPaths(): string[] {
   return ['/', ...Object.keys(PAGES).map((s) => `/${s}`), ...Object.keys(POSTS).map((s) => `/blog/${s}`)];
 }
 
+// Site-wide last-modified for static pages. Bump when the site changes
+// materially; blog posts use their own publish date.
+const SITE_LASTMOD = '2026-06-02';
+
 export function sitemapXml(origin: string): string {
-  const urls = allPaths().map((p) => `  <url><loc>${origin}${p}</loc></url>`).join('\n');
+  const entries: { loc: string; lastmod: string }[] = [
+    { loc: '/', lastmod: SITE_LASTMOD },
+    ...Object.keys(PAGES).map((s) => ({ loc: `/${s}`, lastmod: SITE_LASTMOD })),
+    ...Object.entries(POSTS).map(([s, p]) => ({ loc: `/blog/${s}`, lastmod: p.iso })),
+  ];
+  const urls = entries
+    .map((e) => `  <url><loc>${origin}${e.loc}</loc><lastmod>${e.lastmod}</lastmod></url>`)
+    .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
