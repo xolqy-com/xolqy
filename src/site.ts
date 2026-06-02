@@ -349,13 +349,35 @@ function compareTable(rival: string, rows: [string, string, string][]): string {
   </table></div>`;
 }
 
-function compare(rival: string, description: string, lead: string, secs: [string, string[]][], facts?: [string, string, string][]): Page {
+function compare(rival: string, description: string, lead: string, secs: [string, string[]][], facts?: [string, string, string][], faq?: QA[]): Page {
   return {
     title: `Xolqy vs ${rival}`,
     description,
-    body: pageBody(`${hero(`Xolqy vs ${rival}`, lead)}${facts ? compareTable(rival, facts) : ''}${secs.map(([h, ps]) => section(h, ...ps)).join('')}${cta(`Switching from ${rival}? It takes minutes.`)}`),
+    body: pageBody(`${hero(`Xolqy vs ${rival}`, lead)}${facts ? compareTable(rival, facts) : ''}${secs.map(([h, ps]) => section(h, ...ps)).join('')}${faq ? faqSection('FAQ', faq) : ''}${cta(`Switching from ${rival}? It takes minutes.`)}`),
   };
 }
+
+// Per-comparison FAQ — visible on the page AND emitted as FAQPage schema.
+const VS_GA_FAQ: QA[] = [
+  ['Is Xolqy a good Google Analytics alternative?', 'For sites that want simple, privacy-friendly traffic numbers without cookies, a consent banner, or a 45KB script, yes. It will not replace GA4’s ad attribution or deep e-commerce funnels.'],
+  ['Do I still need a cookie consent banner?', 'No. GA4 uses cookies and shares data with Google, which requires a banner. Xolqy is cookieless and stores no personal data, so most sites need none for analytics.'],
+  ['Can I migrate from GA4 to Xolqy?', 'Yes. Install Xolqy alongside GA4, compare for a week, then remove the GA tag. No data export is required.'],
+];
+const VS_PLAUSIBLE_FAQ: QA[] = [
+  ['How is Xolqy different from Plausible?', 'Same cookieless, simple-metrics philosophy, but Xolqy runs on Cloudflare Workers + D1 (a generous free self-host tier) and adds scroll depth, engagement, and a super-admin view across every domain.'],
+  ['Is Xolqy a cheaper Plausible alternative?', 'There is a free plan up to 10k pageviews/month, and Xolqy is self-hostable for free on Cloudflare’s edge.'],
+  ['Is Xolqy open source like Plausible?', 'Yes — Xolqy is AGPL-licensed and source-available on GitHub.'],
+];
+const VS_MATOMO_FAQ: QA[] = [
+  ['Why choose Xolqy over self-hosting Matomo?', 'Matomo needs a PHP + MySQL server you maintain and scale. Xolqy is serverless on Cloudflare — it scales to zero, runs on the free tier, and ships a <2KB cookieless script.'],
+  ['Is Xolqy as privacy-friendly as Matomo?', 'Xolqy is cookieless by default and stores no IP addresses. Matomo can be configured for privacy but is heavier to run.'],
+  ['Can I self-host Xolqy for free?', 'Yes, on the Cloudflare free tier. Xolqy is open source under the AGPL.'],
+];
+const PAGE_FAQ: Record<string, QA[]> = {
+  'vs-google-analytics': VS_GA_FAQ,
+  'vs-plausible': VS_PLAUSIBLE_FAQ,
+  'vs-matomo': VS_MATOMO_FAQ,
+};
 
 function legal(title: string, description: string, intro: string, secs: [string, string[]][]): Page {
   return {
@@ -580,7 +602,8 @@ export const PAGES: Record<string, Page> = {
       ['Data ownership', 'Yours (self-host option)', 'Google'],
       ['Scroll depth & engagement', 'Built in', 'Manual setup'],
       ['Price', 'Free up to 10k/mo', 'Free (you are the product)'],
-    ]),
+    ],
+    VS_GA_FAQ),
 
   'vs-plausible': compare(
     'Plausible', 'Xolqy vs Plausible: the same privacy-first philosophy, on Cloudflare\'s edge with built-in scroll &amp; engagement.',
@@ -597,7 +620,8 @@ export const PAGES: Record<string, Page> = {
       ['Self-host stack', 'Cloudflare Workers + D1', 'Elixir + PostgreSQL/ClickHouse'],
       ['Self-host free tier', 'Cloudflare free tier', 'Bring your own server'],
       ['Open source', 'Yes', 'Yes'],
-    ]),
+    ],
+    VS_PLAUSIBLE_FAQ),
 
   'vs-matomo': compare(
     'Matomo', 'Xolqy vs Matomo: get privacy-friendly analytics without running a PHP/MySQL server.',
@@ -613,7 +637,8 @@ export const PAGES: Record<string, Page> = {
       ['Cookies', 'None', 'Optional'],
       ['Scales to zero', 'Yes', 'No'],
       ['Free hosting tier', 'Cloudflare free tier', 'Self-managed'],
-    ]),
+    ],
+    VS_MATOMO_FAQ),
 
   'migrate-from-ga4': feature(
     'Migrate from GA4', 'Move off Google Analytics in an afternoon.',
@@ -860,9 +885,10 @@ export function renderInvitePage(origin: string): string {
 export function renderPageHtml(slug: string, origin: string): string | null {
   const p = PAGES[slug];
   if (!p) return null;
-  const jsonLd =
-    slug === 'pricing' ? [softwareAppSchema(origin), pricingFaqSchema()] : undefined;
-  return shell({ title: p.title, description: p.description, body: p.body, path: `/${slug}`, origin, ogSlug: slug, jsonLd });
+  const jsonLd: Record<string, unknown>[] = [];
+  if (slug === 'pricing') jsonLd.push(softwareAppSchema(origin), pricingFaqSchema());
+  if (PAGE_FAQ[slug]) jsonLd.push(faqSchema(PAGE_FAQ[slug]));
+  return shell({ title: p.title, description: p.description, body: p.body, path: `/${slug}`, origin, ogSlug: slug, jsonLd: jsonLd.length ? jsonLd : undefined });
 }
 
 // ----------------------------------------------------------------------------
