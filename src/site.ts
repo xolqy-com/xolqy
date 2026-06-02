@@ -509,6 +509,21 @@ export const POSTS: Record<string, Post> = {
           <tr><td>Swetrix</td><td>Open source + SaaS</td><td>Developer-friendly, marketing features</td></tr>
         </tbody>
       </table></div>
+      <h2>Pricing at a glance</h2>
+      <p class="muted">Approximate entry pricing as of June 2026 — plans and limits change often, so check each vendor's current pricing page. "Self-host" means you can run it yourself for free (infrastructure aside).</p>
+      <div class="compare-table"><table>
+        <thead><tr><th>Tool</th><th>Free tier</th><th>Paid from (approx)</th><th>Self-host free</th></tr></thead>
+        <tbody>
+          <tr><td class="yes">Xolqy</td><td>Yes — up to 10k pageviews/mo</td><td>$9/mo (100k)</td><td>Yes (AGPL, Cloudflare free tier)</td></tr>
+          <tr><td>Plausible</td><td>Trial</td><td>~$9/mo</td><td>Yes (open source)</td></tr>
+          <tr><td>Fathom</td><td>Trial</td><td>~$15/mo</td><td>No (hosted)</td></tr>
+          <tr><td>Matomo</td><td>Trial</td><td>~$26/mo (Cloud)</td><td>Yes (open source)</td></tr>
+          <tr><td>Simple Analytics</td><td>Trial</td><td>~$9/mo</td><td>No (hosted)</td></tr>
+          <tr><td>Umami</td><td>Yes (Cloud)</td><td>~$9/mo</td><td>Yes (open source)</td></tr>
+          <tr><td>Swetrix</td><td>Yes</td><td>~$5/mo</td><td>Yes (open source)</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted">Xolqy's pricing is exact; competitor figures are indicative entry points — verify on their sites before deciding.</p>
       <h2>Best for WordPress</h2>
       <p>A one-line script works on any WordPress theme — see <a href="/blog/cookieless-analytics-wordpress">cookieless analytics for WordPress</a>.</p>
       <h2>Best for SaaS &amp; agencies</h2>
