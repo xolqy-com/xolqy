@@ -180,7 +180,7 @@ const INSTALL = `&lt;script defer src="https://xolqy.com/t.js"&gt;&lt;/script&gt
 // Versioned, immutable build + Subresource Integrity hash (computed from the
 // exact bytes served at /v1/t.js). Lets customers pin the script so it can
 // never silently change. Update only when a new version (/v2/t.js) ships.
-const TRACKER_SRI = 'sha384-ke6QrWN1bDKHOJu8IxR+RQRP2LSR5hrjAAlpTKEFmnxrQchQDdz7CBsOQws8su9P';
+const TRACKER_SRI = 'sha384-pKXxF1rkM+EtLGxb5cqWrj0csxQ//a4DJH4lEGqHbUql1i5GSyVZgBxs4j+ljjOo';
 const PINNED_INSTALL =
   `&lt;script defer\n  src="https://xolqy.com/v1/t.js"\n  integrity="${TRACKER_SRI}"\n  crossorigin="anonymous"&gt;&lt;/script&gt;`;
 
@@ -631,6 +631,10 @@ export const PAGES: Record<string, Page> = {
       ${section('Pin a version with Subresource Integrity (recommended for production)', 'For a contractual guarantee that the JavaScript running on your site can never silently change, load the immutable, versioned build with an <code>integrity</code> hash. The bytes at <code>/v1/t.js</code> are frozen forever; any breaking change ships as <code>/v2/t.js</code> with a new hash, so your pinned tag keeps working untouched.')}
       <pre class="install"><code>${PINNED_INSTALL}</code></pre>
       <p class="muted">Current <code>/v1/t.js</code> integrity: <code>${TRACKER_SRI}</code>. Astro users: add <code>is:inline</code> so the attributes are preserved.</p>
+      ${section('Content-Security-Policy', 'If your site uses a CSP, allow the script source and its single endpoint — Xolqy talks to nothing else:')}
+      <pre class="install"><code>script-src https://xolqy.com;
+connect-src https://xolqy.com;</code></pre>
+      <p class="muted">The script loads from <code>xolqy.com</code> and sends events to <code>xolqy.com/api/event</code> and <code>xolqy.com/api/click</code> only. It respects Do Not Track and Global Privacy Control.</p>
       ${section('4. Read your dashboard', 'Pick a date range and a site. KPIs and the traffic chart update instantly; tables show top pages, sources, countries and devices.')}
       ${section('Self-hosting', 'Xolqy is open source and runs on Cloudflare Workers + D1. See the README on <a href="https://github.com/xolqy-com/xolqy" target="_blank" rel="noopener">GitHub</a> for one-command deploy instructions.')}
       ${cta()}
@@ -694,7 +698,7 @@ export const PAGES: Record<string, Page> = {
     title: 'Contact', description: 'Get in touch with the Xolqy team.',
     body: pageBody(`
       ${hero('Contact', 'Questions, sales, security, or support — we read everything.')}
-      ${section('Email', 'General &amp; support: <a href="mailto:hello@xolqy.com">hello@xolqy.com</a><br/>Security reports: <a href="mailto:security@xolqy.com">security@xolqy.com</a><br/>Sales &amp; Enterprise: <a href="mailto:sales@xolqy.com">sales@xolqy.com</a>')}
+      ${section('Email', 'General &amp; support: <a href="mailto:hello@xolqy.com">hello@xolqy.com</a><br/>Privacy &amp; data requests: <a href="mailto:privacy@xolqy.com">privacy@xolqy.com</a><br/>Security reports: <a href="mailto:security@xolqy.com">security@xolqy.com</a><br/>Sales &amp; Enterprise: <a href="mailto:sales@xolqy.com">sales@xolqy.com</a>')}
       ${section('On the web', 'Issues and feature requests are welcome on <a href="https://github.com/xolqy-com/xolqy" target="_blank" rel="noopener">GitHub</a>.')}
     `),
   },
@@ -703,10 +707,14 @@ export const PAGES: Record<string, Page> = {
     'Privacy policy', 'How Xolqy handles data — short version: we barely collect any.',
     'We collect as little as possible, store no personal data about your visitors, and never sell anything.',
     [
+      ['Cookies', ['Xolqy sets <b>no cookies</b> and uses no <code>localStorage</code> beyond a per-tab session id that is discarded when the tab closes. There is nothing to disclose in a cookie banner.']],
       ['Visitor data', ['For sites using Xolqy, we record pageviews, paths, referrer hostnames, coarse country, device/browser type, time-on-page and scroll depth. We do not store IP addresses or set cookies. Visitors are counted via a daily-rotating salted hash that is not personal data.']],
+      ['Do Not Track &amp; Global Privacy Control', ['If a visitor\'s browser sends a Do Not Track or Global Privacy Control signal, the tracker collects nothing at all.']],
+      ['Lawful basis (GDPR)', ['Because we store no personal data about visitors (no IP, no cookies, no cross-site identifiers), aggregate measurement relies on the site operator\'s <b>legitimate interest</b> (Art. 6(1)(f)) in understanding their own traffic. Account data is processed to perform our contract with you (Art. 6(1)(b)).']],
       ['Account data', ['For Xolqy account holders we store your email, a hashed password (or Google identifier), and the domains you add. We use this only to operate your account.']],
-      ['Sharing', ['We do not sell or share your data with advertisers or third parties. Sub-processors (e.g. our hosting provider) are listed in our Data policy.']],
-      ['Your rights', ['Email <a href="mailto:hello@xolqy.com">hello@xolqy.com</a> to access or delete your account data.']],
+      ['Retention', ['Raw events are retained according to your plan (30 days to 5 years); daily rollups are kept for trend history. See the <a href="/data-policy">Data policy</a> for specifics.']],
+      ['Sharing', ['We do not sell or share your data with advertisers or third parties. Sub-processors are listed in our <a href="/data-policy">Data policy</a>.']],
+      ['Your rights &amp; deletion', ['Email <a href="mailto:privacy@xolqy.com">privacy@xolqy.com</a> to access, export, or delete your data. Deleting your account purges your records.']],
     ]),
 
   'data-policy': legal(

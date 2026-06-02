@@ -14,6 +14,10 @@
 export const TRACKER_JS = `
 (() => {
   if (typeof window === "undefined" || window.__xolqy__) return;
+  // Respect Do Not Track and Global Privacy Control — if the visitor has opted
+  // out, we collect nothing at all.
+  var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+  if (dnt == "1" || dnt === "yes" || navigator.globalPrivacyControl === true) return;
   window.__xolqy__ = 1;
   var endpoint = (document.currentScript && document.currentScript.dataset.endpoint) || (location.origin === "https://xolqy.com" ? "" : "https://xolqy.com");
   var site = (document.currentScript && document.currentScript.dataset.site) || location.hostname;
@@ -60,8 +64,7 @@ export const TRACKER_JS = `
       duration_ms: visibleNow(),
       scroll_pct: maxScroll,
       ref: document.referrer || "",
-      ua: navigator.userAgent,
-      sw: screen.width
+      ua: navigator.userAgent
     });
   }
 

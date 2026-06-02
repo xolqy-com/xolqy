@@ -94,7 +94,7 @@ Set with `npx wrangler secret put <NAME>` (and mirror them in a gitignored `.dev
 ```html
 <script defer
   src="https://xolqy.com/v1/t.js"
-  integrity="sha384-ke6QrWN1bDKHOJu8IxR+RQRP2LSR5hrjAAlpTKEFmnxrQchQDdz7CBsOQws8su9P"
+  integrity="sha384-pKXxF1rkM+EtLGxb5cqWrj0csxQ//a4DJH4lEGqHbUql1i5GSyVZgBxs4j+ljjOo"
   crossorigin="anonymous"></script>
 ```
 

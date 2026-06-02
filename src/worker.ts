@@ -361,6 +361,35 @@ async function serveAsset(req: Request, env: Env): Promise<Response> {
 // ----------------------------------------------------------------------------
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
+    return withSecurity(await handleRequest(req, env));
+  },
+
+  // Cron Trigger (see [triggers] in wrangler.toml). Rolls completed days into
+  // daily_rollups so the dashboard's headline numbers stay fast at scale.
+  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(Rollup.tick(env));
+  },
+};
+
+// Apply security headers to every response (preserving existing headers like
+// CORS, Set-Cookie, and cache-control). CSP is only added to HTML documents.
+function withSecurity(res: Response): Response {
+  const r = new Response(res.body, res);
+  r.headers.set('strict-transport-security', 'max-age=63072000; includeSubDomains; preload');
+  r.headers.set('x-content-type-options', 'nosniff');
+  r.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
+  r.headers.set('permissions-policy', 'accelerometer=(), camera=(), geolocation=(), microphone=(), payment=(), usb=()');
+  r.headers.set('x-frame-options', 'DENY');
+  if ((r.headers.get('content-type') || '').includes('text/html')) {
+    r.headers.set('content-security-policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+      "style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; " +
+      "frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+  }
+  return r;
+}
+
+async function handleRequest(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
 
     // Canonical host. Consolidate www + workers.dev onto https://xolqy.com so
@@ -485,6 +514,11 @@ export default {
         headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=3600' },
       });
     }
+    // Security contact (RFC 9116)
+    if (url.pathname === '/.well-known/security.txt' || url.pathname === '/security.txt') {
+      const body = `Contact: mailto:security@xolqy.com\nExpires: 2027-06-02T00:00:00.000Z\nPreferred-Languages: en\nCanonical: ${url.origin}/.well-known/security.txt\nPolicy: ${url.origin}/security\n`;
+      return new Response(body, { headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=86400' } });
+    }
 
     // Marketing site — landing + every footer page + blog, rendered by the
     // Worker so the shared header/footer stay consistent and no link 404s.
@@ -501,11 +535,4 @@ export default {
 
     // Everything else → static assets (css, dashboard.html, login.html, etc.)
     return serveAsset(req, env);
-  },
-
-  // Cron Trigger (see [triggers] in wrangler.toml). Rolls completed days into
-  // daily_rollups so the dashboard's headline numbers stay fast at scale.
-  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
-    ctx.waitUntil(Rollup.tick(env));
-  },
-};
+}
