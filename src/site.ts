@@ -41,6 +41,7 @@ const FOOTER_COLUMNS: Column[] = [
     title: 'Resources',
     links: [
       { label: 'Documentation', href: '/docs' },
+      { label: 'Cookieless analytics guide', href: '/blog/cookieless-analytics-guide' },
       { label: 'Blog', href: '/blog' },
       { label: "What's new", href: '/changelog' },
       { label: 'Status', href: '/status' },
@@ -392,6 +393,260 @@ function legal(title: string, description: string, intro: string, secs: [string,
 type Post = { title: string; date: string; iso: string; excerpt: string; body: string };
 
 export const POSTS: Record<string, Post> = {
+  'cookieless-analytics-guide': {
+    title: 'Cookieless Analytics: The Complete Guide for Website Owners (2026)',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'Everything website owners need to know about cookieless analytics in 2026 — how it works, the pros and cons versus cookie-based tracking, GDPR, and whether it is the new default.',
+    body: `
+      <p>For two decades, web analytics meant cookies. In 2026 that is changing fast: third-party cookies are being phased out, privacy laws have teeth, consent banners hurt conversion, and GA4 left a lot of owners frustrated. <strong>Cookieless analytics</strong> is the answer most privacy-conscious sites are moving to. This guide explains what it is, how it compares, and how to adopt it.</p>
+      <h2>What is cookieless analytics?</h2>
+      <p>Cookieless analytics measures your traffic without storing a cookie or other persistent identifier on the visitor's device. Instead of recognising a browser across days, it counts visits using anonymous, server-side techniques. See the deep dive: <a href="/blog/what-is-cookieless-analytics">What is cookieless analytics?</a></p>
+      <h2>Why 2026 is the turning point</h2>
+      <ul class="prose-list">
+        <li><strong>Third-party cookies are dying.</strong> Browsers block them by default; ad-tech's cross-site tracking is collapsing.</li>
+        <li><strong>Privacy law is enforced.</strong> GDPR, ePrivacy and similar laws make cookie-based tracking a consent (and liability) problem.</li>
+        <li><strong>Consent-banner fatigue.</strong> Banners hurt UX and conversion, and many are not even compliant.</li>
+        <li><strong>GA4 frustration.</strong> Powerful but complex, sampled, and owned by Google. Many owners just want simple, trustworthy numbers.</li>
+      </ul>
+      <h2>Cookieless vs cookie-based analytics: pros and cons</h2>
+      <div class="compare-table"><table>
+        <thead><tr><th>Aspect</th><th>Cookieless</th><th>Cookie-based (e.g. GA4)</th></tr></thead>
+        <tbody>
+          <tr><td>Consent banner</td><td class="yes">Usually not needed</td><td>Required</td></tr>
+          <tr><td>Privacy / PII</td><td class="yes">No cookies, no IP stored</td><td>Cookies + personal data</td></tr>
+          <tr><td>Script size / speed</td><td class="yes">Tiny (&lt; 2 KB)</td><td>Heavy (~45 KB+)</td></tr>
+          <tr><td>Simplicity</td><td class="yes">One screen</td><td>Steep learning curve</td></tr>
+          <tr><td>Cross-day / cross-site tracking</td><td>No (by design)</td><td>Yes</td></tr>
+          <tr><td>Ad attribution & deep funnels</td><td>Limited</td><td class="yes">Advanced</td></tr>
+          <tr><td>Data ownership</td><td class="yes">Yours (self-host option)</td><td>Vendor</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Is cookieless analytics accurate?</h2>
+      <p>For the numbers that matter to most sites — pageviews, unique visitors, sources, top pages, engagement — yes. It does not follow individuals across days, so it cannot do person-level retargeting or multi-day attribution. That is a deliberate trade for privacy and simplicity.</p>
+      <h2>Do you still need a cookie banner?</h2>
+      <p>For analytics, usually not — though it depends on your tool, setup and jurisdiction. We cover the nuances in <a href="/blog/do-i-need-a-cookie-banner">Do you need a cookie banner for cookieless analytics?</a> and <a href="/blog/cookieless-analytics-gdpr">Cookieless analytics and GDPR</a>.</p>
+      <h2>Is this the new era of analytics?</h2>
+      <p>Yes. With third-party cookies gone and privacy the default expectation, cookieless, first-party, privacy-first measurement is becoming the standard rather than the exception. The winners will be tools that are simple, fast, and respectful of visitors.</p>
+      <h2>Read the rest of the cluster</h2>
+      <ul class="prose-list">
+        <li><a href="/blog/what-is-cookieless-analytics">What Is Cookieless Analytics?</a></li>
+        <li><a href="/blog/cookieless-analytics-vs-ga4">Cookieless Analytics vs GA4</a></li>
+        <li><a href="/blog/google-analytics-alternatives-without-cookies">Best Google Analytics Alternatives Without Cookies</a></li>
+        <li><a href="/blog/cookieless-analytics-wordpress">Cookieless Analytics for WordPress</a></li>
+        <li><a href="/blog/do-i-need-a-cookie-banner">Do You Need a Cookie Banner?</a></li>
+        <li><a href="/blog/cookieless-analytics-gdpr">Cookieless Analytics and GDPR</a></li>
+        <li><a href="/blog/track-website-visitors-without-cookies">How to Track Visitors Without Cookies</a></li>
+        <li><a href="/blog/cookieless-analytics-ecommerce">Cookieless Analytics for Ecommerce</a></li>
+        <li><a href="/blog/best-cookieless-analytics-tools-small-business">Best Cookieless Tools for Small Business</a></li>
+        <li><a href="/blog/plausible-vs-matomo-vs-fathom">Plausible vs Matomo vs Fathom</a></li>
+      </ul>`,
+  },
+  'what-is-cookieless-analytics': {
+    title: 'What Is Cookieless Analytics? A Simple Explanation for Website Owners',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'A plain-English explanation of cookieless analytics: cookies vs first-party vs third-party, anonymous tracking, fingerprinting risks, and why businesses are moving away from traditional analytics.',
+    body: `
+      <p>Cookieless analytics measures your website traffic without storing a cookie on the visitor's device. Here is what that actually means, in plain English.</p>
+      <h2>First, what is a cookie?</h2>
+      <p>A cookie is a small file a site stores in your browser to remember you. <strong>First-party cookies</strong> are set by the site you are visiting; <strong>third-party cookies</strong> are set by other domains (usually ad networks) to track you across the web. Third-party cookies are the privacy problem — and browsers are removing them.</p>
+      <h2>How cookieless analytics works instead</h2>
+      <p>Rather than storing an identifier, cookieless tools count visits using anonymous, server-side signals. A common approach is a daily-rotating salted hash: the server derives a short value from request data that is unique enough to count a visitor for one day, then becomes meaningless. No cookie, no stored IP. See exactly how in <a href="/blog/how-the-salted-hash-works">how the salted hash works</a>.</p>
+      <h2>Is that the same as fingerprinting?</h2>
+      <p>No — and that distinction matters. Fingerprinting tries to <em>uniquely and persistently</em> identify a device (canvas, fonts, audio). Good cookieless analytics deliberately avoids that: the identifier is ephemeral and cannot follow you. Privacy-first tools do not fingerprint.</p>
+      <h2>Why businesses are switching</h2>
+      <ul class="prose-list">
+        <li>No consent banner needed in most cases (no cookies, no personal data).</li>
+        <li>Faster pages — scripts are a fraction of GA's size.</li>
+        <li>Simple, readable reports instead of a configuration maze.</li>
+        <li>You own the data; many tools are open source and self-hostable.</li>
+      </ul>
+      <p>For the full picture, start with the <a href="/blog/cookieless-analytics-guide">complete guide to cookieless analytics</a>, or compare it directly to <a href="/blog/cookieless-analytics-vs-ga4">GA4</a>.</p>`,
+  },
+  'cookieless-analytics-vs-ga4': {
+    title: 'Cookieless Analytics vs GA4: Which Is Better for Your Website?',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'A clear comparison of cookieless analytics and Google Analytics 4 — privacy, consent banners, complexity, accuracy, and which fits your website.',
+    body: `
+      <p>Google Analytics 4 is powerful and free, but it is also complex, cookie-based, and owned by Google. Cookieless analytics is simpler and privacy-first. Here is how to choose.</p>
+      <h2>Side by side</h2>
+      <div class="compare-table"><table>
+        <thead><tr><th>Feature</th><th>Cookieless analytics</th><th>GA4</th></tr></thead>
+        <tbody>
+          <tr><td>Cookies & consent banner</td><td class="yes">None needed (usually)</td><td>Cookies; banner required</td></tr>
+          <tr><td>Tracking model</td><td class="yes">Anonymous pageviews/events</td><td>Event-based, identity-linked</td></tr>
+          <tr><td>Script size</td><td class="yes">&lt; 2 KB</td><td>~45 KB+</td></tr>
+          <tr><td>Ease of use</td><td class="yes">One screen</td><td>Explorations, steep curve</td></tr>
+          <tr><td>Data sampling</td><td class="yes">No</td><td>Sampled at scale</td></tr>
+          <tr><td>Ad attribution</td><td>Basic (UTM, referrers)</td><td class="yes">Advanced</td></tr>
+          <tr><td>Data ownership</td><td class="yes">Yours</td><td>Google</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Choose GA4 if…</h2>
+      <p>You run paid advertising that needs deep, multi-touch attribution, or you need tight integration with Google Ads and BigQuery. GA4's complexity buys real power there.</p>
+      <h2>Choose cookieless if…</h2>
+      <p>You want fast pages, simple numbers, no consent banner, and to respect your visitors — which describes most blogs, SaaS, docs sites, portfolios, and small e-commerce. Migrating is easy: see <a href="/migrate-from-ga4">migrate from GA4</a>.</p>
+      <p>More: the <a href="/blog/cookieless-analytics-guide">complete guide</a> and <a href="/blog/google-analytics-alternatives-without-cookies">GA alternatives without cookies</a>.</p>`,
+  },
+  'google-analytics-alternatives-without-cookies': {
+    title: 'Best Google Analytics Alternatives Without Cookies (2026)',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'The best cookieless Google Analytics alternatives in 2026, with a comparison table and picks for WordPress, SaaS, agencies, self-hosting, and GDPR.',
+    body: `
+      <p>If you want to leave Google Analytics behind without cookies or a consent banner, here are the leading privacy-first alternatives and who each is best for.</p>
+      <div class="compare-table"><table>
+        <thead><tr><th>Tool</th><th>Model</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td class="yes">Xolqy</td><td>Open source (AGPL) + SaaS, on Cloudflare</td><td>Cookieless on the edge, scroll/engagement, many sites</td></tr>
+          <tr><td>Plausible</td><td>Open source + SaaS</td><td>Simple, popular privacy-first analytics</td></tr>
+          <tr><td>Fathom</td><td>SaaS</td><td>Hands-off, hosted simplicity</td></tr>
+          <tr><td>Matomo</td><td>Open source + SaaS</td><td>GA-style depth, self-hosted</td></tr>
+          <tr><td>Simple Analytics</td><td>SaaS</td><td>Minimalist, EU-hosted</td></tr>
+          <tr><td>Umami</td><td>Open source</td><td>Lightweight self-hosting</td></tr>
+          <tr><td>Swetrix</td><td>Open source + SaaS</td><td>Developer-friendly, marketing features</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Best for WordPress</h2>
+      <p>A one-line script works on any WordPress theme — see <a href="/blog/cookieless-analytics-wordpress">cookieless analytics for WordPress</a>.</p>
+      <h2>Best for SaaS &amp; agencies</h2>
+      <p>Look for multi-site management and a single admin view across properties. Xolqy includes a super-admin across every domain plus an "all sites combined" view.</p>
+      <h2>Best self-hosted &amp; GDPR-focused</h2>
+      <p>Open-source tools you can run yourself keep data entirely in your control. Xolqy runs on the Cloudflare free tier; Matomo and Umami self-host on your own server. All avoid cookies when configured for privacy.</p>
+      <p>Not sure cookieless is right? Read the <a href="/blog/cookieless-analytics-guide">complete guide</a> or <a href="/blog/cookieless-analytics-vs-ga4">vs GA4</a>.</p>`,
+  },
+  'best-cookieless-analytics-tools-small-business': {
+    title: 'Best Cookieless Analytics Tools for Small Business Websites in 2026',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'The best cookieless analytics tools for small business websites in 2026 — privacy-friendly, lightweight, affordable, and easy to read.',
+    body: `
+      <p>Small business sites do not need a 200-report platform. They need to know how many people came, where from, and what they read — privately and without slowing the site. These cookieless tools fit the bill.</p>
+      <h2>What to look for</h2>
+      <ul class="prose-list">
+        <li><strong>No cookie banner</strong> — saves you a compliance headache.</li>
+        <li><strong>Lightweight</strong> — a small script that will not hurt page speed or SEO.</li>
+        <li><strong>Simple dashboard</strong> — answers you can read in seconds.</li>
+        <li><strong>Affordable / free tier</strong> — and ideally self-hostable.</li>
+      </ul>
+      <h2>Top picks</h2>
+      <p>Strong options include <strong>Xolqy</strong> (cookieless, &lt; 2 KB, free up to 10k pageviews/mo, self-hostable on Cloudflare), <strong>Plausible</strong>, <strong>Fathom</strong>, <strong>Simple Analytics</strong>, <strong>Umami</strong>, and <strong>WP Statistics</strong> for WordPress. See the full <a href="/blog/google-analytics-alternatives-without-cookies">comparison of GA alternatives without cookies</a>.</p>
+      <h2>For WordPress sites</h2>
+      <p>If you run WordPress, see <a href="/blog/cookieless-analytics-wordpress">cookieless analytics for WordPress</a> for plugins and a one-line setup.</p>
+      <p>New to the topic? Start with <a href="/blog/what-is-cookieless-analytics">what is cookieless analytics</a>.</p>`,
+  },
+  'do-i-need-a-cookie-banner': {
+    title: 'Do You Need a Cookie Banner for Cookieless Analytics?',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'Do you need a cookie consent banner if you use cookieless analytics? The honest answer: usually not — but it depends on the tool, setup, and jurisdiction.',
+    body: `
+      <p>One of the biggest reasons people switch to cookieless analytics is to drop the consent banner. Can you? In most cases yes — but the honest answer is "it depends." Here is what determines it.</p>
+      <p class="legal-note">This is general information, not legal advice. Confirm your obligations with a qualified professional for your jurisdiction.</p>
+      <h2>Why cookie banners exist</h2>
+      <p>Laws like the EU's ePrivacy Directive require consent to store or read information on a user's device — i.e. cookies — except for strictly necessary ones. Analytics cookies are not "strictly necessary," so cookie-based analytics triggers the banner.</p>
+      <h2>When you likely do NOT need a banner</h2>
+      <ul class="prose-list">
+        <li>The tool sets <strong>no cookies</strong> and writes nothing to the device.</li>
+        <li>It stores <strong>no personal data</strong> — no IP addresses, no persistent identifiers.</li>
+        <li>It does not fingerprint or track across sites.</li>
+      </ul>
+      <p>Xolqy meets all three, which is why most Xolqy sites run with no analytics banner.</p>
+      <h2>When you still might</h2>
+      <p>If you also use cookie-based ads/marketing tools, or your tool stores IP addresses, or your jurisdiction is stricter, you may still need consent for those. The banner requirement is about cookies and personal data in general — not just analytics.</p>
+      <p>Related: <a href="/blog/cookieless-analytics-gdpr">cookieless analytics and GDPR</a> and the <a href="/blog/cookieless-analytics-guide">complete guide</a>.</p>`,
+  },
+  'cookieless-analytics-gdpr': {
+    title: 'Cookieless Analytics and GDPR: What Website Owners Should Know',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'How cookieless analytics relates to GDPR — personal data, IP addresses, consent vs legitimate interest, anonymization, EU hosting, and DPAs.',
+    body: `
+      <p>GDPR is the main reason European sites rethink analytics. Cookieless, privacy-first analytics makes compliance far simpler — here is why, and what to still check.</p>
+      <p class="legal-note">General information, not legal advice. Confirm specifics with a qualified professional.</p>
+      <h2>The core issue: personal data</h2>
+      <p>GDPR governs <strong>personal data</strong>. An IP address is considered personal data. Traditional analytics store IPs and set cookies, which brings you squarely under GDPR and usually requires consent.</p>
+      <h2>How cookieless analytics reduces the burden</h2>
+      <ul class="prose-list">
+        <li><strong>No IP stored</strong> — Xolqy hashes request data with a secret, daily-rotating salt and keeps only an anonymous fragment.</li>
+        <li><strong>No cookies / no identifiers</strong> — nothing persistent on the device.</li>
+        <li><strong>Aggregate by design</strong> — you see counts, not people.</li>
+      </ul>
+      <h2>Lawful basis: consent vs legitimate interest</h2>
+      <p>Because no personal data is stored, aggregate measurement can typically rely on the site operator's <strong>legitimate interest</strong> rather than consent. (Cookie-based analytics generally needs consent.)</p>
+      <h2>Other things that help</h2>
+      <p>EU/edge hosting, a published privacy and data policy, a signable <a href="/dpa">DPA</a>, and a clear list of sub-processors. Xolqy publishes all of these. See also <a href="/blog/do-i-need-a-cookie-banner">do you need a cookie banner?</a></p>`,
+  },
+  'track-website-visitors-without-cookies': {
+    title: 'How to Track Website Visitors Without Cookies',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'A practical guide to tracking website visitors without cookies — pageviews, referrers, UTM parameters, goals, anonymized sessions, and the limits.',
+    body: `
+      <p>You can learn almost everything useful about your traffic without a single cookie. Here is how cookieless tracking works in practice, and where its limits are.</p>
+      <h2>What you can track without cookies</h2>
+      <ul class="prose-list">
+        <li><strong>Pageviews &amp; unique visitors</strong> — via anonymous, daily-rotating identifiers.</li>
+        <li><strong>Traffic sources &amp; referrers</strong> — where people came from.</li>
+        <li><strong>UTM campaigns</strong> — read straight from the URL, no cookie needed.</li>
+        <li><strong>Engagement</strong> — time on page and scroll depth.</li>
+        <li><strong>Goals / conversions</strong> — fire an event on key actions (signup, purchase).</li>
+      </ul>
+      <h2>How it is done</h2>
+      <p>A tiny first-party script sends an anonymous pageview to your analytics endpoint. The server counts uniques with an anonymous hash (no cookie, no stored IP). Campaigns come from UTM parameters; conversions are simple events. For deeper server-side conversion tracking, your backend can post events directly to the analytics API.</p>
+      <h2>The limits (and why they are fine)</h2>
+      <p>Without cookies you cannot recognise the same person across days or run person-level retargeting. For most sites that is an acceptable — even desirable — trade for privacy, speed, and no consent banner.</p>
+      <p>See the <a href="/blog/cookieless-analytics-guide">complete guide</a>, and for shops, <a href="/blog/cookieless-analytics-ecommerce">cookieless analytics for ecommerce</a>.</p>`,
+  },
+  'plausible-vs-matomo-vs-fathom': {
+    title: 'Plausible vs Matomo vs Fathom: Best Privacy-Friendly Analytics Tool?',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'Plausible vs Matomo vs Fathom compared — hosting, simplicity, data ownership, GDPR, cookie-banner needs — plus where Xolqy fits.',
+    body: `
+      <p>Plausible, Matomo and Fathom are three of the best-known privacy-friendly analytics tools. Here is how they differ, and where Xolqy fits.</p>
+      <div class="compare-table"><table>
+        <thead><tr><th>Aspect</th><th>Plausible</th><th>Matomo</th><th>Fathom</th></tr></thead>
+        <tbody>
+          <tr><td>Open source</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Self-host</td><td>Yes (Elixir/PG)</td><td>Yes (PHP/MySQL)</td><td>No (hosted)</td></tr>
+          <tr><td>Complexity</td><td>Simple</td><td>Feature-rich</td><td>Simple</td></tr>
+          <tr><td>Cookies / banner</td><td>Cookieless</td><td>Optional</td><td>Cookieless</td></tr>
+          <tr><td>Data ownership</td><td>Yes (self-host)</td><td>Yes (self-host)</td><td>Hosted</td></tr>
+        </tbody>
+      </table></div>
+      <h2>Quick take</h2>
+      <ul class="prose-list">
+        <li><strong>Plausible</strong> — clean, simple, open source; great default privacy-first pick.</li>
+        <li><strong>Matomo</strong> — closest to GA's depth; heavier to self-host (PHP + MySQL).</li>
+        <li><strong>Fathom</strong> — polished hosted simplicity; not open source.</li>
+      </ul>
+      <h2>Where Xolqy fits</h2>
+      <p>Xolqy shares the cookieless, simple-metrics philosophy, but runs serverless on Cloudflare Workers + D1 (so self-hosting is free on the edge), adds scroll-depth and engagement, and a super-admin view across every site. Compare directly: <a href="/vs-plausible">vs Plausible</a>, <a href="/vs-matomo">vs Matomo</a>.</p>
+      <p>See also the <a href="/blog/google-analytics-alternatives-without-cookies">full list of GA alternatives without cookies</a>.</p>`,
+  },
+  'cookieless-analytics-ecommerce': {
+    title: 'Cookieless Analytics for Ecommerce: Can You Track Sales Without Cookies?',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'Can you track ecommerce sales without cookies? What cookieless analytics can measure — product views, add-to-cart, checkout, UTM, server-side conversions — and its limits.',
+    body: `
+      <p>Ecommerce owners ask: can I track sales without cookies? Mostly yes — especially with server-side conversion tracking — though cross-session ad attribution has limits. Here is the practical picture.</p>
+      <h2>What you can track</h2>
+      <ul class="prose-list">
+        <li><strong>Product views</strong> and top products.</li>
+        <li><strong>Add-to-cart</strong> and <strong>checkout</strong> as events.</li>
+        <li><strong>Conversions / orders</strong> — fired client-side or, more reliably, <strong>server-side</strong> from your order webhook.</li>
+        <li><strong>Campaign performance</strong> via UTM parameters.</li>
+      </ul>
+      <h2>Server-side is your friend</h2>
+      <p>Because the order confirmation happens on your server, you can post the conversion event directly to your analytics API — no cookie, accurate, and resistant to ad-blockers. This is the most reliable way to count sales privately.</p>
+      <h2>The honest limits</h2>
+      <p>Without cookies you cannot stitch a purchase to an ad click from days earlier across devices. For last-click/UTM attribution and overall funnel health, cookieless is plenty; for multi-touch ad attribution, you may still pair it with your ad platform's own reporting.</p>
+      <p>More: <a href="/blog/track-website-visitors-without-cookies">how to track visitors without cookies</a> and the <a href="/blog/cookieless-analytics-guide">complete guide</a>.</p>`,
+  },
   'how-the-salted-hash-works': {
     title: 'How the salted hash counts visitors without tracking them',
     date: 'June 2, 2026',
