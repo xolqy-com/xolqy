@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Xolqy Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="dash">
+  <header>
+    <h1><span class="x">X</span>olqy</h1>
+    <div class="controls">
+      <select id="site"></select>
+      <select id="range">
+        <option value="1">Last 24h</option>
+        <option value="7" selected>Last 7d</option>
+        <option value="30">Last 30d</option>
+        <option value="90">Last 90d</option>
+      </select>
+      <button id="install-btn" class="btn-sm" type="button">Install</button>
+      <button id="share-btn" class="btn-sm" type="button">Share</button>
+      <button id="add-site" class="btn-sm" type="button">+ Add site</button>
+      <span class="user-box">
+        <span id="user-email"></span>
+        <button id="logout" class="btn-sm" type="button">Log out</button>
+      </span>
+    </div>
+  </header>
+
+  <!-- Shown when the account has no sites yet -->
+  <main id="onboarding" style="display:none">
+    <div class="empty">
+      <h2>Add your first site</h2>
+      <p>Enter the domain you want to track. You'll only see analytics for sites you've added.</p>
+      <div class="addsite">
+        <input id="first-domain" type="text" placeholder="example.com" />
+        <button id="first-add" class="btn-sm" type="button">Add site</button>
+      </div>
+      <div id="first-err" class="auth-err" style="display:none;max-width:420px;margin:1rem auto 0"></div>
+      <p style="margin-top:2rem">Then drop this on every page you want to track:</p>
+      <div class="snippet" id="onboard-snippet">&lt;script defer src="https://xolqy.com/t.js"&gt;&lt;/script&gt;</div>
+    </div>
+  </main>
+
+  <main id="app" style="display:none">
+    <div class="install-bar" id="install-panel" style="display:none">
+      <div>
+        <div class="install-title">Add this to the <code>&lt;head&gt;</code> of every page on <span id="install-domain">your site</span>:</div>
+        <code class="install-code" id="install-code">&lt;script defer src="https://xolqy.com/t.js"&gt;&lt;/script&gt;</code>
+      </div>
+      <div class="install-actions">
+        <button id="copy-snippet" class="btn-sm" type="button">Copy</button>
+        <button id="install-close" class="btn-sm" type="button" aria-label="Dismiss">✕</button>
+      </div>
+    </div>
+    <div class="share-box" id="share-panel" style="display:none">
+      <div class="share-head">
+        <div class="install-title">Share read-only access to <span id="share-domain">this site</span></div>
+        <button id="share-close" class="btn-sm" type="button" aria-label="Dismiss">✕</button>
+      </div>
+      <div class="share-invite">
+        <input id="share-email" type="email" placeholder="person@example.com" />
+        <button id="share-send" class="btn-sm" type="button">Send invite</button>
+      </div>
+      <div id="share-link" class="share-link" style="display:none"></div>
+      <div id="share-msg" class="auth-err" style="display:none"></div>
+      <div id="share-list" class="share-list"></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Pageviews</div><div class="kpi-val" id="kpi-pv">—</div></div>
+      <div class="kpi"><div class="kpi-label">Unique visitors</div><div class="kpi-val" id="kpi-uv">—</div></div>
+      <div class="kpi"><div class="kpi-label">Avg time on page</div><div class="kpi-val" id="kpi-time">—</div></div>
+      <div class="kpi"><div class="kpi-label">Avg scroll depth</div><div class="kpi-val" id="kpi-scroll">—</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Traffic over time</h2>
+      <div class="chart"><canvas id="chart-series"></canvas></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Top pages by views</h2>
+        <table>
+          <thead><tr><th>Path</th><th class="num">Views</th><th class="num">Visitors</th><th class="num">Avg time</th><th class="num">Scroll</th></tr></thead>
+          <tbody id="t-pages"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Top pages by engagement</h2>
+        <table>
+          <thead><tr><th>Path</th><th class="num">Avg time</th><th class="num">Scroll</th></tr></thead>
+          <tbody id="t-eng"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Top referrers</h2>
+        <table>
+          <thead><tr><th>Source</th><th class="num">Views</th><th class="num">Visitors</th></tr></thead>
+          <tbody id="t-ref"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Countries</h2>
+        <table>
+          <thead><tr><th>Country</th><th class="num">Views</th><th class="num">Visitors</th></tr></thead>
+          <tbody id="t-country"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Devices</h2>
+        <table>
+          <thead><tr><th>Device</th><th class="num">Views</th></tr></thead>
+          <tbody id="t-device"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const siteSel = document.getElementById('site');
+    const rangeSel = document.getElementById('range');
+
+    function fmtDuration(ms) {
+      ms = Math.round(Number(ms) || 0);
+      const s = Math.floor(ms / 1000);
+      if (s < 60) return s + 's';
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return m + 'm ' + (r ? r + 's' : '');
+    }
+    function fmtPct(n) { return Math.round(Number(n) || 0) + '%'; }
+    function el(tag, attrs, ...kids) {
+      const e = document.createElement(tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      for (const c of kids) e.append(c?.nodeType ? c : document.createTextNode(c ?? ''));
+      return e;
+    }
+    // Truncated, clickable path/label. Shows full text in a tooltip and on click.
+    function truncEl(text) {
+      const s = el('span', { class: 'trunc', title: text }, text);
+      s.addEventListener('click', () => s.classList.toggle('expanded'));
+      return s;
+    }
+
+    async function api(path) {
+      const url = new URL('/api/stats/' + path, location.origin);
+      url.searchParams.set('site', siteSel.value);
+      const days = Number(rangeSel.value);
+      const now = Math.floor(Date.now() / 1000);
+      url.searchParams.set('from', String(now - days * 86400));
+      url.searchParams.set('to', String(now));
+      const res = await fetch(url);
+      if (res.status === 401) { location.href = '/login'; throw new Error('not signed in'); }
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    let chart;
+    async function refresh() {
+      const [ov, tp, te, tr, tc, td, ts] = await Promise.all([
+        api('overview'), api('top-pages'), api('engagement'),
+        api('referrers'), api('countries'), api('devices'), api('series'),
+      ]);
+      document.getElementById('kpi-pv').textContent = (ov.pageviews ?? 0).toLocaleString();
+      document.getElementById('kpi-uv').textContent = (ov.visitors ?? 0).toLocaleString();
+      document.getElementById('kpi-time').textContent = fmtDuration(ov.avg_duration_ms);
+      document.getElementById('kpi-scroll').textContent = fmtPct(ov.avg_scroll_pct);
+
+      const tbody = (id) => { const b = document.getElementById(id); b.innerHTML=''; return b; };
+      const max = (rows, key) => Math.max(1, ...rows.map((r) => Number(r[key]) || 0));
+
+      const mvp = max(tp, 'pageviews');
+      const bp = tbody('t-pages');
+      for (const r of tp) {
+        const w = Math.max(2, Math.round((r.pageviews / mvp) * 80));
+        bp.append(el('tr', {},
+          el('td', { class: 'path-td' }, el('span', { class: 'bar', style: `width:${w}px` }), truncEl(r.path)),
+          el('td', { class: 'num' }, r.pageviews.toLocaleString()),
+          el('td', { class: 'num' }, r.visitors.toLocaleString()),
+          el('td', { class: 'num' }, fmtDuration(r.avg_duration_ms)),
+          el('td', { class: 'num' }, fmtPct(r.avg_scroll_pct)),
+        ));
+      }
+
+      const be = tbody('t-eng');
+      for (const r of te) {
+        be.append(el('tr', {},
+          el('td', { class: 'path-td' }, truncEl(r.path)),
+          el('td', { class: 'num' }, fmtDuration(r.avg_duration_ms)),
+          el('td', { class: 'num' }, fmtPct(r.avg_scroll_pct)),
+        ));
+      }
+
+      const br = tbody('t-ref');
+      for (const r of tr) br.append(el('tr', {}, el('td', { class: 'path-td' }, truncEl(r.source)), el('td', { class: 'num' }, r.pageviews.toLocaleString()), el('td', { class: 'num' }, r.visitors.toLocaleString())));
+
+      const bc = tbody('t-country');
+      for (const r of tc) bc.append(el('tr', {}, el('td', {}, r.country), el('td', { class: 'num' }, r.pageviews.toLocaleString()), el('td', { class: 'num' }, r.visitors.toLocaleString())));
+
+      const bd = tbody('t-device');
+      for (const r of td) bd.append(el('tr', {}, el('td', {}, r.device || 'unknown'), el('td', { class: 'num' }, r.pageviews.toLocaleString())));
+
+      const ctx = document.getElementById('chart-series').getContext('2d');
+      if (chart) chart.destroy();
+      const labels = ts.map((r) => new Date(r.bucket * 1000).toISOString().slice(0, 10));
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels,
+          datasets: [
+            { label: 'Pageviews', data: ts.map((r) => r.pageviews), borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,0.1)', fill: true, tension: 0.3 },
+            { label: 'Visitors', data: ts.map((r) => r.visitors), borderColor: '#888', backgroundColor: 'transparent', tension: 0.3 },
+          ] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#888' } } },
+          scales: {
+            x: { ticks: { color: '#888' }, grid: { color: '#222' } },
+            y: { ticks: { color: '#888' }, grid: { color: '#222' }, beginAtZero: true },
+          },
+        },
+      });
+    }
+
+    const onboarding = document.getElementById('onboarding');
+    const appMain = document.getElementById('app');
+
+    async function jsonFetch(path, opts) {
+      const res = await fetch(path, opts);
+      if (res.status === 401) { location.href = '/login'; throw new Error('not signed in'); }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'request failed');
+      return data;
+    }
+
+    let isAdmin = false;
+    const domainToId = {};
+
+    async function loadSites() {
+      const { sites } = await jsonFetch('/api/sites');
+      siteSel.innerHTML = '';
+      for (const k in domainToId) delete domainToId[k];
+      // Super-admin gets a combined "all sites" aggregate first.
+      if (isAdmin) siteSel.append(el('option', { value: '*' }, '★ All sites (combined)'));
+      for (const s of sites) {
+        siteSel.append(el('option', { value: s.domain }, s.domain));
+        if (s.id) domainToId[s.domain] = s.id;
+      }
+      return sites;
+    }
+
+    async function addSite(domain, errEl) {
+      if (errEl) { errEl.style.display = 'none'; }
+      try {
+        await jsonFetch('/api/sites', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ domain }),
+        });
+        return true;
+      } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+        return false;
+      }
+    }
+
+    document.getElementById('logout').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      location.href = '/login';
+    });
+
+    document.getElementById('add-site').addEventListener('click', async () => {
+      const domain = prompt('Domain to track (e.g. example.com):');
+      if (!domain) return;
+      if (await addSite(domain)) { await loadSites(); updateInstallDomain(); await refresh(); }
+      else alert('Could not add that domain. It may already be claimed.');
+    });
+
+    // Install snippet panel — always available, snippet is the same for every site.
+    const SNIPPET = '<script defer src="https://xolqy.com/t.js"></scr' + 'ipt>';
+    const installPanel = document.getElementById('install-panel');
+    function updateInstallDomain() {
+      const v = siteSel.value;
+      document.getElementById('install-domain').textContent = (!v || v === '*') ? 'your site' : v;
+    }
+    document.getElementById('install-btn').addEventListener('click', () => {
+      updateInstallDomain();
+      installPanel.style.display = installPanel.style.display === 'none' ? 'flex' : 'none';
+    });
+    document.getElementById('install-close').addEventListener('click', () => { installPanel.style.display = 'none'; });
+
+    // Share panel — per-site read-only invites.
+    const sharePanel = document.getElementById('share-panel');
+    const shareMsg = document.getElementById('share-msg');
+    const shareLink = document.getElementById('share-link');
+    function currentSiteId() { return domainToId[siteSel.value]; }
+
+    async function loadShares() {
+      const id = currentSiteId();
+      const list = document.getElementById('share-list');
+      list.innerHTML = '';
+      if (!id) return;
+      try {
+        const { shares } = await jsonFetch('/api/sites/' + id + '/shares');
+        if (!shares.length) { list.append(el('div', { class: 'muted' }, 'No one else has access yet.')); return; }
+        for (const s of shares) {
+          const row = el('div', { class: 'share-row' },
+            el('span', {}, s.email + (s.status === 'pending' ? ' · pending' : ' · accepted')),
+            el('button', { class: 'btn-sm', 'data-id': s.id }, 'Revoke'));
+          row.querySelector('button').addEventListener('click', async (e) => {
+            await jsonFetch('/api/shares/' + e.target.getAttribute('data-id'), { method: 'DELETE' });
+            loadShares();
+          });
+          list.append(row);
+        }
+      } catch (e) { /* not owner / no access to manage */ }
+    }
+
+    function openShare() {
+      shareMsg.style.display = 'none'; shareLink.style.display = 'none';
+      const domain = siteSel.value;
+      if (!currentSiteId()) {
+        alert(domain === '*' ? 'Pick a specific site to share.' : 'Add “' + domain + '” to your account first, then you can share it.');
+        return;
+      }
+      document.getElementById('share-domain').textContent = domain;
+      sharePanel.style.display = 'block';
+      loadShares();
+    }
+    document.getElementById('share-btn').addEventListener('click', () => {
+      if (sharePanel.style.display !== 'none') { sharePanel.style.display = 'none'; return; }
+      openShare();
+    });
+    document.getElementById('share-close').addEventListener('click', () => { sharePanel.style.display = 'none'; });
+    document.getElementById('share-send').addEventListener('click', async () => {
+      const id = currentSiteId(); if (!id) return;
+      const email = document.getElementById('share-email').value.trim();
+      shareMsg.style.display = 'none'; shareLink.style.display = 'none';
+      if (!email) return;
+      try {
+        const res = await jsonFetch('/api/sites/' + id + '/shares', {
+          method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email }),
+        });
+        document.getElementById('share-email').value = '';
+        shareLink.style.display = 'block';
+        shareLink.innerHTML = (res.emailed ? 'Invite emailed. ' : 'Invite created. ') +
+          'Share this link:<br><code>' + res.link + '</code> <button class="btn-sm" id="copy-link">Copy</button>';
+        document.getElementById('copy-link').addEventListener('click', async (e) => {
+          try { await navigator.clipboard.writeText(res.link); e.target.textContent = 'Copied!'; } catch (_) {}
+        });
+        loadShares();
+      } catch (ex) { shareMsg.textContent = ex.message; shareMsg.style.display = 'block'; }
+    });
+    document.getElementById('copy-snippet').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      try {
+        await navigator.clipboard.writeText(SNIPPET);
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+      } catch {
+        // Fallback: select the code so the user can copy manually.
+        const r = document.createRange();
+        r.selectNodeContents(document.getElementById('install-code'));
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        btn.textContent = 'Press Ctrl+C';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      }
+    });
+
+    (async function init() {
+      // Confirm the session and show who's signed in (redirects to /login on 401).
+      const me = await jsonFetch('/api/me');
+      isAdmin = !!me.user.is_admin;
+      const emailEl = document.getElementById('user-email');
+      emailEl.textContent = me.user.email;
+      if (isAdmin) emailEl.append(el('span', { class: 'admin-badge' }, 'ADMIN'));
+
+      const sites = await loadSites();
+      // Admins always get the dashboard (they can pick "All sites"); regular
+      // users with no claimed sites get the onboarding screen.
+      if (!isAdmin && !sites.length) {
+        onboarding.style.display = 'block';
+        const errEl = document.getElementById('first-err');
+        document.getElementById('first-add').addEventListener('click', async () => {
+          const domain = document.getElementById('first-domain').value.trim();
+          if (!domain) return;
+          if (await addSite(domain, errEl)) location.reload();
+        });
+        return;
+      }
+
+      appMain.style.display = 'block';
+      updateInstallDomain();
+      siteSel.addEventListener('change', () => { updateInstallDomain(); refresh(); });
+      rangeSel.addEventListener('change', refresh);
+      try { await refresh(); }
+      catch (e) { appMain.append(el('pre', {}, 'No data yet for this site, or an error occurred.\n\n' + e.message)); }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+node_modules
+.wrangler
+.wrangler-dryrun
+dist
+.mf
+.dev.vars
+.dev.vars.*
+.env
+.env.local
+.og-tmp.mjs
+*.log
+.DS_Store
+desktop.ini
+Thumbs.db
+.vscode
+.idea

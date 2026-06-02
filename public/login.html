@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign in · Xolqy</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/dashboard.css" />
+</head>
+<body class="auth">
+  <div class="auth-card">
+    <div class="auth-mark">X</div>
+    <h1>Xolqy</h1>
+    <p class="sub">Privacy-first analytics. Free to use — create an account to get started.</p>
+
+    <div class="auth-tabs">
+      <button id="tab-login" class="active" type="button">Log in</button>
+      <button id="tab-register" type="button">Register</button>
+    </div>
+
+    <div id="err" class="auth-err" style="display:none"></div>
+
+    <a id="google" class="btn-google" href="/auth/google">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Continue with Google
+    </a>
+
+    <div class="divider">or</div>
+
+    <form id="form" autocomplete="on">
+      <div class="field" id="name-field" style="display:none">
+        <label for="name">Name (optional)</label>
+        <input id="name" name="name" type="text" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" />
+      </div>
+      <button id="submit" class="btn" type="submit">Log in</button>
+    </form>
+
+    <p class="auth-foot" id="foot">No account yet? <a href="#" id="switch">Register free</a></p>
+  </div>
+
+  <script>
+    let mode = 'login'; // or 'register'
+    const $ = (id) => document.getElementById(id);
+    const err = $('err');
+
+    const ERRORS = {
+      google_not_configured: 'Google sign-in is not set up yet on this server.',
+      google_denied: 'Google sign-in was cancelled.',
+      google_failed: 'Could not sign in with Google. Please try again.',
+      email_unverified: 'Your Google email is not verified.',
+      bad_state: 'Google sign-in expired. Please try again.',
+    };
+
+    function showError(msg) { err.textContent = msg; err.style.display = msg ? 'block' : 'none'; }
+
+    // Surface ?error= from OAuth redirects.
+    const urlErr = new URLSearchParams(location.search).get('error');
+    if (urlErr) showError(ERRORS[urlErr] || 'Something went wrong. Please try again.');
+
+    function setMode(m) {
+      mode = m;
+      const reg = m === 'register';
+      $('tab-login').classList.toggle('active', !reg);
+      $('tab-register').classList.toggle('active', reg);
+      $('name-field').style.display = reg ? 'block' : 'none';
+      $('submit').textContent = reg ? 'Create account' : 'Log in';
+      $('password').autocomplete = reg ? 'new-password' : 'current-password';
+      $('foot').innerHTML = reg
+        ? 'Already have an account? <a href="#" id="switch">Log in</a>'
+        : 'No account yet? <a href="#" id="switch">Register free</a>';
+      $('switch').addEventListener('click', onSwitch);
+      showError('');
+    }
+    function onSwitch(e) { e.preventDefault(); setMode(mode === 'login' ? 'register' : 'login'); }
+
+    $('tab-login').addEventListener('click', () => setMode('login'));
+    $('tab-register').addEventListener('click', () => setMode('register'));
+    $('switch').addEventListener('click', onSwitch);
+
+    $('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showError('');
+      const btn = $('submit');
+      btn.disabled = true;
+      const payload = { email: $('email').value.trim(), password: $('password').value };
+      if (mode === 'register') payload.name = $('name').value.trim();
+      try {
+        const res = await fetch('/api/auth/' + mode, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+        // Honor a safe local ?next= (e.g. returning to an invite link).
+        const nextRaw = new URLSearchParams(location.search).get('next') || '';
+        const next = (nextRaw.startsWith('/') && !nextRaw.startsWith('//')) ? nextRaw : '/dashboard';
+        location.href = next;
+      } catch (ex) {
+        showError(ex.message);
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+name = "xolqy"
+main = "src/worker.ts"
+compatibility_date = "2025-05-01"
+
+# Public landing + dashboard files served as static assets by the worker.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# Cloudflare D1 (SQLite-at-the-edge) — analytics storage.
+# After `wrangler d1 create xolqy`, paste the database_id here.
+[[d1_databases]]
+binding = "DB"
+database_name = "xolqy"
+database_id = "548948de-a89f-4dfb-9763-f3102c47ed8b"
+
+# Nightly rollup of completed days into daily_rollups (src/rollup.ts).
+# 00:15 UTC — after midnight so the day that just ended is final. The first run
+# on an empty table backfills all history; later runs refresh the trailing 2 days.
+[triggers]
+crons = ["15 0 * * *"]
+
+# Secrets — set via `npx wrangler secret put <NAME>` (and in .dev.vars for `wrangler dev`):
+#   SALT_SEED             – seed for the daily visitor-hash salt
+#   ADMIN_TOKEN           – legacy; no longer gates the dashboard (accounts do)
+#   GOOGLE_CLIENT_ID      – OAuth 2.0 client ID from Google Cloud Console
+#   GOOGLE_CLIENT_SECRET  – OAuth 2.0 client secret
+#   SUPERADMIN_EMAIL      – comma-separated emails that see every domain
+#
+# Optional plain var: the OAuth redirect URI. If omitted it's derived per-request
+# as <origin>/auth/google/callback, which works once you're on a stable domain.
+# [vars]
+# GOOGLE_REDIRECT_URI = "https://xolqy.com/auth/google/callback"

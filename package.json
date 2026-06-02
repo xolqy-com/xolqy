@@ -1,0 +1,19 @@
+{
+  "name": "xolqy",
+  "version": "0.1.0",
+  "description": "Cookieless web analytics on Cloudflare Workers + D1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "schema": "wrangler d1 execute xolqy --file=schema.sql",
+    "schema:remote": "wrangler d1 execute xolqy --remote --file=schema.sql",
+    "og": "node scripts/build-og.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240620.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^3.114.0"
+  }
+}
