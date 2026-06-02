@@ -89,6 +89,17 @@ Set with `npx wrangler secret put <NAME>` (and mirror them in a gitignored `.dev
 
 **Rollups for scale.** A Cron Trigger (00:15 UTC) aggregates each completed day into `daily_rollups` (one row per site per day) via [`src/rollup.ts`](src/rollup.ts). The dashboard's KPIs and chart read pre‑aggregated totals for past days and query raw `events` only for *today* — so history is cheap and today is live. Averages are stored as sum + count so they recombine across any range; because the visitor hash rotates daily, summing per‑day uniques equals the range‑wide distinct count.
 
+**Subresource Integrity.** `/t.js` is the rolling latest (short cache). For production, load the frozen, versioned build `/v1/t.js` — immutable cache + CORS — with an `integrity` hash so the browser refuses to run it if a single byte changes:
+
+```html
+<script defer
+  src="https://xolqy.com/v1/t.js"
+  integrity="sha384-ke6QrWN1bDKHOJu8IxR+RQRP2LSR5hrjAAlpTKEFmnxrQchQDdz7CBsOQws8su9P"
+  crossorigin="anonymous"></script>
+```
+
+A breaking change ships as `/v2/t.js` with a new hash; pinned tags keep working. Recompute the hash with `curl -s https://your-domain.com/v1/t.js | openssl dgst -sha384 -binary | openssl base64 -A`.
+
 **Generating OG images.** `npm run og` renders a per‑page Open Graph PNG into `public/og/` (uses `sharp`). Re‑run after adding pages or posts.
 
 ## Project layout

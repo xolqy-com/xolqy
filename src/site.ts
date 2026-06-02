@@ -177,6 +177,13 @@ function pageBody(inner: string): string {
 
 const INSTALL = `&lt;script defer src="https://xolqy.com/t.js"&gt;&lt;/script&gt;`;
 
+// Versioned, immutable build + Subresource Integrity hash (computed from the
+// exact bytes served at /v1/t.js). Lets customers pin the script so it can
+// never silently change. Update only when a new version (/v2/t.js) ships.
+const TRACKER_SRI = 'sha384-ke6QrWN1bDKHOJu8IxR+RQRP2LSR5hrjAAlpTKEFmnxrQchQDdz7CBsOQws8su9P';
+const PINNED_INSTALL =
+  `&lt;script defer\n  src="https://xolqy.com/v1/t.js"\n  integrity="${TRACKER_SRI}"\n  crossorigin="anonymous"&gt;&lt;/script&gt;`;
+
 // ----------------------------------------------------------------------------
 // Landing page
 export const LANDING_DESCRIPTION =
@@ -609,6 +616,7 @@ export const PAGES: Record<string, Page> = {
     [
       ['What it sends', ['On load it sends a pageview with a random id, the path, and a session id. Every 15s while visible it sends a ping with time-on-page and max scroll. On unload it sends a final beacon.']],
       ['What it never does', ['It sets no cookies, reads no <code>localStorage</code> beyond a per-tab session id, and collects no personal data. Source is open — read it on GitHub.']],
+      ['Pin it so it can never change', ['Load the versioned, immutable build at <code>/v1/t.js</code> with a Subresource Integrity hash and the browser will refuse to run it if a single byte differs. See the <a href="/docs">install docs</a> for the exact <code>integrity</code> snippet.']],
     ]),
 
   // --- Resources ------------------------------------------------------------
@@ -620,6 +628,9 @@ export const PAGES: Record<string, Page> = {
       ${section('2. Add your site', 'In the dashboard, click <b>Add site</b> and enter your domain (e.g. <code>example.com</code>). You can add every domain you own.')}
       ${section('3. Install the script', `Add this one line to every page you want to track, ideally in the &lt;head&gt;:`)}
       <pre class="install"><code>${INSTALL}</code></pre>
+      ${section('Pin a version with Subresource Integrity (recommended for production)', 'For a contractual guarantee that the JavaScript running on your site can never silently change, load the immutable, versioned build with an <code>integrity</code> hash. The bytes at <code>/v1/t.js</code> are frozen forever; any breaking change ships as <code>/v2/t.js</code> with a new hash, so your pinned tag keeps working untouched.')}
+      <pre class="install"><code>${PINNED_INSTALL}</code></pre>
+      <p class="muted">Current <code>/v1/t.js</code> integrity: <code>${TRACKER_SRI}</code>. Astro users: add <code>is:inline</code> so the attributes are preserved.</p>
       ${section('4. Read your dashboard', 'Pick a date range and a site. KPIs and the traffic chart update instantly; tables show top pages, sources, countries and devices.')}
       ${section('Self-hosting', 'Xolqy is open source and runs on Cloudflare Workers + D1. See the README on <a href="https://github.com/xolqy-com/xolqy" target="_blank" rel="noopener">GitHub</a> for one-command deploy instructions.')}
       ${cta()}

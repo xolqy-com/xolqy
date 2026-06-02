@@ -65,7 +65,7 @@ function canonicalRedirect(url: URL, req: Request): Response | null {
   // Only redirect browsable navigations — never the collector or the script,
   // which must answer on whatever host a tracked site calls.
   if (req.method !== 'GET' && req.method !== 'HEAD') return null;
-  if (url.pathname === '/t.js' || url.pathname === '/track.js' || url.pathname.startsWith('/api/')) return null;
+  if (url.pathname.endsWith('/t.js') || url.pathname === '/track.js' || url.pathname.startsWith('/api/')) return null;
   return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
 }
 
@@ -375,11 +375,26 @@ export default {
 
     // Tracker script
     if (url.pathname === '/t.js' || url.pathname === '/track.js') {
+      // Rolling "latest" — short cache, no SRI guarantee (bytes may change).
       return new Response(TRACKER_JS, {
         headers: {
           'content-type': 'application/javascript; charset=utf-8',
           'cache-control': 'public, max-age=300, s-maxage=300',
           'access-control-allow-origin': '*',
+        },
+      });
+    }
+    // Versioned, immutable tracker for Subresource Integrity (SRI) pinning.
+    // The bytes at /v1/t.js never change; a breaking change ships as /v2/t.js.
+    // Immutable long cache + CORS so `integrity` + `crossorigin` validate.
+    if (url.pathname === '/v1/t.js') {
+      return new Response(TRACKER_JS, {
+        headers: {
+          'content-type': 'application/javascript; charset=utf-8',
+          'cache-control': 'public, max-age=31536000, immutable',
+          'access-control-allow-origin': '*',
+          'cross-origin-resource-policy': 'cross-origin',
+          'x-content-type-options': 'nosniff',
         },
       });
     }
