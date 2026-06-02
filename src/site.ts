@@ -396,6 +396,38 @@ function legal(title: string, description: string, intro: string, secs: [string,
 type Post = { title: string; date: string; iso: string; excerpt: string; body: string };
 
 export const POSTS: Record<string, Post> = {
+  'is-cookieless-analytics-just-the-eu-ceiling': {
+    title: 'Is Cookieless Analytics Just the EU Ceiling Applied Globally? A Straight Answer',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'A sharp critique says cookieless analytics is just the maximum the EU allows without consent, applied everywhere for no reason — measuring less by design. Here is an honest answer, including where the critics are right.',
+    body: `
+      <p>There is a sharp argument going around that goes like this: cookieless analytics is not a feature, it is a <em>legal ceiling</em> — the most you can measure without consent under EU ePrivacy rules. Shipping it globally by default, in places where consent is not legally required, just means measuring less for no regulatory reason. Returning visitors look new, sessions do not stitch, attribution becomes fiction — and some platforms even charge extra for it.</p>
+      <p>It is a good argument. It is also, in the end, wrong — and the most interesting part is that it contains the seed of its own rebuttal. Let me take it seriously.</p>
+      <h2>Where the critics are right</h2>
+      <ul class="prose-list">
+        <li><strong>Consent banners are mostly theater.</strong> Open devtools, click "Reject All," watch the network tab — on a huge share of sites the scripts fire anyway. Consent-management platforms block the one or two trackers they know by name and let everything hardcoded or routed through a tag manager keep running. And the consent platforms are themselves third-party scripts that ad-blockers stop before they load. The banner is often decoration.</li>
+        <li><strong>Cookieless does measure less on some axes.</strong> It cannot recognise the same person across days, stitch multi-session journeys, or do multi-touch attribution. Anyone selling it as a strict upgrade on those dimensions is not being straight with you.</li>
+      </ul>
+      <p>Both true. So why is the conclusion wrong?</p>
+      <h2>1. Cookies were never the source of "accurate"</h2>
+      <p>The argument assumes cookie-based analytics is the reliable baseline that cookieless degrades. It is not — not anymore. Safari's ITP caps first-party analytics cookies to seven days (sometimes 24 hours), Firefox blocks third-party cookies, third-party cookies are being removed entirely, and 30–40% of users run ad-blockers. The "returning visitor" and "multi-touch attribution" the critique mourns were already unreliable and getting worse. Cookieless is not trading reliable data for unreliable data. It is trading <em>invasive-and-already-broken</em> for <em>honest-and-private</em>. Attribution did not become fiction with cookieless. It was fiction.</p>
+      <h2>2. The two halves of the argument cancel out</h2>
+      <p>This is the part most people miss. If the consent layer is held together with tape — banners that do not block, platforms that get blocked before they load — then cookie-based analytics <strong>depends on infrastructure that does not work</strong>. It is both legally exposed and technically broken. The rational response to "consent is theater" is to stop depending on consent. Which is exactly what cookieless does. The critique's strongest observation is an argument <em>for</em> the thing it attacks.</p>
+      <h2>3. "No regulatory reason outside the EU" is no longer true</h2>
+      <p>The idea that only the EU cares is dated. California's CPRA is in force, <strong>Global Privacy Control is legally binding there</strong>, and a wave of US state laws (Virginia, Colorado, Connecticut, Texas and more) keep arriving. Canada's Quebec Law 25, Brazil's LGPD, and others are tightening too. Building cookieless-by-default is not applying an EU ceiling for no reason — it is future-proofing against a clearly rising tide, with one measurement stack instead of two region-switched ones. (Running dual regimes is itself a compliance risk.)</p>
+      <h2>4. There are non-regulatory reasons too</h2>
+      <ul class="prose-list">
+        <li><strong>Speed:</strong> a sub-2KB script versus 45KB+. That helps Core Web Vitals and SEO everywhere, regardless of region.</li>
+        <li><strong>Simplicity:</strong> no banner, no consent platform, one pipeline. Less to break, less to get wrong.</li>
+        <li><strong>Trust:</strong> "we do not track you" is a brand advantage in the US too, not only a compliance checkbox.</li>
+      </ul>
+      <h2>The honest limit — and the real fix</h2>
+      <p>Here is the concession the industry usually avoids: cookieless genuinely cannot do retention cohorts or cross-session product funnels. But the fix for that is <strong>not</strong> third-party cookies. It is <strong>authenticated first-party identity</strong> — your own logged-in user IDs — which is privacy-appropriate and consent-clean. The correct stack is cookieless for acquisition and content, first-party events for product analytics. The real mistake is selling cookieless as a <em>total</em> replacement for GA4 when it is the top-of-funnel layer.</p>
+      <h2>So, is it just the ceiling?</h2>
+      <p>No. It is the honest measurement of the things that actually change your decisions — traffic, sources, content, conversions — without leaning on a consent layer that does not work, without slowing your site, and without betraying your visitors. The critics are right that the marketing is often confused and the consent stack is broken. They are wrong that the answer is more cookies.</p>
+      <p>That is the bet behind Xolqy: <a href="/blog/what-is-cookieless-analytics">cookieless</a>, fast, and honest about its limits. Read the <a href="/blog/cookieless-analytics-guide">complete guide</a>, see <a href="/blog/cookieless-analytics-vs-ga4">how it compares to GA4</a>, or exactly <a href="/blog/how-the-salted-hash-works">how it counts visitors</a> without tracking anyone.</p>`,
+  },
   'cookieless-analytics-guide': {
     title: 'Cookieless Analytics: The Complete Guide for Website Owners (2026)',
     date: 'June 2, 2026',
