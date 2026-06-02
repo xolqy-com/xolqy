@@ -86,7 +86,17 @@ a:hover { text-decoration: underline; }
 .nav-links a:hover { color: var(--fg); text-decoration: none; }
 .nav-cta { display: flex; align-items: center; gap: 0.9rem; }
 .nav-login { color: var(--fg); }
-@media (max-width: 760px) { .nav-links { display: none; } }
+.nav-toggle { display: none; background: none; border: 0; color: var(--fg); font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.4rem; }
+@media (max-width: 760px) {
+  .site-nav { flex-wrap: wrap; gap: 0.75rem; }
+  .nav-toggle { display: block; order: 1; margin-left: auto; }
+  .nav-links, .nav-cta { display: none; flex-basis: 100%; flex-direction: column; align-items: stretch; order: 2; }
+  .site-nav.nav-open .nav-links, .site-nav.nav-open .nav-cta { display: flex; }
+  .nav-links { gap: 0.25rem; margin-left: 0; }
+  .nav-links a { padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .nav-cta { gap: 0.5rem; padding-top: 0.5rem; }
+  .nav-cta .btn-primary, .nav-cta .nav-login { text-align: center; }
+}
 
 .btn-primary {
   background: var(--accent); color: #fff; border: 0; border-radius: 6px;

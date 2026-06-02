@@ -95,6 +95,7 @@ function headerHtml(): string {
   return `
   <header class="site-nav">
     <a class="nav-brand" href="/"><span class="mark">X</span> Xolqy</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
     <nav class="nav-links">
       <a href="/web-analytics">Why Xolqy</a>
       <a href="/vs-google-analytics">Compare</a>
@@ -106,7 +107,8 @@ function headerHtml(): string {
       <a class="nav-login" href="/login">Log in</a>
       <a class="btn-primary" href="/login">Get started</a>
     </div>
-  </header>`;
+  </header>
+  <script>(function(){var b=document.getElementById('nav-toggle');if(!b)return;b.addEventListener('click',function(){var n=b.closest('.site-nav');var o=n.classList.toggle('nav-open');b.setAttribute('aria-expanded',o?'true':'false');});})();</script>`;
 }
 
 // ----------------------------------------------------------------------------
