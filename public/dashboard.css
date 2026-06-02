@@ -177,6 +177,13 @@ a:hover { text-decoration: underline; }
 .status-row .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
 .status-row .dot.ok { background: #22c55e; }
 
+/* ---------- Manifesto ---------- */
+.manifesto p { font-size: 1.05rem; line-height: 1.8; }
+.manifesto-statement { font-family: Georgia, 'Times New Roman', serif; font-size: 1.6rem; color: var(--fg); margin: 2rem 0; line-height: 1.3; }
+.manifesto-nos, .manifesto-close { display: grid; gap: 0.5rem; margin: 2rem 0; }
+.manifesto-nos span { color: var(--muted); font-size: 1.05rem; }
+.manifesto-close span { font-family: Georgia, serif; font-size: 1.7rem; color: var(--accent); line-height: 1.2; }
+
 /* ---------- FAQ (homepage) ---------- */
 .faq { margin-top: 2rem; }
 .faq-item {

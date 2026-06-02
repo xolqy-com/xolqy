@@ -53,6 +53,7 @@ const FOOTER_COLUMNS: Column[] = [
     title: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'Manifesto', href: '/manifesto' },
       { label: 'Pricing', href: '/pricing' },
       { label: 'Contact', href: '/contact' },
       { label: 'Privacy policy', href: '/privacy' },
@@ -1049,6 +1050,57 @@ connect-src https://xolqy.com;</code></pre>
   },
 
   // --- Company --------------------------------------------------------------
+  manifesto: {
+    title: 'Manifesto',
+    description: 'The Xolqy Manifesto — analytics without the creep. Clarity from anonymous data for the privacy-first web. Know what works, track no one.',
+    body: pageBody(`
+      <header class="page-hero">
+        <h1>The Xolqy Manifesto</h1>
+        <p class="lead">The web was not meant to be watched.</p>
+      </header>
+      <div class="prose manifesto">
+        <p>It was built to be explored, searched, read, shared, and used freely. But somewhere along the way, measurement became surveillance. Analytics became personal tracking. Cookies followed people from page to page, platform to platform, device to device.</p>
+        <p class="manifesto-statement">We believe there is a better way.</p>
+        <p>Xolqy exists for the privacy-first web.</p>
+        <h2>What the name means</h2>
+        <p>The name <strong>Xolqy</strong> starts with <strong>X</strong> — the unknown variable. In analytics, not every visitor needs to become a known identity. Sometimes the most ethical way to understand behavior is to keep the person anonymous.</p>
+        <p>The <strong>Q</strong> stands for the question every website owner asks: <em>Why?</em></p>
+        <ul class="prose-list">
+          <li>Why did traffic grow?</li>
+          <li>Why did users leave?</li>
+          <li>Why did this page convert?</li>
+          <li>Why did this campaign work?</li>
+        </ul>
+        <p>And the <strong>Y</strong> brings us back to the same idea: analytics should help us understand the “why” behind performance, without exposing the “who” behind the visit.</p>
+        <p class="manifesto-statement">So Xolqy means: clarity from anonymous data.</p>
+        <p>It is the idea that websites can learn, improve, and grow without tracking people personally. We help businesses understand what works without identifying who people are. We measure visits, pages, clicks, conversions, campaigns, and growth signals — without turning visitors into profiles.</p>
+        <div class="manifesto-nos">
+          <span>No creepy tracking.</span>
+          <span>No personal data harvesting.</span>
+          <span>No unnecessary cookies.</span>
+          <span>No hidden surveillance.</span>
+        </div>
+        <p>Just clean analytics for websites that respect their users. Website owners deserve clarity — where traffic comes from, what content performs, which pages convert, and where users drop off. But they do not need to spy on individuals to get those answers.</p>
+        <h2>The future of analytics is not more invasive</h2>
+        <p>It is lighter. Cleaner. Faster. More transparent. More respectful. Xolqy turns anonymous signals into useful insight.</p>
+        <ul class="prose-list">
+          <li>We do not ask, “Who is this person?” We ask, “What is working?”</li>
+          <li>We do not build profiles. We build understanding.</li>
+          <li>We do not track people. We measure performance.</li>
+        </ul>
+        <p>Because good data should help businesses make better decisions — not make users feel exposed.</p>
+        <p class="manifesto-statement">Xolqy is analytics without the creep.</p>
+        <p>For founders, marketers, publishers, e-shops, agencies, and creators who want to grow without betraying trust.</p>
+        <div class="manifesto-close">
+          <span>Know what works.</span>
+          <span>Track no one.</span>
+          <span>Build for the web we actually want.</span>
+        </div>
+      </div>
+      ${cta('Analytics without the creep — start free')}
+    `),
+  },
+
   about: feature(
     'About', 'Who we are and why Xolqy exists.',
     'Xolqy is privacy-first web analytics, built by people who were tired of choosing between useful numbers and respecting visitors.',
