@@ -392,6 +392,36 @@ function legal(title: string, description: string, intro: string, secs: [string,
 type Post = { title: string; date: string; iso: string; excerpt: string; body: string };
 
 export const POSTS: Record<string, Post> = {
+  'how-the-salted-hash-works': {
+    title: 'How the salted hash counts visitors without tracking them',
+    date: 'June 2, 2026',
+    iso: '2026-06-02',
+    excerpt: 'The exact technique Xolqy uses to count daily unique visitors with no cookies and no stored IP address — a daily-rotating salted hash, explained in full.',
+    body: `
+      <p>Counting unique visitors normally means storing an identifier — a cookie, or an IP address. Xolqy stores neither. Here is exactly how it counts daily uniques anyway, with no hand-waving, so you can verify the privacy claim for yourself.</p>
+      <h2>The construction</h2>
+      <p>For every incoming pageview, the server computes a one-way hash of four ingredients and keeps only a short fragment of it:</p>
+      <pre class="install"><code>visitor = SHA-256( ip + "|" + user_agent + "|" + secret_salt + "|" + "YYYYMMDD" )
+          → keep the first 12 hexadecimal characters</code></pre>
+      <p>That 12-character value is the only visitor identifier stored. The raw IP and user-agent are used for the calculation and then discarded — never written to the database.</p>
+      <h2>Why each ingredient matters</h2>
+      <ul class="prose-list">
+        <li><strong>IP + user-agent</strong> distinguish one visitor from another within a single day.</li>
+        <li><strong>A secret salt</strong> (a long random string only the server knows) means nobody can pre-compute the hash for a given IP. Without the salt, the whole scheme would be reversible by brute force, because the space of IPs is small. The salt is what makes it safe — and it is never published.</li>
+        <li><strong>The date (YYYYMMDD)</strong> changes the output every midnight UTC. The same person tomorrow produces a completely different, unrelated hash.</li>
+      </ul>
+      <h2>Why it is not personal data</h2>
+      <p>A cryptographic hash is one-way: you cannot run it backwards to recover the inputs. Because the salt is secret <em>and</em> rotates daily, even we cannot take yesterday's hash and link it to today's, or back to a specific person — we would need the original IP, which we never stored. The identifier is useful for one day and then becomes meaningless noise.</p>
+      <p>This is the same well-established technique used by other privacy-first analytics tools. It is enough to answer "how many different people visited today?" without ever holding data that identifies any of them.</p>
+      <h2>What it can and cannot do</h2>
+      <ul class="prose-list">
+        <li><strong>Can:</strong> count daily unique visitors, per page and per site, accurately.</li>
+        <li><strong>Cannot (by design):</strong> follow a person across days, build a profile, or recognise a returning visitor next week. That is a feature, not a limitation — it is precisely why no consent banner is needed.</li>
+      </ul>
+      <h2>A note on range totals</h2>
+      <p>Because the hash rotates daily, a person who visits on three days counts as three day-uniques. That sounds odd until you realise it makes range totals additive: the unique count over a week equals the sum of the daily unique counts. It is also why Xolqy's <a href="/blog/analytics-on-the-edge">daily rollups</a> stay fast and correct.</p>
+      <p>Want the higher-level version? See <a href="/cookieless">cookieless, explained</a>, or read the open-source implementation on <a href="https://github.com/xolqy-com/xolqy" target="_blank" rel="noopener">GitHub</a>.</p>`,
+  },
   'cookieless-analytics-cloudflare-workers': {
     title: 'Cookieless analytics on Cloudflare Workers',
     date: 'June 2, 2026',
