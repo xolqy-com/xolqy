@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/og/home.png" alt="Xolqy — privacy-first web analytics" width="640" />
+
 # Xolqy
 
 **Cookieless, privacy-first web analytics — on the edge.**
