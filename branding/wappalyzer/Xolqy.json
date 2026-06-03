@@ -1,0 +1,16 @@
+{
+  "Xolqy": {
+    "cats": [10],
+    "description": "Xolqy is cookieless, privacy-first web analytics. The tracker is under 2 KB, sets no cookies, and stores no personal data. It runs on Cloudflare Workers + D1 and is open source.",
+    "website": "https://xolqy.com",
+    "icon": "Xolqy.svg",
+    "js": { "__xolqy__": "" },
+    "scriptSrc": [
+      "xolqy\\.com/(?:v\\d+/)?t\\.js",
+      "xolqy\\.com/track\\.js"
+    ],
+    "saas": true,
+    "oss": true,
+    "pricing": ["freemium", "recurring"]
+  }
+}
