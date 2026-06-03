@@ -30,14 +30,9 @@ a:hover { text-decoration: underline; }
   padding: 0 1.5rem;
 }
 .hero-mark {
-  width: 64px; height: 64px; margin: 0 auto 1rem;
-  background: #000;
-  color: var(--accent);
-  border-radius: 14px;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 48px;
-  line-height: 64px;
-  display: flex; align-items: center; justify-content: center;
+  width: 72px; height: 72px; margin: 0 auto 1rem;
+  background: url('/favicon.svg') center/contain no-repeat;
+  color: transparent; font-size: 0;
 }
 .landing h1 {
   font-family: Georgia, 'Times New Roman', serif;
@@ -77,9 +72,8 @@ a:hover { text-decoration: underline; }
 }
 .nav-brand:hover { text-decoration: none; }
 .nav-brand .mark, .footer-logo .mark {
-  width: 28px; height: 28px; background: var(--accent); color: #fff; border-radius: 7px;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: Georgia, serif; font-size: 19px; line-height: 1;
+  width: 26px; height: 26px; background: url('/favicon.svg') center/contain no-repeat;
+  display: inline-block; vertical-align: middle; color: transparent; font-size: 0;
 }
 .nav-links { display: flex; gap: 1.25rem; margin-left: 0.5rem; flex: 1; flex-wrap: wrap; }
 .nav-links a { color: var(--muted); }
@@ -324,10 +318,9 @@ canvas { width: 100% !important; height: 100% !important; }
   padding: 2rem 1.75rem;
 }
 .auth-mark {
-  width: 52px; height: 52px; margin: 0 auto 1rem;
-  background: #000; color: var(--accent); border-radius: 12px;
-  font-family: Georgia, 'Times New Roman', serif; font-size: 38px;
-  display: flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; margin: 0 auto 1rem;
+  background: url('/favicon.svg') center/contain no-repeat;
+  color: transparent; font-size: 0;
 }
 .auth-card h1 { font-family: Georgia, serif; font-size: 1.5rem; text-align: center; margin: 0 0 0.25rem; }
 .auth-card .sub { color: var(--muted); text-align: center; margin: 0 0 1.5rem; font-size: 0.85rem; }

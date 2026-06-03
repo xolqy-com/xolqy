@@ -63,11 +63,12 @@ function svg(title, subtitle) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#0a0a0a"/>
   <rect x="0" y="0" width="1200" height="8" fill="#ea580c"/>
-  <g>
-    <rect x="90" y="70" width="64" height="64" rx="14" fill="#ea580c"/>
-    <text x="122" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#ffffff" text-anchor="middle">X</text>
-    <text x="172" y="116" font-family="Georgia, 'Times New Roman', serif" font-size="40" fill="#ffffff">Xolqy</text>
+  <defs><clipPath id="lg"><circle cx="122" cy="102" r="32"/></clipPath></defs>
+  <g clip-path="url(#lg)">
+    <rect x="90" y="70" width="64" height="64" fill="#ea580c"/>
+    <path d="M92 72 L152 132 M152 72 L92 132" stroke="#ffffff" stroke-width="9" fill="none"/>
   </g>
+  <text x="172" y="116" font-family="Georgia, 'Times New Roman', serif" font-size="40" fill="#ffffff">Xolqy</text>
   <text font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700" fill="#ffffff">${tspans}</text>
   <text x="90" y="${startY + titleLines.length * 84 + 6}" font-family="'Segoe UI', Arial, sans-serif" font-size="32" fill="#9a9a9a">${sub}</text>
   <text x="90" y="575" font-family="'Segoe UI', Arial, sans-serif" font-size="26" fill="#ea580c">xolqy.com</text>

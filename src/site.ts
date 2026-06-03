@@ -151,6 +151,10 @@ function shell(opts: {
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${ogImage}" />
   <link rel="alternate" type="application/rss+xml" title="Xolqy Blog" href="${opts.origin}/rss.xml" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#ea580c" />
   ${ldTags}
   <link rel="stylesheet" href="/dashboard.css" />
 </head>
