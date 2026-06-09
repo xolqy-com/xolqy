@@ -94,6 +94,20 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_shares_site_email ON shares (site_id, emai
 CREATE INDEX IF NOT EXISTS idx_shares_site ON shares (site_id);
 CREATE INDEX IF NOT EXISTS idx_shares_user ON shares (user_id, status);
 
+-- API keys for programmatic, read-only access to the stats API (e.g. the MCP
+-- server so Claude can query analytics). Only the SHA-256 hash is stored.
+CREATE TABLE IF NOT EXISTS api_keys (
+  id           TEXT PRIMARY KEY,            -- uuid
+  user_id      TEXT NOT NULL,
+  name         TEXT,                        -- user label
+  prefix       TEXT NOT NULL,               -- first chars, for display only
+  key_hash     TEXT NOT NULL,               -- sha-256 hex of the full key
+  created_at   INTEGER NOT NULL,
+  last_used_at INTEGER
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys (key_hash);
+CREATE INDEX IF NOT EXISTS idx_api_keys_user ON api_keys (user_id);
+
 -- ----------------------------------------------------------------------------
 -- Pre-aggregated daily totals per (site, day). Populated by the scheduled cron
 -- (see src/rollup.ts). The dashboard's headline KPIs and traffic chart read

@@ -24,6 +24,7 @@
       </select>
       <button id="install-btn" class="btn-sm" type="button">Install</button>
       <button id="share-btn" class="btn-sm" type="button">Share</button>
+      <button id="api-btn" class="btn-sm" type="button">API</button>
       <button id="add-site" class="btn-sm" type="button">+ Add site</button>
       <span class="user-box">
         <span id="user-email"></span>
@@ -70,6 +71,19 @@
       <div id="share-link" class="share-link" style="display:none"></div>
       <div id="share-msg" class="auth-err" style="display:none"></div>
       <div id="share-list" class="share-list"></div>
+    </div>
+
+    <div class="share-box" id="api-panel" style="display:none">
+      <div class="share-head">
+        <div class="install-title">API keys — read-only access for the <a href="/docs">MCP server</a> &amp; integrations</div>
+        <button id="api-close" class="btn-sm" type="button" aria-label="Dismiss">✕</button>
+      </div>
+      <div class="share-invite">
+        <input id="api-name" type="text" placeholder="Key name (e.g. Claude MCP)" />
+        <button id="api-gen" class="btn-sm" type="button">Generate key</button>
+      </div>
+      <div id="api-new" class="share-link" style="display:none"></div>
+      <div id="api-list" class="share-list"></div>
     </div>
 
     <div class="kpis">
@@ -356,6 +370,52 @@
         loadShares();
       } catch (ex) { shareMsg.textContent = ex.message; shareMsg.style.display = 'block'; }
     });
+
+    // API keys panel — read-only keys for the MCP server / integrations.
+    const apiPanel = document.getElementById('api-panel');
+    async function loadKeys() {
+      const list = document.getElementById('api-list');
+      list.innerHTML = '';
+      const { keys } = await jsonFetch('/api/keys');
+      if (!keys.length) { list.append(el('div', { class: 'muted' }, 'No API keys yet.')); return; }
+      for (const k of keys) {
+        const used = k.last_used_at ? 'used' : 'never used';
+        const row = el('div', { class: 'share-row' },
+          el('span', {}, (k.name || 'key') + ' · ' + k.prefix + '… · ' + used),
+          el('button', { class: 'btn-sm', 'data-id': k.id }, 'Revoke'));
+        row.querySelector('button').addEventListener('click', async (e) => {
+          if (!confirm('Revoke this key? Anything using it will stop working.')) return;
+          await jsonFetch('/api/keys/' + e.target.getAttribute('data-id'), { method: 'DELETE' });
+          loadKeys();
+        });
+        list.append(row);
+      }
+    }
+    document.getElementById('api-btn').addEventListener('click', () => {
+      if (apiPanel.style.display !== 'none') { apiPanel.style.display = 'none'; return; }
+      document.getElementById('api-new').style.display = 'none';
+      apiPanel.style.display = 'block';
+      loadKeys();
+    });
+    document.getElementById('api-close').addEventListener('click', () => { apiPanel.style.display = 'none'; });
+    document.getElementById('api-gen').addEventListener('click', async () => {
+      const name = document.getElementById('api-name').value.trim() || 'API key';
+      const newBox = document.getElementById('api-new');
+      try {
+        const { key } = await jsonFetch('/api/keys', {
+          method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }),
+        });
+        document.getElementById('api-name').value = '';
+        newBox.style.display = 'block';
+        newBox.innerHTML = 'Copy this key now — it is shown only once:<br><code>' + key.key +
+          '</code> <button class="btn-sm" id="copy-key">Copy</button>';
+        document.getElementById('copy-key').addEventListener('click', async (e) => {
+          try { await navigator.clipboard.writeText(key.key); e.target.textContent = 'Copied!'; } catch (_) {}
+        });
+        loadKeys();
+      } catch (ex) { newBox.style.display = 'block'; newBox.textContent = ex.message; }
+    });
+
     document.getElementById('copy-snippet').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       try {

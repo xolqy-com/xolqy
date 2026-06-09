@@ -322,6 +322,25 @@ async function handleAcceptInvite(env: Env, user: Auth.User, token: string): Pro
   return res.ok ? json({ ok: true, domain: res.domain }) : bad(res.error, 403);
 }
 
+// API key management (session-only). The full key is returned once on create.
+async function handleKeys(req: Request, env: Env, user: Auth.User): Promise<Response> {
+  const url = new URL(req.url);
+  const idMatch = url.pathname.match(/^\/api\/keys\/([^/]+)$/);
+  if (req.method === 'DELETE' && idMatch) {
+    const ok = await Auth.deleteApiKey(env, user.id, decodeURIComponent(idMatch[1]));
+    return ok ? json({ ok: true }) : bad('not found', 404);
+  }
+  if (req.method === 'GET') return json({ keys: await Auth.listApiKeys(env, user.id) });
+  if (req.method === 'POST') {
+    let body: any;
+    try { body = await req.json(); } catch { body = {}; }
+    const name = String(body?.name || 'API key').slice(0, 60);
+    const key = await Auth.createApiKey(env, user.id, name);
+    return json({ key }, { status: 201 });
+  }
+  return bad('method not allowed', 405);
+}
+
 // ----------------------------------------------------------------------------
 // Stats API — requires a logged-in account that owns the requested site
 async function handleStats(req: Request, env: Env, user: Auth.User): Promise<Response> {
@@ -450,9 +469,16 @@ async function handleRequest(req: Request, env: Env): Promise<Response> {
     if (url.pathname === '/api/me' || url.pathname === '/api/sites' ||
         url.pathname.startsWith('/api/sites/') || url.pathname.startsWith('/api/stats/') ||
         url.pathname.startsWith('/api/shares/') || url.pathname.startsWith('/api/invite/') ||
+        url.pathname === '/api/keys' || url.pathname.startsWith('/api/keys/') ||
         url.pathname === '/api/admin/rollup') {
-      const user = await Auth.currentUser(req, env);
+      let user = await Auth.currentUser(req, env);
+      // API keys (Bearer) grant read-only access to the site list and stats only.
+      if (!user) {
+        const isReadApi = (url.pathname === '/api/sites' && req.method === 'GET') || url.pathname.startsWith('/api/stats/');
+        if (isReadApi) user = await Auth.apiKeyUser(req, env);
+      }
       if (!user) return json({ error: 'unauthorized' }, { status: 401 });
+      if (url.pathname === '/api/keys' || url.pathname.startsWith('/api/keys/')) return handleKeys(req, env, user);
       const shareDel = url.pathname.match(/^\/api\/shares\/([^/]+)$/);
       if (shareDel && req.method === 'DELETE') return handleDeleteShare(req, env, user, decodeURIComponent(shareDel[1]));
       const accept = url.pathname.match(/^\/api\/invite\/([^/]+)\/accept$/);

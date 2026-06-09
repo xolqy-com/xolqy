@@ -158,6 +158,52 @@ export async function attachGoogleSub(env: Env, userId: string, sub: string): Pr
 }
 
 // ----------------------------------------------------------------------------
+// API keys (read-only programmatic access to the stats API, e.g. the MCP server)
+async function sha256hex(s: string): Promise<string> {
+  const d = await crypto.subtle.digest('SHA-256', enc.encode(s));
+  return toHex(new Uint8Array(d));
+}
+
+export async function createApiKey(env: Env, userId: string, name: string) {
+  const full = `xolqy_sk_${randomToken(24)}`;
+  const id = uuid();
+  const now = Math.floor(Date.now() / 1000);
+  const prefix = full.slice(0, 16);
+  await env.DB.prepare(
+    'INSERT INTO api_keys (id, user_id, name, prefix, key_hash, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)',
+  ).bind(id, userId, name || null, prefix, await sha256hex(full), now).run();
+  return { id, name: name || null, prefix, created_at: now, key: full };
+}
+
+export async function listApiKeys(env: Env, userId: string) {
+  const { results } = await env.DB.prepare(
+    'SELECT id, name, prefix, created_at, last_used_at FROM api_keys WHERE user_id = ?1 ORDER BY created_at DESC',
+  ).bind(userId).all();
+  return results ?? [];
+}
+
+export async function deleteApiKey(env: Env, userId: string, id: string): Promise<boolean> {
+  const res = await env.DB.prepare('DELETE FROM api_keys WHERE id = ?1 AND user_id = ?2').bind(id, userId).run();
+  return (res.meta?.changes ?? 0) > 0;
+}
+
+// Resolve the account behind a `Authorization: Bearer xolqy_sk_...` header.
+export async function apiKeyUser(req: Request, env: Env): Promise<User | null> {
+  const h = req.headers.get('authorization') || '';
+  const m = h.match(/^Bearer\s+(xolqy_sk_[A-Za-z0-9]+)$/i);
+  if (!m) return null;
+  const hash = await sha256hex(m[1]);
+  const { results } = await env.DB.prepare(
+    'SELECT u.* FROM api_keys k JOIN users u ON u.id = k.user_id WHERE k.key_hash = ?1',
+  ).bind(hash).all();
+  const user = (results?.[0] as unknown as User) ?? null;
+  if (user) {
+    try { await env.DB.prepare('UPDATE api_keys SET last_used_at = ?2 WHERE key_hash = ?1').bind(hash, Math.floor(Date.now() / 1000)).run(); } catch { /* best effort */ }
+  }
+  return user;
+}
+
+// ----------------------------------------------------------------------------
 // Sessions
 export async function createSession(env: Env, userId: string): Promise<string> {
   const id = randomToken();

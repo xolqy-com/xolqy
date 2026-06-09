@@ -1038,6 +1038,7 @@ export const PAGES: Record<string, Page> = {
 connect-src https://xolqy.com;</code></pre>
       <p class="muted">The script loads from <code>xolqy.com</code> and sends events to <code>xolqy.com/api/event</code> and <code>xolqy.com/api/click</code> only. It respects Do Not Track and Global Privacy Control.</p>
       ${section('4. Read your dashboard', 'Pick a date range and a site. KPIs and the traffic chart update instantly; tables show top pages, sources, countries and devices.')}
+      ${section('Ask Claude about your traffic (MCP)', 'Prefer asking questions to reading a dashboard? Xolqy ships an <a href="https://github.com/xolqy-com/xolqy/tree/main/mcp" target="_blank" rel="noopener">MCP server</a> so Claude (and any Model Context Protocol client) can query your analytics directly: <em>"what were my top pages last week?"</em>, <em>"why did traffic drop on Tuesday?"</em>. Generate a read-only API key in the dashboard (the <b>API</b> button), then point your MCP client at the server. Because Xolqy data is anonymous and aggregate, handing it to an AI is privacy-safe.')}
       ${section('Self-hosting', 'Xolqy is open source and runs on Cloudflare Workers + D1. See the README on <a href="https://github.com/xolqy-com/xolqy" target="_blank" rel="noopener">GitHub</a> for one-command deploy instructions.')}
       ${cta()}
     `),
