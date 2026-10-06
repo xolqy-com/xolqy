@@ -21,3 +21,7 @@ desktop.ini
 Thumbs.db
 .vscode
 .idea
+
+# Transfer archives used to sync this folder with another machine
+*.tgz
+*.tar.gz

@@ -124,7 +124,19 @@ function setupAnimationPausing(): void {
   nets.forEach((n) => io.observe(n));
 }
 
+/* ---- Wide markdown tables scroll inside their own box ------------------------ */
+function wrapTables(): void {
+  document.querySelectorAll<HTMLTableElement>('.prose table').forEach((table) => {
+    if (table.parentElement?.classList.contains('table-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    table.replaceWith(wrap);
+    wrap.append(table);
+  });
+}
+
 setupReveals();
 setupMenu();
 setupTabs();
 setupAnimationPausing();
+wrapTables();

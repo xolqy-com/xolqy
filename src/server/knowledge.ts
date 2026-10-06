@@ -77,6 +77,20 @@ export async function loadKnowledge(): Promise<{ chunks: KnowledgeChunk[]; servi
     splitBody(s.body ?? '').forEach((sec, i) => push(`body-${i}`, `${sec.heading}: ${sec.text}`, i));
   }
 
+  // Wiki entries: one passage per term, so the finder can define products and point to the pillar page.
+  const wiki = await getCollection('wiki', ({ data }) => !data.draft);
+  for (const w of wiki) {
+    chunks.push({
+      id: `wiki:${w.id}:0`,
+      slug: `wiki-${w.id}`,
+      title: w.data.term,
+      section: 'definition',
+      url: `/wiki/${w.id}/`,
+      text: `${w.data.term}: ${w.data.summary} Use it when: ${w.data.useWhen} Pricing: ${w.data.pricing}`.slice(0, 1800),
+      keywords: [w.data.term.toLowerCase(), ...w.data.related],
+    });
+  }
+
   HOME_FAQS.forEach((f, i) => {
     chunks.push({
       id: `general:faq:${i}`,

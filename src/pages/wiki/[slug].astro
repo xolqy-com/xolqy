@@ -1,0 +1,161 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { breadcrumbJsonLd, definedTermJsonLd, formatDate } from '@/lib/seo';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('wiki', ({ data }) => !data.draft);
+  return entries.map((e) => ({ params: { slug: e.id }, props: { entry: e } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const path = `/wiki/${entry.id}/`;
+
+const services = (await getCollection('services', ({ data }) => !data.draft))
+  .filter((s) => entry.data.pillars.includes(s.id))
+  .sort((a, b) => a.data.order - b.data.order);
+const insights = (await getCollection('insights', ({ data }) => !data.draft)).filter((p) => entry.data.insights.includes(p.id));
+const related = (await getCollection('wiki', ({ data }) => !data.draft))
+  .filter((w) => entry.data.related.includes(w.id))
+  .sort((a, b) => a.data.term.localeCompare(b.data.term));
+
+const facts = [
+  { label: 'Use it when', value: entry.data.useWhen },
+  { label: 'Think twice when', value: entry.data.avoidWhen },
+  { label: 'How it is priced', value: entry.data.pricing },
+  { label: 'Limits that shape designs', value: entry.data.limits },
+].filter((f): f is { label: string; value: string } => Boolean(f.value));
+
+const title = `${entry.data.term}: what it is, when to use it, what it costs`;
+---
+
+<Base
+  title={title}
+  description={entry.data.summary}
+  path={path}
+  ogImage="/og/wiki.png"
+  jsonLd={[
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Wiki', href: '/wiki/' }, { name: entry.data.term, href: path }]),
+    definedTermJsonLd({ name: entry.data.term, description: entry.data.summary, path }),
+  ]}
+>
+  <article>
+    <header class="section wk-head" data-theme="dark">
+      <div class="container">
+        <p class="eyebrow fade-in"><a href="/wiki/" class="wk-head__crumb">Wiki</a> / {entry.data.category}</p>
+        <h1 class="display shade wk-head__title"><span class="hero-line"><span style="--d:60ms">{entry.data.term}</span></span></h1>
+        <p class="lead wk-head__lead fade-in" style="--d:240ms">{entry.data.summary}</p>
+        <p class="mono faint wk-head__meta fade-in" style="--d:360ms">
+          <span>Reviewed <time datetime={entry.data.updatedAt.toISOString()}>{formatDate(entry.data.updatedAt)}</time></span>
+          {entry.data.docs && <span> · <a href={entry.data.docs} rel="noopener">Official documentation</a></span>}
+        </p>
+      </div>
+    </header>
+
+    <section class="section" data-theme="light" aria-labelledby="facts-title">
+      <div class="container">
+        <h2 id="facts-title" class="visually-hidden">Key facts</h2>
+        <dl class="wk-facts reveal">
+          {facts.map((f) => (
+            <div class="wk-facts__item">
+              <dt class="mono faint">{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div class="prose wk-prose reveal" style="--reveal-delay:80ms">
+          <Content />
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-theme="dark" aria-labelledby="pillars-title">
+      <div class="container wk-pillars">
+        <div class="flow reveal">
+          <XMark size={40} class="accent-mark" />
+          <p class="eyebrow">Where this fits</p>
+          <h2 id="pillars-title" class="h-3xl">The services this term belongs to.</h2>
+          <p class="muted">Every wiki entry points at the work we actually do with it. The service pages carry the deliverables, the process and the questions clients ask.</p>
+        </div>
+        <div class="flow-lg reveal" style="--reveal-delay:100ms">
+          {services.length > 0 && (
+            <ul class="list-reset wk-services">
+              {services.map((s) => (
+                <li class="wk-services__item">
+                  <a href={`/services/${s.id}/`} class="wk-services__link">
+                    <span class="mono faint">{s.data.eyebrow}</span>
+                    <span class="h-lg wk-services__title">{s.data.title}</span>
+                    <span class="muted wk-services__summary">{s.data.summary}</span>
+                    <span class="link">Read the service <span class="arrow" aria-hidden="true">&rarr;</span></span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {insights.length > 0 && (
+            <div class="wk-list">
+              <p class="mono faint">Read next</p>
+              <ul class="ticks">
+                {insights.map((p) => <li><a href={`/insights/${p.id}/`}>{p.data.title}</a></li>)}
+              </ul>
+            </div>
+          )}
+          {related.length > 0 && (
+            <div class="wk-list">
+              <p class="mono faint">Related terms</p>
+              <ul class="list-reset cluster">
+                {related.map((w) => <li><a href={`/wiki/${w.id}/`} class="badge wk-term">{w.data.term}</a></li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-theme="light">
+      <div class="container between reveal">
+        <div class="flow">
+          <p class="eyebrow">Need this done?</p>
+          <h2 class="h-3xl">Tell us what you are building.</h2>
+        </div>
+        <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .wk-head__crumb { color: inherit; }
+  .wk-head__title { max-width: 16ch; margin-top: var(--space-4); }
+  .wk-head__lead { max-width: 60ch; margin-top: var(--space-5); }
+  .wk-head__meta { margin-top: var(--space-5); }
+  .wk-head__meta a { color: inherit; }
+  .wk-facts { margin: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .wk-facts__item { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-2); align-content: start; }
+  .wk-facts__item dd { margin: 0; }
+  .wk-prose { margin-top: var(--space-7); }
+  .wk-pillars { display: grid; gap: var(--space-7); align-items: start; }
+  .wk-pillars :global(.accent-mark) { color: var(--signal); }
+  .wk-services { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .wk-services__link { display: grid; gap: var(--space-2); padding: var(--space-5); background: var(--bg); text-decoration: none; height: 100%; transition: background-color var(--dur-base); }
+  .wk-services__link:hover { background: var(--bg-raised); }
+  .wk-services__title { display: block; }
+  .wk-services__summary { font-size: var(--text-sm); }
+  .wk-list { margin-top: var(--space-6); display: grid; gap: var(--space-3); }
+  .wk-list .ticks a { color: inherit; }
+  .wk-term { text-decoration: none; }
+  .wk-term:hover { color: var(--fg); border-color: var(--fg); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (min-width: 48em) {
+    .wk-facts { grid-template-columns: repeat(2, 1fr); }
+    .wk-facts__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .wk-services { grid-template-columns: repeat(2, 1fr); }
+    .wk-services__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  @media (min-width: 60em) {
+    .wk-pillars { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .wk-pillars > .flow { position: sticky; top: 6rem; }
+  }
+</style>

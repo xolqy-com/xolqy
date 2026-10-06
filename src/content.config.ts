@@ -76,4 +76,34 @@ const work = defineCollection({
   }),
 });
 
-export const collections = { services, insights, work };
+/**
+ * Wiki: short, factual entries on Cloudflare products and the terms around them.
+ * Each entry points at the "pillar" service pages and insights it belongs to, so
+ * definitional searches land on a page that links to the commercial ones.
+ */
+const wiki = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/wiki' }),
+  schema: z.object({
+    term: z.string(),
+    category: z.enum(['Compute', 'Data', 'AI', 'Security', 'Delivery', 'Platform', 'Concepts']),
+    /** One-paragraph definition, also used as the meta description. */
+    summary: z.string().max(320),
+    /** Official documentation URL. */
+    docs: z.string().url().optional(),
+    useWhen: z.string(),
+    avoidWhen: z.string().optional(),
+    /** Pricing model in one or two sentences, qualitative where figures change often. */
+    pricing: z.string(),
+    limits: z.string().optional(),
+    /** Service slugs: the pillar pages this term supports. */
+    pillars: z.array(z.string()).default([]),
+    /** Insight slugs. */
+    insights: z.array(z.string()).default([]),
+    /** Other wiki slugs. */
+    related: z.array(z.string()).default([]),
+    updatedAt: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { services, insights, work, wiki };

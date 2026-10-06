@@ -118,3 +118,34 @@ export function articleJsonLd(input: {
 export function formatDate(d: Date): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
+
+/** A wiki entry as a schema.org DefinedTerm inside the site's DefinedTermSet. */
+export function definedTermJsonLd(input: { name: string; description: string; path: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    '@id': `${canonical(input.path)}#term`,
+    name: input.name,
+    description: input.description,
+    url: canonical(input.path),
+    inDefinedTermSet: {
+      '@type': 'DefinedTermSet',
+      '@id': `${canonical('/wiki/')}#set`,
+      name: 'Xolqy Cloudflare wiki',
+      url: canonical('/wiki/'),
+    },
+  };
+}
+
+/** The wiki index as a DefinedTermSet listing every published term. */
+export function definedTermSetJsonLd(terms: { name: string; path: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': `${canonical('/wiki/')}#set`,
+    name: 'Xolqy Cloudflare wiki',
+    description: 'Short, factual entries on Cloudflare products and the terms around them, each linked to the services and articles where it matters.',
+    url: canonical('/wiki/'),
+    hasDefinedTerm: terms.map((t) => ({ '@type': 'DefinedTerm', name: t.name, url: canonical(t.path) })),
+  };
+}
