@@ -1,0 +1,6 @@
+# Security contact for xolqy.com and sites operated by Xolqy. RFC 9116.
+Contact: https://xolqy.com/contact/
+Expires: 2027-10-06T00:00:00.000Z
+Preferred-Languages: en, el
+Canonical: https://xolqy.com/.well-known/security.txt
+Policy: https://xolqy.com/security/

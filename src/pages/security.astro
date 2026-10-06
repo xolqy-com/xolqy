@@ -1,0 +1,238 @@
+---
+import Base from '@/layouts/Base.astro';
+import Faq from '@/components/ui/Faq.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { SITE } from '@/data/site';
+import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
+
+const description = 'How Xolqy protects the Cloudflare accounts, code and data of the businesses it works with, what Cloudflare provides underneath, and how to report a vulnerability.';
+
+/** The three facts a security reviewer asks for first. Honest, not aspirational. */
+const facts = [
+  { label: 'Platform', value: 'Cloudflare', note: 'SOC 2 Type II, ISO 27001:2022, ISO 27018, ISO 27701, PCI DSS. Cloudflare, Inc. holds these, not Xolqy.' },
+  { label: 'Your account', value: 'Yours, always', note: 'We work as a member with a scoped role or a scoped API token. No shared logins, nothing moved to our account.' },
+  { label: 'Xolqy certifications', value: 'None claimed', note: 'We are a small, independent agency. The controls on this page are what we actually do, and we answer vendor questionnaires in writing.' },
+] as const;
+
+const dataProtection = [
+  {
+    title: 'Data in transit',
+    body: 'TLS 1.3 on every site we build, HSTS with a one-year max-age, and automatic HTTPS rewrites. On zones that keep an origin server, the origin connection runs in Full (strict) mode with a valid certificate. xolqy.com itself serves nothing over plain HTTP.',
+  },
+  {
+    title: 'Data at rest',
+    body: 'Cloudflare encrypts D1, R2 and KV at rest with AES-256 and manages the keys. Application secrets live in Workers Secrets, encrypted and never committed. Local development uses an ignored .dev.vars file, never a copy of production secrets.',
+  },
+  {
+    title: 'Backups and recovery',
+    body: 'D1 Time Travel restores a database to any minute in the last 30 days (7 days on the Free plan). Every Worker deploy is a version that can be rolled back with one command. Code lives in a Git repository you own, with its full history.',
+  },
+];
+
+const engagement = [
+  { title: 'Membership, not shared logins', body: 'You add us to your Cloudflare account as a member with the narrowest role that fits the work, or issue a scoped API token. We never ask for your password and never move your zone to an account we control.' },
+  { title: 'Least privilege, with an expiry', body: 'API tokens are scoped to the zone or Worker they are for and get an expiry date. When a token is no longer needed it is revoked, not kept "just in case".' },
+  { title: 'Two-factor authentication everywhere', body: 'Every Xolqy account that can touch client infrastructure has two-factor authentication on. We recommend enforcing it for all members of your account, which Cloudflare supports in one setting.' },
+  { title: 'Secrets stay out of Git', body: 'API keys, tokens and credentials are stored as Workers Secrets or in your password manager, never in configuration files, commits, tickets or chat messages.' },
+  { title: 'Reviewed changes, versioned deploys', body: 'Work happens on branches and is merged through pull requests. Deploys create Worker versions, so any change can be rolled back in seconds, and gradual rollouts are used for changes that carry risk.' },
+  { title: 'A clean exit', body: 'When an engagement ends, our membership is removed, tokens are revoked, secrets we handled are rotated on request, and you receive documentation written for whoever comes next.' },
+];
+
+const platform = [
+  'DDoS protection that is always on, in front of every site and API.',
+  'WAF managed rulesets, rate limiting and bot management, configured per site and reviewed after launch.',
+  'Cloudflare Access (Zero Trust) for admin areas and internal tools, with the Access JWT verified in application code as well.',
+  'Automatic TLS certificates, HSTS and TLS version controls at the edge.',
+  'Workers Secrets for credentials, Workers observability for logs, and audit logs for every change made in the account.',
+];
+
+const thisSite = [
+  { control: 'Content Security Policy and security headers', detail: 'Strict CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy on every response, static and dynamic.' },
+  { control: 'Turnstile with server-side verification', detail: 'The enquiry form token is verified with Siteverify, including the hostname and action checks, before anything is stored.' },
+  { control: 'Rate limiting on public endpoints', detail: 'The enquiry and finder endpoints use Cloudflare rate limiting keyed by client, so a flood costs the attacker time, not us a database.' },
+  { control: 'Parameterized SQL, validated input', detail: 'Every D1 query is parameterized. Request bodies are validated with a schema, size-limited, and screened for pasted secrets.' },
+  { control: 'Access-protected staff area', detail: '/admin/ sits behind Cloudflare Access and the application verifies the Access JWT itself, so a misconfigured policy fails closed.' },
+  { control: 'Secrets and dependencies', detail: 'Secrets are Workers Secrets only. Dependencies are pinned and reviewed on update; the build fails on type errors.' },
+];
+
+const faqs = [
+  { q: 'Is Xolqy SOC 2 or ISO 27001 certified?', a: 'No. Cloudflare, the platform everything runs on, holds SOC 2 Type II, ISO 27001:2022, ISO 27018 and ISO 27701 among others. Xolqy is a small independent agency and does not hold certifications of its own. The controls on this page are what we do, and we will answer your vendor security questionnaire in writing.' },
+  { q: 'Where is my data stored?', a: 'In your own Cloudflare account. D1, KV and R2 live on Cloudflare\'s network; where residency matters we use location hints and R2 jurisdictions (for example the EU). Xolqy stores only the enquiries sent through this website, in its own D1 database, as described on the privacy page.' },
+  { q: 'Do you need access to my Cloudflare account?', a: 'For most work, yes: as a member with the narrowest role that fits, or through a scoped API token with an expiry. Both are removed when the work ends. For audits we can often work from exported configuration and read-only access.' },
+  { q: 'Will you sign an NDA or a data processing agreement?', a: 'Yes, on request. For the platform itself, Cloudflare\'s own data processing addendum applies between you and Cloudflare; we can walk you through where it applies.' },
+  { q: 'What happens if there is a security incident?', a: 'We contain it first, then tell affected clients without undue delay with what happened, what was affected and what we did. Afterwards we write down the cause and change whatever allowed it. We do not hide incidents to look better.' },
+  { q: 'What happens when the engagement ends?', a: 'Our membership is removed, our tokens are revoked, secrets we handled are rotated if you ask, and you keep the repository, the account and the documentation. Nothing of ours stays running in your account.' },
+];
+---
+
+<Base
+  title="Security"
+  description={description}
+  path="/security/"
+  ogImage="/og/security.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Security', href: '/security/' }]), faqJsonLd(faqs)]}
+>
+  <section class="section sec-hero" data-theme="dark">
+    <div class="container">
+      <div class="flow reveal">
+        <p class="eyebrow">Security</p>
+        <h1 id="security-title" class="display shade sec-hero__title">Security, in practice.</h1>
+        <p class="lead sec-hero__lead">How {SITE.name} protects the accounts, code and data of the businesses we work with, what Cloudflare provides underneath, and how to tell us when something is wrong.</p>
+      </div>
+      <ul class="list-reset sec-facts">
+        {facts.map((f, i) => (
+          <li class="sec-facts__item reveal" style={`--reveal-delay:${120 + i * 70}ms`}>
+            <span class="mono faint">{f.label}</span>
+            <span class="sec-facts__value h-xl">{f.value}</span>
+            <span class="muted sec-facts__note">{f.note}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="data-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">Data protection</p>
+          <h2 id="data-title" class="h-3xl measure">Encrypted in transit, encrypted at rest, recoverable.</h2>
+        </div>
+        <p class="muted sec-note">Specific, checkable statements. Where a number depends on the plan, the plan is named.</p>
+      </div>
+      <ul class="list-reset sec-cards">
+        {dataProtection.map((c, i) => (
+          <li class="sec-cards__item reveal" style={`--reveal-delay:${i * 70}ms`}>
+            <h3 class="h-xl">{c.title}</h3>
+            <p class="muted">{c.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="engagement-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">How we work in your account</p>
+          <h2 id="engagement-title" class="h-3xl measure">Your account, your code, our access kept small.</h2>
+        </div>
+        <p class="muted sec-note">The same six rules apply to every engagement, from a two-day audit to a managed retainer.</p>
+      </div>
+      <ol class="list-reset sec-rules">
+        {engagement.map((r, i) => (
+          <li class="sec-rules__item reveal" style={`--reveal-delay:${i * 60}ms`}>
+            <span class="mono accent" aria-hidden="true">0{i + 1}</span>
+            <h3 class="h-xl">{r.title}</h3>
+            <p class="muted">{r.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="platform-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <p class="eyebrow">What Cloudflare provides</p>
+        <h2 id="platform-title" class="h-3xl">A certified platform underneath every project.</h2>
+        <p class="muted">Cloudflare, Inc. holds SOC 2 Type II, ISO 27001:2022, ISO 27018:2019, ISO 27701:2019 and PCI DSS attestations for its network and services. The reports are available from the <a href="https://www.cloudflare.com/trust-hub/compliance-resources/" rel="noopener">Cloudflare Trust Hub</a>. They belong to Cloudflare; {SITE.name} is independent and claims none of them as its own.</p>
+      </div>
+      <div class="reveal" style="--reveal-delay:100ms">
+        <p class="mono faint sec-list-label">Configured on every site we run</p>
+        <ul class="ticks">
+          {platform.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="site-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">This website</p>
+          <h2 id="site-title" class="h-3xl measure">The controls you can check from outside.</h2>
+        </div>
+        <p class="muted sec-note">xolqy.com runs on the stack we sell. Open the response headers, submit the form, or read the <a href="/stack/">stack page</a>.</p>
+      </div>
+      <dl class="sec-controls reveal" style="--reveal-delay:80ms">
+        {thisSite.map((c) => (
+          <div class="sec-controls__row">
+            <dt class="h-lg">{c.control}</dt>
+            <dd class="muted">{c.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="disclosure-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <XMark size={40} class="accent-mark" />
+        <h2 id="disclosure-title" class="h-3xl">Responsible disclosure.</h2>
+        <p class="muted">If you believe you have found a vulnerability in xolqy.com or in a site we operate for a client, tell us before telling anyone else. We will acknowledge within two business days, keep you informed while we fix it, and credit you if you want credit. Good-faith research will not be met with legal action. There is no paid bounty programme at this time.</p>
+      </div>
+      <div class="flow reveal sec-disclose" style="--reveal-delay:100ms">
+        <p class="mono faint sec-list-label">How to report</p>
+        <ul class="ticks">
+          <li>Use the <a href="/contact/">enquiry form</a> with "Security" in the subject, or the contact in <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</li>
+          <li>Include the URL, the steps to reproduce and, if you have it, the impact. Please do not access or alter data that is not yours.</li>
+          <li>Give us a reasonable time to fix the issue before publishing. We will tell you when it is safe to publish.</li>
+        </ul>
+        <a href="/contact/" class="btn btn--primary">Report a vulnerability <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="faqs" aria-labelledby="faq-title">
+    <div class="container faq-grid">
+      <div class="flow reveal">
+        <p class="eyebrow">FAQs</p>
+        <h2 id="faq-title" class="h-3xl">What security reviewers ask us.</h2>
+        <p class="muted">Short answers. The long versions are a message away.</p>
+      </div>
+      <div>
+        <Faq items={faqs} id="security-faq" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sec-hero__title { max-width: 14ch; }
+  .sec-hero__lead { max-width: 52ch; }
+  .sec-facts { margin-top: var(--space-8); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sec-facts__item { background: var(--bg); padding: var(--space-5) var(--space-6); display: grid; gap: var(--space-2); align-content: start; }
+  .sec-facts__value { display: block; }
+  .sec-facts__note { font-size: var(--text-sm); }
+  .sec-note { max-width: 40ch; font-size: var(--text-sm); }
+  .sec-note a { color: inherit; }
+  .sec-cards { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sec-cards__item { background: var(--bg); padding: var(--space-6); display: grid; gap: var(--space-3); align-content: start; }
+  .sec-rules { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sec-rules__item { background: var(--bg); padding: var(--space-6); display: grid; gap: var(--space-3); align-content: start; }
+  .two-col { display: grid; gap: var(--space-7); align-items: start; }
+  .two-col :global(.accent-mark) { color: var(--signal); }
+  .sec-list-label { margin-bottom: var(--space-3); }
+  .sec-controls { margin: var(--space-7) 0 0; border-top: 1px solid var(--line); }
+  .sec-controls__row { display: grid; gap: var(--space-2); padding: var(--space-5) 0; border-bottom: 1px solid var(--line); }
+  .sec-controls__row dd { margin: 0; max-width: 60ch; }
+  .sec-disclose .btn { margin-top: var(--space-2); }
+  .faq-grid { display: grid; gap: var(--space-7); align-items: start; }
+  .faq-grid > .flow { max-width: 28ch; }
+  @media (min-width: 48em) {
+    .sec-facts { grid-template-columns: repeat(3, 1fr); }
+    .sec-cards { grid-template-columns: repeat(3, 1fr); }
+    .sec-rules { grid-template-columns: repeat(2, 1fr); }
+    .sec-controls__row { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+  }
+  @media (min-width: 60em) {
+    .sec-rules { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+    .faq-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .faq-grid > .flow { position: sticky; top: 6rem; }
+  }
+</style>

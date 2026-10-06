@@ -32,7 +32,7 @@ const toc = headings.filter((h) => h.depth === 2);
     <header class="section post-head" data-theme="dark">
       <div class="container">
         <p class="eyebrow fade-in"><a href="/insights/" class="post-head__crumb">Insights</a> / {post.data.audience === 'both' ? 'Business + technical' : post.data.audience}</p>
-        <h1 class="h-3xl post-head__title"><span class="hero-line"><span style="--d:60ms">{post.data.title}</span></span></h1>
+        <h1 class="h-3xl shade post-head__title"><span class="hero-line"><span style="--d:60ms">{post.data.title}</span></span></h1>
         <p class="lead fade-in" style="--d:240ms">{post.data.description}</p>
         <p class="mono faint post-head__meta fade-in" style="--d:360ms">
           <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>

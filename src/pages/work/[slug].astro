@@ -30,7 +30,7 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
     <div class="container cs-hero__grid">
       <div class="flow-lg">
         <p class="eyebrow fade-in">{entry.data.eyebrow} / <a href="/work/" class="cs-hero__crumb">All work</a></p>
-        <h1 class="h-3xl cs-hero__title"><span class="hero-line"><span style="--d:60ms">{entry.data.headline}</span></span></h1>
+        <h1 class="h-3xl shade cs-hero__title"><span class="hero-line"><span style="--d:60ms">{entry.data.headline}</span></span></h1>
         <p class="lead fade-in" style="--d:240ms">{entry.data.summary}</p>
         <p class="fade-in" style="--d:360ms"><a href={entry.data.url} class="link" rel="noopener">Visit {host} <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
       </div>

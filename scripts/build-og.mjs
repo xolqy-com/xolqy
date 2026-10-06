@@ -114,6 +114,7 @@ const pages = [
   { file: 'insights', eyebrow: 'Insights', title: 'Technical and business articles on Cloudflare.', subtitle: 'Workers websites, migration runbooks, choosing D1, KV or R2.' },
   { file: 'about', eyebrow: 'About', title: 'Independent. Cloudflare-focused. Specific.', subtitle: 'One platform, understood deeply, applied to business outcomes.' },
   { file: 'contact', eyebrow: 'Start your project', title: 'Make Cloudflare work harder for your business.', subtitle: 'Send a short brief. We reply with questions, then a proposal.' },
+  { file: 'security', eyebrow: 'Security', title: 'Security, in practice.', subtitle: 'How we protect client accounts, code and data, and how to report a vulnerability.' },
   { file: 'privacy', eyebrow: 'Privacy', title: 'What this site stores, and why.', subtitle: 'Enquiries in D1, no advertising cookies, Cloudflare Web Analytics.' },
   { file: 'insight-websites-on-cloudflare-workers', eyebrow: 'Insights', title: 'Why your next website belongs on Workers.', subtitle: 'What changes, what breaks, and the three questions that decide it.' },
   { file: 'insight-cloudflare-migration-runbook', eyebrow: 'Insights', title: 'The migration runbook that keeps your rankings.', subtitle: 'Inventory, TTLs, redirects as code, protection in log mode, rollback.' },

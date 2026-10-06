@@ -253,6 +253,7 @@ Declared statuses (`src/data/stack.ts`) and what completes each one:
 * **Public endpoints** never return personal data: `/api/enquiry/status` exposes stages and codes only.
 * **Caching:** all `/api/*` and `/admin/*` responses are `no-store` except `/api/status` (60s, no personal data) and `/api/resources/*` (public files).
 * **Retention:** enquiries are retained until archived/deleted by staff. A fixed retention period for archived records has not been decided; the privacy page says so explicitly rather than inventing one.
+* **Security page:** `/security/` describes the engagement security model (account membership, scoped tokens, 2FA, secrets, versioned deploys, exit), the controls on this site, Cloudflare's own certifications (named as Cloudflare's, never Xolqy's) and the disclosure process. `public/.well-known/security.txt` (RFC 9116) points reporters to the contact form; its `Expires` date must be renewed yearly.
 
 ## Missing business details
 

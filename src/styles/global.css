@@ -430,6 +430,22 @@ p { text-wrap: pretty; }
 /* Headline lines are blocks regardless of motion preference */
 .hero-line, .hero-line > span { display: block; }
 
+/* Shade: white display type on a dark background, lit from the top-left.
+   A gradient fill clipped to the glyphs plus a one-pixel highlight and shadow,
+   so large headings read as pressed into the surface rather than printed on it.
+   Dark sections only; in light sections the class is inert. Headings built from
+   animated .hero-line spans take the fill per line, because a transformed child
+   would otherwise break the text clip. */
+[data-theme='dark'] .shade:not(:has(.hero-line)),
+[data-theme='dark'] .shade .hero-line > span {
+  background-image: linear-gradient(to bottom right, var(--paper) 30%, rgba(245, 245, 240, 0.5));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.2), 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+[data-theme='dark'] .shade em { -webkit-text-fill-color: var(--signal); }
+
 /* Utilities */
 .flow > * + * { margin-top: var(--space-4); }
 .flow-lg > * + * { margin-top: var(--space-6); }
