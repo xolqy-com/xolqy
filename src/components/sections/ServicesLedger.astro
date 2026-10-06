@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section ledger" data-theme="dark" aria-labelledby="services-title">
+  <div class="container">
+    <div class="between reveal">
+      <div class="flow">
+        <p class="eyebrow">Services</p>
+        <h2 id="services-title" class="h-3xl measure">Six ways we put Cloudflare to work.</h2>
+      </div>
+      <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+
+    <ol class="list-reset ledger__list">
+      {services.map((s, i) => (
+        <li class="ledger__row reveal" style={`--reveal-delay:${i * 60}ms`}>
+          <a href={`/services/${s.id}/`} class="ledger__link">
+            <span class="mono ledger__index" aria-hidden="true">0{s.data.order}</span>
+            <span class="ledger__main">
+              <span class="h-xl ledger__title">{s.data.title}</span>
+              <span class="ledger__summary">{s.data.summary}</span>
+            </span>
+            <span class="ledger__meta">
+              <span class="mono ledger__outcome-label">Outcome</span>
+              <span class="ledger__outcome">{s.data.outcome}</span>
+              <span class="ledger__stack">
+                {s.data.stack.slice(0, 4).map((t) => <span class="badge">{t.name}</span>)}
+              </span>
+            </span>
+            <span class="ledger__arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .ledger__list { margin-top: var(--space-8); border-top: 1px solid var(--line); }
+  .ledger__row { border-bottom: 1px solid var(--line); }
+  .ledger__link {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    grid-template-areas: 'index main arrow' 'index meta arrow';
+    gap: var(--space-3) var(--space-4);
+    padding-block: var(--space-6);
+    text-decoration: none;
+    position: relative;
+    transition: padding-left var(--dur-base) var(--ease-out);
+  }
+  .ledger__link::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--signal);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .ledger__link:hover::before, .ledger__link:focus-visible::before { transform: scaleY(1); }
+  .ledger__link:hover { padding-left: var(--space-3); }
+  .ledger__index { grid-area: index; color: var(--accent-text); padding-top: 0.35rem; }
+  .ledger__main { grid-area: main; display: grid; gap: var(--space-2); }
+  .ledger__title { display: block; }
+  .ledger__summary { color: var(--fg-muted); max-width: 60ch; }
+  .ledger__meta { grid-area: meta; display: grid; gap: var(--space-2); max-width: 60ch; }
+  .ledger__outcome-label { color: var(--fg-faint); }
+  .ledger__outcome { font-size: var(--text-sm); }
+  .ledger__stack { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+  .ledger__arrow {
+    grid-area: arrow; align-self: center;
+    font-size: var(--text-xl); color: var(--fg-faint);
+    transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast);
+  }
+  .ledger__link:hover .ledger__arrow { transform: translateX(6px); color: var(--signal); }
+  @media (min-width: 60em) {
+    .ledger__link {
+      grid-template-columns: 3rem minmax(0, 6fr) minmax(0, 5fr) 3rem;
+      grid-template-areas: 'index main meta arrow';
+      gap: var(--gutter);
+      align-items: start;
+    }
+    .ledger__meta { padding-top: 0.4rem; }
+  }
+</style>

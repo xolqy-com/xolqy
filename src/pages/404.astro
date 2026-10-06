@@ -1,0 +1,35 @@
+---
+import Base from '@/layouts/Base.astro';
+import EdgeNetwork from '@/components/brand/EdgeNetwork.astro';
+import { NAV } from '@/data/site';
+---
+
+<Base title="Page not found" description="The page you asked for does not exist on xolqy.com." path="/404/" noindex={true}>
+  <section class="section nf" data-theme="dark">
+    <div class="container nf__grid">
+      <div class="flow-lg">
+        <p class="eyebrow">404 / No route</p>
+        <h1 class="display">Nothing at this address.</h1>
+        <p class="lead">The request reached Cloudflare's edge and the Worker, but no page matches this path. If you followed a link from somewhere else, it may be out of date.</p>
+        <div class="cluster">
+          <a href="/" class="btn btn--primary">Go to the homepage</a>
+          <a href="/contact/" class="btn btn--ghost">Tell us what you were looking for</a>
+        </div>
+        <nav aria-label="Main sections">
+          <ul class="list-reset nf__links">
+            {NAV.map((n) => <li><a href={n.href} class="link">{n.label}</a></li>)}
+          </ul>
+        </nav>
+      </div>
+      <div class="nf__art"><EdgeNetwork /></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 70vh; display: grid; align-items: center; }
+  .nf__grid { display: grid; gap: var(--space-7); align-items: center; }
+  .nf__links { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .nf__art { max-width: 520px; margin-inline: auto; opacity: 0.8; }
+  @media (min-width: 60em) { .nf__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gutter); } .nf__art { max-width: none; } }
+</style>

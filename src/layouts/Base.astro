@@ -1,0 +1,99 @@
+---
+import '@/styles/global.css';
+import { PUBLIC_CF_BEACON_TOKEN } from 'astro:env/client';
+import Header from '@/components/ui/Header.astro';
+import Footer from '@/components/ui/Footer.astro';
+import { SITE } from '@/data/site';
+import { canonical, absolute, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path used for the canonical URL; defaults to the current pathname. */
+  path?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /** Additional JSON-LD objects for this page. */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Theme of the header's first section so the header blends correctly. */
+  theme?: 'dark' | 'light';
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  ogImage = SITE.defaultOgImage,
+  ogType = 'website',
+  jsonLd = [],
+  noindex = false,
+  theme = 'dark',
+  bodyClass,
+} = Astro.props;
+
+const fullTitle = path === '/' ? `${SITE.name}: the Cloudflare-focused agency` : `${title} | ${SITE.name}`;
+const canonicalUrl = canonical(path);
+const ogImageUrl = absolute(ogImage);
+const ld = [organizationJsonLd(), websiteJsonLd(), ...jsonLd];
+---
+
+<!doctype html>
+<html lang="en" data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name}: ${title}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    {ld.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script src="../scripts/site.ts"></script>
+    {
+      PUBLIC_CF_BEACON_TOKEN && (
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: PUBLIC_CF_BEACON_TOKEN })}
+        />
+      )
+    }
+  </body>
+</html>

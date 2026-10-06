@@ -1,0 +1,29 @@
+---
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+import { RESOURCES } from '@/data/resources';
+---
+<article class="lab" id="r2-delivery" aria-labelledby="r2-title">
+  <header class="lab__head">
+    <div class="flow">
+      <p class="eyebrow">Lab 04 / R2, Workers</p>
+      <h2 id="r2-title" class="h-2xl">Resource delivery from R2</h2>
+      <p class="muted lab__intro">Files live in an R2 bucket and are streamed through the Worker, which checks an allow-list, honours <code>If-None-Match</code>, and sets cache and content-disposition headers. No egress fees, no origin server.</p>
+    </div>
+    <StatusBadge status="demo" />
+  </header>
+  <div class="lab__body">
+    <ul class="list-reset resources">
+      {RESOURCES.map((r) => (
+        <li class="resources__item">
+          <div class="flow">
+            <h3 class="h-lg">{r.title}</h3>
+            <p class="muted">{r.description}</p>
+            <p class="mono--lc faint">Served by GET /api/resources/{r.key} · {r.contentType.split(';')[0]}</p>
+          </div>
+          <a href={`/api/resources/${r.key}`} class="btn btn--ghost" download={r.filename}>Download <span class="arrow" aria-hidden="true">&darr;</span></a>
+        </li>
+      ))}
+    </ul>
+    <p class="mono--lc faint lab__note">If the download answers 404 with "not-uploaded", the object has not been put into the bucket yet (README > Resources).</p>
+  </div>
+</article>

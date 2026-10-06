@@ -1,0 +1,98 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const description = 'What xolqy.com stores and why: enquiries in Cloudflare D1, no advertising cookies, cookieless Cloudflare Web Analytics, and the AI solution finder sessions. Your rights and how to exercise them.';
+const updated = '6 October 2026';
+---
+
+<Base
+  title="Privacy"
+  description={description}
+  path="/privacy/"
+  ogImage="/og/privacy.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Privacy', href: '/privacy/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Privacy policy" title="What this site stores, and&nbsp;why." id="privacy-title" level="h1">
+        <p class="lead">Written to match how the site is actually built. Last updated {updated}.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container privacy__grid">
+      <aside class="privacy__aside">
+        <p class="mono faint">Contents</p>
+        <ol class="list-reset privacy__toc">
+          <li><a href="#controller">Who is responsible</a></li>
+          <li><a href="#enquiries">Project enquiries</a></li>
+          <li><a href="#finder">AI solution finder</a></li>
+          <li><a href="#analytics">Analytics</a></li>
+          <li><a href="#cookies">Cookies and storage</a></li>
+          <li><a href="#security">Security and abuse protection</a></li>
+          <li><a href="#processors">Where data is processed</a></li>
+          <li><a href="#retention">Retention</a></li>
+          <li><a href="#rights">Your rights</a></li>
+          <li><a href="#changes">Changes</a></li>
+        </ol>
+      </aside>
+
+      <div class="prose privacy__prose">
+        <h2 id="controller">Who is responsible</h2>
+        <p>This website, xolqy.com, is operated by Xolqy, an independent agency. The legal entity, registered address and the contact address for privacy requests have not yet been added to this page; they will appear here before the site handles enquiries from the public. Until then, use the <a href="/contact/">enquiry form</a> for any privacy question and mark it as such in the brief.</p>
+        <p class="notice">Placeholder notice: legal entity name, address, company registration and a privacy contact email are required here and must be supplied by Xolqy. They are intentionally not invented.</p>
+
+        <h2 id="enquiries">Project enquiries</h2>
+        <p>When you send the enquiry form we store: your name, work email address, website (if given), the service you are interested in, the budget range (if given) and the brief you wrote. We also store the country and the Cloudflare location that served your request, the time, and the hostname and timestamp reported by the Turnstile verification. We do not store your IP address with the enquiry.</p>
+        <p>Technically, the record is written to Cloudflare D1 (a database in our Cloudflare account), a message is placed on a Cloudflare Queue, and a Cloudflare Workflow emails the enquiry to our team through Cloudflare Email Service. If you opt in to acknowledgements in future, a short receipt is sent to your address. The processing status of your enquiry (not its content) can be looked up on the <a href="/labs/#enquiry-pipeline">Labs page</a> using the random reference you receive.</p>
+        <p>We use this information to reply to you and, if we work together, to prepare a proposal. The legal basis is our legitimate interest in responding to a request you made, and, once a contract is discussed, the steps needed to enter into it. We do not sell or share enquiry data with third parties beyond the processors listed below.</p>
+        <p>Please do not include passwords, keys or personal data about other people in the brief; the form rejects obvious secrets and we delete any we receive.</p>
+
+        <h2 id="finder">AI solution finder</h2>
+        <p>The finder on the Labs page starts only when you press its button. Messages you type are sent to our Worker, stored for the duration of the session in a Cloudflare Durable Object, and used to retrieve passages from our own published service content (Cloudflare Vectorize) and to generate an answer with a model running on Cloudflare Workers AI. Sessions are limited to six messages and are deleted automatically 30 minutes after the last message. When an AI Gateway is configured, requests are logged there for operational monitoring in our Cloudflare account.</p>
+        <p>The finder is not designed to collect personal data and asks you not to provide any. Inputs that look like secrets or card numbers are rejected before storage. Conversations are not used to train any model.</p>
+
+        <h2 id="analytics">Analytics</h2>
+        <p>When enabled, the site uses Cloudflare Web Analytics, which measures page views and Core Web Vitals without cookies, without fingerprinting, and without storing personal data on our side. If the analytics beacon is not configured on a given build of the site, no analytics script is loaded at all. The <a href="/stack/">stack page</a> shows whether it is active.</p>
+        <p>Cloudflare, as the network that serves the site, keeps its own request logs for security and operational purposes under its own policies.</p>
+
+        <h2 id="cookies">Cookies and storage</h2>
+        <p>The site sets no advertising or tracking cookies and no first-party cookies of its own. Cloudflare Turnstile, which protects the enquiry form, may set a cookie on the <code>challenges.cloudflare.com</code> domain as part of its challenge (see Cloudflare's documentation for details). If staff open the protected administration area, Cloudflare Access sets an authorisation cookie for that session; visitors never encounter it.</p>
+        <p>The finder keeps its session identifier in page memory only; reloading the page starts a new session.</p>
+
+        <h2 id="security">Security and abuse protection</h2>
+        <p>Form submissions are verified with Cloudflare Turnstile on the server, rate-limited per connection, validated for size and content, and stored with parameterised queries. The enquiry endpoint and the finder apply per-connection rate limits derived from a hashed form of the connecting address, which is not stored. Application logs do not contain names, email addresses or message bodies. Staff access to enquiries is protected by Cloudflare Access and verified in code on every request.</p>
+
+        <h2 id="processors">Where data is processed</h2>
+        <p>All processing described above runs on Cloudflare's network and services (Workers, D1, Queues, Workflows, Durable Objects, R2, KV, Workers AI, Vectorize, AI Gateway, Email Service, Turnstile, Access, Web Analytics), under Cloudflare's data processing terms. Cloudflare operates globally; the Worker that handles your request runs in the location nearest to you, and the database and storage are held in our Cloudflare account. If a specific data residency commitment is needed, contact us before sending personal data.</p>
+
+        <h2 id="retention">Retention</h2>
+        <p>Enquiries are kept while we respond to them and for as long as a potential or actual engagement makes them relevant; staff can archive and delete records from the administration area. Finder sessions are deleted 30 minutes after the last message. Analytics data, where enabled, is retained by Cloudflare Web Analytics according to its own retention periods.</p>
+        <p class="notice">Placeholder notice: a fixed retention period for archived enquiries (for example, deletion after a set number of months) has not been decided and will be stated here once it is.</p>
+
+        <h2 id="rights">Your rights</h2>
+        <p>Depending on where you are, you may have the right to access, correct, delete or restrict the personal data we hold about you, to object to its processing, to receive it in a portable format, and to complain to a supervisory authority. To exercise any of these, contact us through the <a href="/contact/">enquiry form</a> (quote your enquiry reference if you have one) until a dedicated privacy contact is published above. We will respond within the period the applicable law allows.</p>
+
+        <h2 id="changes">Changes</h2>
+        <p>This policy is updated when the site's processing changes, which, because the site documents its own architecture, usually coincides with a change on the <a href="/stack/">stack page</a>. The date at the top of this page is the date of the last change.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .privacy__grid { display: grid; gap: var(--space-7); align-items: start; }
+  .privacy__aside { display: grid; gap: var(--space-3); }
+  .privacy__toc { display: grid; gap: var(--space-2); font-size: var(--text-sm); }
+  .privacy__toc a { text-decoration: none; color: var(--fg-muted); }
+  .privacy__toc a:hover { color: var(--accent-text); }
+  .privacy__prose :global(h2) { scroll-margin-top: 6rem; }
+  .privacy__prose :global(h2:first-child) { margin-top: 0; padding-top: 0; border-top: 0; }
+  @media (min-width: 60em) {
+    .privacy__grid { grid-template-columns: 14rem minmax(0, 1fr); gap: var(--gutter); }
+    .privacy__aside { position: sticky; top: 6rem; }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+---
+<article class="lab" id="edge-inspector" aria-labelledby="edge-title" data-edge>
+  <header class="lab__head">
+    <div class="flow">
+      <p class="eyebrow">Lab 01 / Workers</p>
+      <h2 id="edge-title" class="h-2xl">Edge request inspector</h2>
+      <p class="muted lab__intro">Press the button. Your browser calls <code>/api/edge</code>; the Worker answers with the metadata Cloudflare attached to that request, and the page measures how long the round trip took.</p>
+    </div>
+    <StatusBadge status="demo" />
+  </header>
+
+  <div class="lab__body">
+    <div class="cluster">
+      <button type="button" class="btn btn--primary" data-edge-run>Inspect my request <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      <p class="mono--lc muted" role="status" aria-live="polite" data-edge-status>Nothing requested yet.</p>
+    </div>
+    <noscript><p class="notice">This demonstration needs JavaScript to call the endpoint and time the response. You can open <a href="/api/edge">/api/edge</a> directly to see the raw JSON.</p></noscript>
+
+    <dl class="kv" data-edge-result hidden>
+      <div><dt>Served from</dt><dd data-f="servedBy"></dd></div>
+      <div><dt>Protocol</dt><dd data-f="httpProtocol"></dd></div>
+      <div><dt>TLS</dt><dd data-f="tls"></dd></div>
+      <div><dt>Your network</dt><dd data-f="asn"></dd></div>
+      <div><dt>Ray ID</dt><dd data-f="rayId"></dd></div>
+      <div><dt>Round trip (this request)</dt><dd data-f="rtt"></dd></div>
+    </dl>
+    <p class="mono--lc faint lab__note">One request measured from your browser to the Cloudflare location that served it, including your own network. It says nothing about global latency or uptime; those need many requests from many places over time.</p>
+  </div>
+</article>
+<script src="../../scripts/edge.ts"></script>

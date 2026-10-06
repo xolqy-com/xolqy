@@ -1,0 +1,174 @@
+---
+/**
+ * Staff view of enquiries. Rendered on demand, protected by Cloudflare Access
+ * (validated in code on every request), never indexed, never cached.
+ */
+import { env } from 'cloudflare:workers';
+import Base from '@/layouts/Base.astro';
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+import { verifyAccess } from '@/server/access';
+import { listEnquiries, countByStatus } from '@/server/db';
+import { lastReindex } from '@/server/reindex';
+import { serviceLabel } from '@/server/email';
+
+export const prerender = false;
+
+const access = await verifyAccess(Astro.request, env as Env & { ACCESS_DEV_BYPASS?: string });
+if (!access.ok) {
+  Astro.response.status = access.status;
+}
+
+const enquiries = access.ok ? await listEnquiries(env.DB, 100).catch(() => null) : null;
+const counts: Record<string, number> = access.ok ? await countByStatus(env.DB).catch(() => ({})) : {};
+const manifest = access.ok ? await lastReindex(env) : null;
+const reindexMsg = Astro.url.searchParams.get('reindex');
+const archived = Astro.url.searchParams.get('archived');
+
+const statusState = (s: string) => (s === 'notified' ? 'active' : s === 'notification_failed' ? 'fallback' : s === 'archived' ? 'planned' : 'awaiting');
+const fmt = (iso: string) => iso.replace('T', ' ').slice(0, 16) + ' UTC';
+---
+
+<Base title="Staff: enquiries" description="Internal view of project enquiries." noindex={true} path="/admin/">
+  <section class="section admin" data-theme="dark">
+    <div class="container">
+      {
+        !access.ok ? (
+          <div class="flow" style="max-width: 60ch">
+            <p class="eyebrow">Staff view</p>
+            <h1 class="h-2xl">Not available</h1>
+            <p class="notice notice--error">{access.reason}</p>
+            <p class="muted">
+              This page is protected by Cloudflare Access. In production it is reachable only through the Access application
+              configured for <code>xolqy.com/admin</code>; the Worker validates the token on every request.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div class="between">
+              <div class="flow">
+                <p class="eyebrow">Staff view</p>
+                <h1 class="h-2xl">Enquiries</h1>
+                <p class="muted mono--lc">
+                  Signed in as {access.identity.email}
+                  {access.identity.devBypass && <strong class="accent"> (LOCAL DEVELOPMENT BYPASS, Access not enforced)</strong>}
+                </p>
+              </div>
+              <form method="post" action="/admin/actions" class="admin__reindex">
+                <input type="hidden" name="action" value="reindex" />
+                <button type="submit" class="btn btn--ghost btn--sm">Reindex finder knowledge</button>
+                <p class="mono--lc faint">
+                  {manifest ? `Last index: ${fmt(manifest.at)}, ${manifest.count} passages, ${manifest.dimensions} dims` : 'Never indexed'}
+                </p>
+              </form>
+            </div>
+
+            {reindexMsg && (
+              <p class:list={['notice', reindexMsg.startsWith('ok') ? 'notice--ok' : 'notice--error']}>
+                {reindexMsg.startsWith('ok')
+                  ? `Reindex complete: ${reindexMsg.split(':')[1]} passages upserted, ${reindexMsg.split(':')[2]} stale removed.`
+                  : `Reindex failed: ${reindexMsg.slice(6)}`}
+              </p>
+            )}
+            {archived && <p class="notice notice--ok">Enquiry archived.</p>}
+
+            <ul class="list-reset admin__counts mono">
+              {['received', 'queued', 'processing', 'notified', 'notification_failed', 'archived'].map((s) => (
+                <li>
+                  <span class="faint">{s}</span> <strong>{counts[s] ?? 0}</strong>
+                </li>
+              ))}
+            </ul>
+
+            {enquiries === null ? (
+              <p class="notice notice--error">D1 is bound but the query failed. Have the migrations been applied? (`npm run db:migrate:remote`)</p>
+            ) : enquiries.length === 0 ? (
+              <p class="muted">No enquiries yet.</p>
+            ) : (
+              <div class="admin__table-wrap">
+                <table class="admin__table">
+                  <thead>
+                    <tr>
+                      <th>Reference</th>
+                      <th>Received</th>
+                      <th>From</th>
+                      <th>Service</th>
+                      <th>Budget</th>
+                      <th>Status</th>
+                      <th>Attempts</th>
+                      <th>Last error</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {enquiries.map((e) => (
+                      <>
+                        <tr>
+                          <td class="mono--lc">{e.reference}</td>
+                          <td class="mono--lc">{fmt(e.created_at)}</td>
+                          <td>
+                            {e.name}
+                            <br />
+                            <a href={`mailto:${e.email}`}>{e.email}</a>
+                            {e.website && (
+                              <>
+                                <br />
+                                <a href={e.website} rel="noopener noreferrer nofollow">{e.website.replace(/^https?:\/\//, '')}</a>
+                              </>
+                            )}
+                            <br />
+                            <span class="faint mono--lc">{e.country ?? '?'}</span>
+                          </td>
+                          <td>{serviceLabel(e.service)}</td>
+                          <td class="mono--lc">{e.budget ?? '-'}</td>
+                          <td>
+                            <StatusBadge status={statusState(e.status) as 'active'} />
+                            <span class="visually-hidden">{e.status}</span>
+                            <br />
+                            <span class="mono--lc faint">{e.status}</span>
+                          </td>
+                          <td class="mono--lc">{e.attempts}</td>
+                          <td class="admin__error">{e.last_error ?? ''}</td>
+                          <td>
+                            {e.status !== 'archived' && (
+                              <form method="post" action="/admin/actions">
+                                <input type="hidden" name="action" value="archive" />
+                                <input type="hidden" name="id" value={e.id} />
+                                <button type="submit" class="btn btn--ghost btn--sm">Archive</button>
+                              </form>
+                            )}
+                          </td>
+                        </tr>
+                        <tr class="admin__brief-row">
+                          <td colspan="9">
+                            <details>
+                              <summary class="mono--lc">Brief</summary>
+                              <p class="admin__brief">{e.brief}</p>
+                            </details>
+                          </td>
+                        </tr>
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .admin { min-height: 70vh; }
+  .admin__reindex { display: grid; gap: var(--space-2); justify-items: end; }
+  .admin__counts { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-block: var(--space-6); padding-block: var(--space-4); border-block: 1px solid var(--line); }
+  .admin__table-wrap { overflow-x: auto; }
+  .admin__table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .admin__table th { text-align: left; font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--fg-muted); padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line-strong); }
+  .admin__table td { padding: 0.75rem; vertical-align: top; border-top: 1px solid var(--line); }
+  .admin__brief-row td { border-top: 0; padding-top: 0; }
+  .admin__brief { white-space: pre-wrap; max-width: 90ch; margin-top: var(--space-2); color: var(--fg-muted); }
+  .admin__error { color: var(--accent-text); font-family: var(--font-mono); font-size: 0.75rem; max-width: 24ch; word-break: break-word; }
+  .notice { margin-top: var(--space-5); }
+</style>

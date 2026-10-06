@@ -1,0 +1,59 @@
+---
+import { PROCESS } from '@/data/content';
+---
+<section class="section process" data-theme="light" aria-labelledby="process-title">
+  <div class="container">
+    <div class="between reveal">
+      <div class="flow">
+        <p class="eyebrow">Process</p>
+        <h2 id="process-title" class="h-3xl measure">Audit &rarr; Architect &rarr; Build &amp; Migrate &rarr; Optimize &amp; Support</h2>
+      </div>
+      <p class="muted">Four stages, each with a tangible output you keep whether or not the next stage happens.</p>
+    </div>
+
+    <ol class="list-reset process__steps">
+      {PROCESS.map((p, i) => (
+        <li class="process__step reveal" style={`--reveal-delay:${i * 90}ms`}>
+          <div class="process__marker" aria-hidden="true"><span class="mono">{p.index}</span></div>
+          <h3 class="h-2xl">{p.stage}</h3>
+          <p class="process__summary">{p.summary}</p>
+          <p class="mono faint process__label">Output</p>
+          <p class="muted process__output">{p.output}</p>
+          <p class="mono faint process__duration">{p.duration}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process .between > p { max-width: 40ch; font-size: var(--text-sm); }
+  .process__steps { margin-top: var(--space-8); display: grid; gap: var(--space-7); position: relative; }
+  .process__step { display: grid; gap: var(--space-3); position: relative; padding-left: 3.25rem; }
+  .process__marker {
+    position: absolute; left: 0; top: 0;
+    width: 2.25rem; height: 2.25rem;
+    display: grid; place-items: center;
+    background: var(--ink); color: var(--paper);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+  .process__marker span { font-size: 0.625rem; }
+  .process__summary { font-size: var(--text-lg); font-weight: 500; max-width: 28ch; }
+  .process__label { margin-top: var(--space-2); }
+  .process__output { font-size: var(--text-sm); max-width: 40ch; }
+  .process__duration { padding-top: var(--space-2); border-top: 1px solid var(--line); max-width: 40ch; }
+  /* connecting route between steps */
+  .process__step::before {
+    content: ''; position: absolute; left: 1.1rem; top: 2.5rem; bottom: -3.25rem; width: 1px;
+    background: repeating-linear-gradient(to bottom, var(--line-strong) 0 4px, transparent 4px 10px);
+  }
+  .process__step:last-child::before { display: none; }
+  @media (min-width: 60em) {
+    .process__steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gutter); }
+    .process__step { padding-left: 0; padding-top: 3.5rem; }
+    .process__step::before {
+      left: 2.75rem; right: calc(-1 * var(--gutter)); top: 1.1rem; bottom: auto; height: 1px; width: auto;
+      background: repeating-linear-gradient(to right, var(--line-strong) 0 4px, transparent 4px 10px);
+    }
+  }
+</style>

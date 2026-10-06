@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
+
+// Drafts never reach the public index.
+const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const description = 'Technical and business articles on building, migrating and running on Cloudflare: Workers websites, migration runbooks, and choosing between D1, KV and R2.';
+---
+
+<Base
+  title="Insights"
+  description={description}
+  path="/insights/"
+  ogImage="/og/insights.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Insights', href: '/insights/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Insights" title="Notes from building on&nbsp;Cloudflare." id="insights-title" level="h1">
+        <p class="lead">Technical and business articles. Written to be useful whether or not you ever hire us.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container">
+      <ol class="list-reset posts">
+        {posts.map((p, i) => (
+          <li class="posts__item reveal" style={`--reveal-delay:${i * 60}ms`}>
+            <a href={`/insights/${p.id}/`} class="posts__link">
+              <div class="posts__meta mono faint">
+                <time datetime={p.data.publishedAt.toISOString()}>{formatDate(p.data.publishedAt)}</time>
+                <span>{p.data.readingMinutes} min</span>
+                <span>{p.data.audience === 'both' ? 'Business + technical' : p.data.audience}</span>
+              </div>
+              <h2 class="h-2xl posts__title">{p.data.title}</h2>
+              <p class="muted posts__desc">{p.data.description}</p>
+              <ul class="list-reset cluster">
+                {p.data.topics.map((t) => <li class="badge">{t}</li>)}
+              </ul>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .posts { display: grid; border-top: 1px solid var(--line); }
+  .posts__item { border-bottom: 1px solid var(--line); }
+  .posts__link { display: grid; gap: var(--space-4); padding-block: var(--space-7); text-decoration: none; max-width: 76ch; }
+  .posts__link:hover .posts__title { color: var(--accent-text); }
+  .posts__meta { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .posts__title { transition: color var(--dur-fast); }
+</style>

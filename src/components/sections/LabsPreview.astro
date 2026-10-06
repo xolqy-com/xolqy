@@ -1,0 +1,50 @@
+---
+import { LABS } from '@/data/content';
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+---
+<section class="section labs-preview" data-theme="dark" aria-labelledby="labs-title">
+  <div class="container">
+    <div class="between reveal">
+      <div class="flow">
+        <p class="eyebrow">Labs</p>
+        <h2 id="labs-title" class="h-3xl measure">Working demonstrations, not case studies.</h2>
+      </div>
+      <p class="muted">Everything on the Labs page runs on this site's own Cloudflare account. They are demonstrations of capability, labelled as such, not client work.</p>
+    </div>
+
+    <ul class="list-reset labs-preview__grid">
+      {LABS.map((lab, i) => (
+        <li class="labs-preview__tile reveal" style={`--reveal-delay:${i * 70}ms`}>
+          <div class="labs-preview__head">
+            <span class="mono faint">Lab 0{i + 1}</span>
+            <StatusBadge status="demo" />
+          </div>
+          <h3 class="h-xl"><a href={lab.href} class="labs-preview__link">{lab.name}</a></h3>
+          <p class="muted">{lab.summary}</p>
+          <p class="mono--lc faint labs-preview__uses">Uses: {lab.uses.join(', ')}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="reveal labs-preview__more"><a href="/labs/" class="link">Open the Labs page <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
+  </div>
+</section>
+
+<style>
+  .labs-preview .between > p { max-width: 44ch; font-size: var(--text-sm); }
+  .labs-preview__grid { margin-top: var(--space-8); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .labs-preview__tile {
+    background: var(--bg);
+    padding: var(--space-6);
+    display: grid; gap: var(--space-3); align-content: start;
+    position: relative;
+    transition: background-color var(--dur-base);
+  }
+  .labs-preview__tile:hover { background: var(--bg-raised); }
+  .labs-preview__head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
+  .labs-preview__link { text-decoration: none; }
+  .labs-preview__link::after { content: ''; position: absolute; inset: 0; }
+  .labs-preview__tile:hover h3 { color: var(--signal); }
+  .labs-preview__uses { font-size: 0.8125rem; }
+  .labs-preview__more { margin-top: var(--space-6); }
+  @media (min-width: 48em) { .labs-preview__grid { grid-template-columns: 1fr 1fr; } }
+</style>

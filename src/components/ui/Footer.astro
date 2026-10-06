@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import Wordmark from '@/components/brand/Wordmark.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { SITE, CTA } from '@/data/site';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer" data-theme="dark">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a href="/" aria-label="xolqy, home"><Wordmark height={28} /></a>
+        <p class="site-footer__tagline">Built for the edge.</p>
+        <p class="muted site-footer__blurb">The Cloudflare-focused agency. Websites, applications, migrations, security, AI and managed engineering on Cloudflare.</p>
+        <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label}</a>
+      </div>
+
+      <nav class="site-footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="mono site-footer__heading">Services</h2>
+          <ul class="list-reset site-footer__list">
+            {services.map((s) => (
+              <li><a href={`/services/${s.id}/`}>{s.data.shortTitle}</a></li>
+            ))}
+            <li><a href="/services/">All services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="mono site-footer__heading">Company</h2>
+          <ul class="list-reset site-footer__list">
+            <li><a href="/about/">About</a></li>
+            <li><a href="/labs/">Labs</a></li>
+            <li><a href="/insights/">Insights</a></li>
+            <li><a href="/stack/">Our stack</a></li>
+            <li><a href="/contact/">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="mono site-footer__heading">Legal</h2>
+          <ul class="list-reset site-footer__list">
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/contact/">Project enquiry</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="mono--lc muted site-footer__legal">&copy; {year} {SITE.name}. {SITE.independenceNote}</p>
+      <a href="/stack/" class="site-footer__built mono" aria-label="Built on Cloudflare: see our architecture">
+        <XMark size={12} /> Built on Cloudflare
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: var(--paper);
+    border-top: 1px solid rgba(245, 245, 240, 0.14);
+    padding-block: var(--space-8) var(--space-6);
+  }
+  .site-footer__top {
+    display: grid;
+    gap: var(--space-7);
+    padding-bottom: var(--space-7);
+    border-bottom: 1px solid rgba(245, 245, 240, 0.12);
+  }
+  .site-footer__brand { display: grid; gap: var(--space-4); justify-items: start; max-width: 34ch; }
+  .site-footer__brand a:first-child { color: var(--paper); }
+  .site-footer__tagline { font-size: var(--text-xl); font-weight: 650; letter-spacing: var(--tracking-snug); line-height: 1.1; }
+  .site-footer__blurb { font-size: var(--text-sm); }
+  .site-footer__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+  .site-footer__heading { color: rgba(245, 245, 240, 0.55); margin-bottom: var(--space-4); }
+  .site-footer__list { display: grid; gap: var(--space-2); }
+  .site-footer__list a { text-decoration: none; font-size: var(--text-sm); color: rgba(245, 245, 240, 0.85); }
+  .site-footer__list a:hover { color: var(--signal); }
+  .site-footer__bottom {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-5);
+  }
+  .site-footer__legal { max-width: 70ch; font-size: 0.8125rem; }
+  .site-footer__built { display: inline-flex; align-items: center; gap: 0.5em; text-decoration: none; color: rgba(245, 245, 240, 0.55); }
+  .site-footer__built:hover { color: var(--signal); }
+  @media (min-width: 48em) {
+    .site-footer__top { grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr); }
+    .site-footer__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

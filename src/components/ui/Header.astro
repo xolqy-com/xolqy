@@ -1,0 +1,179 @@
+---
+import Wordmark from '@/components/brand/Wordmark.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { NAV, CTA } from '@/data/site';
+
+const current = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__brand" aria-label="xolqy, home">
+      <Wordmark height={22} />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary">
+      <ul class="list-reset site-header__links">
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href={CTA.primary.href} class="btn btn--primary btn--sm site-header__cta">{CTA.primary.label}</a>
+      <button
+        type="button"
+        class="site-header__toggle"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="visually-hidden">Menu</span>
+        <span class="burger" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Outside the header: backdrop-filter on the header would otherwise become
+     the containing block for this fixed panel. -->
+<div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <div class="container mobile-menu__inner">
+      <nav aria-label="Mobile">
+        <ol class="list-reset mobile-menu__links">
+          {NAV.map((item, i) => (
+            <li style={`--d:${80 + i * 50}ms`}>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                <span class="mono mobile-menu__index">0{i + 1}</span>
+                <span class="mobile-menu__label">{item.label}</span>
+              </a>
+            </li>
+          ))}
+          <li style="--d:360ms">
+            <a href="/contact/" aria-current={isCurrent('/contact/') ? 'page' : undefined}>
+              <span class="mono mobile-menu__index">06</span>
+              <span class="mobile-menu__label">Contact</span>
+            </a>
+          </li>
+        </ol>
+      </nav>
+      <div class="mobile-menu__foot">
+        <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label}</a>
+        <p class="mono mobile-menu__tag"><XMark size={14} /> Built for the edge.</p>
+      </div>
+    </div>
+  </div>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: color-mix(in srgb, var(--ink) 88%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: var(--paper);
+    border-bottom: 1px solid rgba(245, 245, 240, 0.12);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 4.25rem;
+  }
+  .site-header__brand { display: inline-flex; align-items: center; color: var(--paper); padding: var(--space-2) 0; }
+  .site-header__brand:hover { color: var(--signal); }
+
+  .site-header__nav { display: none; }
+  .site-header__links { display: flex; gap: clamp(1rem, 2.4vw, 2.25rem); }
+  .site-header__links a {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    color: rgba(245, 245, 240, 0.78);
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color var(--dur-fast);
+  }
+  .site-header__links a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0.1rem;
+    height: 1px;
+    background: var(--signal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .site-header__links a:hover, .site-header__links a[aria-current='page'] { color: var(--paper); }
+  .site-header__links a:hover::after, .site-header__links a[aria-current='page']::after { transform: scaleX(1); }
+
+  .site-header__actions { display: flex; align-items: center; gap: var(--space-3); }
+  .site-header__cta { display: none; }
+  .site-header__toggle {
+    width: 2.75rem; height: 2.75rem;
+    display: inline-grid; place-items: center;
+    border: 1px solid rgba(245, 245, 240, 0.25);
+    border-radius: var(--radius-pill);
+    color: var(--paper);
+  }
+  .burger { position: relative; width: 18px; height: 12px; display: block; }
+  .burger i {
+    position: absolute; left: 0; right: 0; height: 2px; background: currentColor;
+    transition: transform var(--dur-base) var(--ease-out), top var(--dur-base) var(--ease-out);
+  }
+  .burger i:first-child { top: 0; }
+  .burger i:last-child { top: 10px; }
+  [aria-expanded='true'] .burger i:first-child { top: 5px; transform: rotate(45deg); }
+  [aria-expanded='true'] .burger i:last-child { top: 5px; transform: rotate(-45deg); }
+
+  @media (min-width: 60em) {
+    .site-header__nav { display: block; }
+    .site-header__cta { display: inline-flex; }
+    .site-header__toggle { display: none; }
+  }
+
+  /* Mobile menu: full-height panel under the header */
+  .mobile-menu {
+    position: fixed;
+    inset: 4.25rem 0 0 0;
+    z-index: var(--z-menu);
+    background: var(--ink);
+    color: var(--paper);
+    overflow-y: auto;
+    border-top: 1px solid rgba(245, 245, 240, 0.12);
+  }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu__inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-block: var(--space-6) var(--space-7);
+    gap: var(--space-7);
+  }
+  .mobile-menu__links li { border-top: 1px solid rgba(245, 245, 240, 0.12); }
+  .mobile-menu__links li:last-child { border-bottom: 1px solid rgba(245, 245, 240, 0.12); }
+  .mobile-menu__links a {
+    display: flex; align-items: baseline; gap: var(--space-4);
+    padding: var(--space-4) 0;
+    text-decoration: none;
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    letter-spacing: var(--tracking-snug);
+  }
+  .mobile-menu__links a[aria-current='page'] .mobile-menu__label { color: var(--signal); }
+  .mobile-menu__index { color: rgba(245, 245, 240, 0.5); min-width: 2ch; }
+  .mobile-menu__foot { display: grid; gap: var(--space-5); }
+  .mobile-menu__tag { display: inline-flex; align-items: center; gap: var(--space-2); color: rgba(245, 245, 240, 0.6); }
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-menu:not([hidden]) .mobile-menu__links li { animation: menu-in 0.5s var(--ease-out) both; animation-delay: var(--d, 0ms); }
+    @keyframes menu-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  }
+  @media (min-width: 60em) { .mobile-menu { display: none !important; } }
+</style>

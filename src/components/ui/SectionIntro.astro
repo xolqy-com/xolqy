@@ -1,0 +1,24 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  id: string;
+  level?: 'h1' | 'h2';
+  class?: string;
+}
+const { eyebrow, title, id, level = 'h2', class: className } = Astro.props;
+const Tag = level;
+---
+<div class:list={['intro', 'between', 'reveal', className]}>
+  <div class="flow">
+    <p class="eyebrow">{eyebrow}</p>
+    <Tag id={id} class={level === 'h1' ? 'display' : 'h-3xl'} set:html={title} />
+  </div>
+  <slot />
+</div>
+
+<style>
+  .intro :global(h1), .intro :global(h2) { max-width: 20ch; }
+  .intro :global(h1) { max-width: 14ch; }
+  .intro > :global(:not(:first-child)) { max-width: 44ch; }
+</style>

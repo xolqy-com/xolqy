@@ -1,13 +1,20 @@
+# dependencies and build output
 node_modules
-.wrangler
-.wrangler-dryrun
 dist
-.mf
+.astro
+.wrangler
+
+# local secrets and environment (never commit)
 .dev.vars
 .dev.vars.*
 .env
-.env.local
-.og-tmp.mjs
+.env.*
+!.env.example
+
+# generated at runtime by scripts
+.og-tmp
+
+# editor / OS
 *.log
 .DS_Store
 desktop.ini

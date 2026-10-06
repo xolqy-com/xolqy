@@ -1,19 +1,43 @@
 {
   "name": "xolqy",
-  "version": "0.1.0",
-  "description": "Cookieless web analytics on Cloudflare Workers + D1",
+  "version": "1.0.0",
+  "description": "xolqy.com, the Cloudflare-focused agency. Astro on Cloudflare Workers with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, Turnstile and Email Service.",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "schema": "wrangler d1 execute xolqy --file=schema.sql",
-    "schema:remote": "wrangler d1 execute xolqy --remote --file=schema.sql",
-    "og": "node scripts/build-og.mjs"
+    "dev": "wrangler types --strict-vars=false && astro dev",
+    "build": "wrangler types --strict-vars=false && npm run og && astro check && astro build",
+    "preview": "astro preview",
+    "check": "wrangler types --strict-vars=false && astro check",
+    "og": "node scripts/build-og.mjs",
+    "resources": "node scripts/build-resources.mjs",
+    "cf-typegen": "wrangler types --strict-vars=false",
+    "db:migrate:local": "wrangler d1 migrations apply xolqy-site --local",
+    "db:migrate:remote": "wrangler d1 migrations apply xolqy-site --remote",
+    "db:seed:local": "wrangler d1 execute xolqy-site --local --file=./scripts/seed.dev.sql",
+    "r2:seed:local": "node scripts/seed-r2-local.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:dry": "npm run build && wrangler deploy --dry-run",
+    "rollback": "wrangler rollback",
+    "tail": "wrangler tail --format pretty"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.3.3",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5",
+    "jose": "^6.2.0",
+    "zod": "^4.6.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240620.0",
-    "typescript": "^5.5.0",
-    "wrangler": "^3.114.0"
+    "@astrojs/check": "^0.9.10",
+    "@fontsource-variable/bricolage-grotesque": "^5.2.0",
+    "@fontsource-variable/jetbrains-mono": "^5.2.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "typescript": "^5.9.0",
+    "wawoff2": "^2.0.1",
+    "wrangler": "^4.147.0"
   }
 }

@@ -1,0 +1,44 @@
+---
+import { ENGAGEMENTS } from '@/data/content';
+---
+<section class="section engagements" data-theme="dark" aria-labelledby="engagements-title">
+  <div class="container">
+    <div class="between reveal">
+      <div class="flow">
+        <p class="eyebrow">Engagements</p>
+        <h2 id="engagements-title" class="h-3xl measure">Three ways to work with us.</h2>
+      </div>
+      <p class="muted">Proposals are written per project. Pricing follows scope, not a price list.</p>
+    </div>
+
+    <div class="engagements__grid">
+      {ENGAGEMENTS.map((e, i) => (
+        <article class="engagements__card reveal" style={`--reveal-delay:${i * 90}ms`} aria-labelledby={`eng-${e.id}`}>
+          <p class="mono faint">{e.tag}</p>
+          <h3 id={`eng-${e.id}`} class="h-2xl">{e.name}</h3>
+          <p class="muted">{e.summary}</p>
+          <ul class="ticks">
+            {e.includes.map((inc) => <li>{inc}</li>)}
+          </ul>
+          <a href={`/contact/?interest=${e.service}`} class="btn btn--ghost engagements__cta">{e.cta} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .engagements .between > p { max-width: 36ch; font-size: var(--text-sm); }
+  .engagements__grid { margin-top: var(--space-8); display: grid; gap: var(--space-7); }
+  .engagements__card {
+    display: grid; gap: var(--space-4); align-content: start;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line-strong);
+  }
+  .engagements__card .ticks { font-size: var(--text-sm); }
+  .engagements__cta { justify-self: start; margin-top: var(--space-2); }
+  @media (min-width: 48em) {
+    .engagements__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); }
+    .engagements__card { grid-template-rows: auto auto auto 1fr auto; }
+  }
+</style>

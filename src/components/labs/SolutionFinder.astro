@@ -1,0 +1,35 @@
+---
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+---
+<article class="lab" id="solution-finder" aria-labelledby="finder-title" data-finder>
+  <header class="lab__head">
+    <div class="flow">
+      <p class="eyebrow">Lab 02 / Workers AI, Vectorize, Durable Objects, AI Gateway</p>
+      <h2 id="finder-title" class="h-2xl">AI solution finder</h2>
+      <p class="muted lab__intro">Describe what you are building or moving. The answer is generated only from our published service pages (retrieved from Vectorize) and links to the services that fit. Sessions are bounded to six turns and expire after 30 minutes. When the AI bindings are unavailable, a keyword matcher answers instead and says so.</p>
+    </div>
+    <StatusBadge status="demo" />
+  </header>
+
+  <div class="lab__body">
+    <div data-finder-gate class="stack">
+      <button type="button" class="btn btn--primary" data-finder-start>Start the finder</button>
+      <p class="mono--lc faint lab__note">Starts only when you press the button. Nothing is sent until you submit a message. Do not include confidential information; it is not needed and the input is checked for secrets.</p>
+    </div>
+    <noscript><p class="notice">The finder needs JavaScript. Without it, the <a href="/services/">services page</a> and the <a href="/contact/">enquiry form</a> cover the same ground.</p></noscript>
+
+    <div class="finder" data-finder-ui hidden>
+      <ol class="list-reset finder__log" data-finder-log aria-live="polite" aria-label="Conversation"></ol>
+      <form class="finder__form" data-finder-form>
+        <label class="visually-hidden" for="finder-input">Describe your project</label>
+        <textarea id="finder-input" class="textarea finder__input" rows="3" maxlength="600" placeholder="e.g. We run a WooCommerce shop on shared hosting, it is slow in the US and we get hit by bots on checkout." required></textarea>
+        <div class="between">
+          <p class="mono--lc muted" data-finder-meta>Up to 600 characters. 6 turns per session.</p>
+          <button type="submit" class="btn btn--primary btn--sm" data-finder-send>Ask</button>
+        </div>
+      </form>
+      <p class="mono--lc muted" role="status" data-finder-status></p>
+    </div>
+  </div>
+</article>
+<script src="../../scripts/finder.ts"></script>

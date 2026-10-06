@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import { PROCESS } from '@/data/content';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const description = 'Websites and applications, Cloudflare migration, performance, security and Zero Trust, AI and automation, and managed Cloudflare. Each service has an outcome, deliverables, a stack and a next step.';
+---
+
+<Base
+  title="Services"
+  description={description}
+  path="/services/"
+  ogImage="/og/services.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Services" title="Six ways we put Cloudflare to&nbsp;work." id="services-title" level="h1">
+        <p class="lead">Every service is scoped to an outcome, has a named set of deliverables, uses specific Cloudflare products, and ends with a clear next step. Pick the one that matches your situation, or <a href="/labs/#solution-finder">ask the solution finder</a>.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  {services.map((s, i) => (
+    <section class="section svc" data-theme={i % 2 === 0 ? 'light' : 'dark'} aria-labelledby={`svc-${s.id}`}>
+      <div class="container svc__grid">
+        <div class="svc__head reveal">
+          <p class="eyebrow">{s.data.eyebrow}</p>
+          <h2 id={`svc-${s.id}`} class="h-3xl"><a href={`/services/${s.id}/`} class="svc__title-link">{s.data.title}</a></h2>
+          <p class="lead">{s.data.summary}</p>
+          <a href={`/services/${s.id}/`} class="btn btn--ghost">Explore {s.data.shortTitle} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="svc__cols reveal" style="--reveal-delay:100ms">
+          <div class="svc__col">
+            <h3 class="mono faint svc__label">Outcome</h3>
+            <p class="svc__outcome">{s.data.outcome}</p>
+          </div>
+          <div class="svc__col">
+            <h3 class="mono faint svc__label">Typical deliverables</h3>
+            <ul class="ticks svc__list">
+              {s.data.deliverables.slice(0, 4).map((d) => <li>{d}</li>)}
+            </ul>
+          </div>
+          <div class="svc__col">
+            <h3 class="mono faint svc__label">Relevant technologies</h3>
+            <ul class="list-reset cluster">
+              {s.data.stack.map((t) => <li class="badge">{t.name}</li>)}
+            </ul>
+          </div>
+          <div class="svc__col">
+            <h3 class="mono faint svc__label">Next step</h3>
+            <p><a href={s.data.nextStep.href} class="link">{s.data.nextStep.label} <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">How every engagement runs</p>
+          <h2 class="h-3xl">{PROCESS.map((p) => p.stage).join(' → ')}</h2>
+        </div>
+        <a href="/#faqs" class="link">Read the FAQs <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .svc__grid { display: grid; gap: var(--space-7); }
+  .svc__head { display: grid; gap: var(--space-5); justify-items: start; align-content: start; }
+  .svc__title-link { text-decoration: none; }
+  .svc__title-link:hover { color: var(--accent-text); }
+  .svc__cols { display: grid; gap: var(--space-6); }
+  .svc__col { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--line); align-content: start; }
+  .svc__label { font-weight: 500; }
+  .svc__outcome { font-size: var(--text-lg); font-weight: 500; }
+  .svc__list { font-size: var(--text-sm); }
+  @media (min-width: 48em) { .svc__cols { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 60em) {
+    .svc__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+    .svc__head { position: sticky; top: 6rem; }
+  }
+</style>

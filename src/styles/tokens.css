@@ -1,0 +1,110 @@
+/* ---------------------------------------------------------------------------
+   xolqy design tokens
+   Three brand colours, two type families, one spacing scale. Components read
+   from these custom properties only; sections switch theme by setting
+   data-theme="dark" | "light" which remaps the semantic tokens below.
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* Brand */
+  --ink: #0a0a0a;        /* near-black */
+  --paper: #f5f5f0;      /* warm white */
+  --signal: #ff5a1f;     /* electric orange */
+  --signal-deep: #d9430c;
+
+  /* Derived surfaces */
+  --ink-2: #121212;
+  --ink-3: #1b1b1b;
+  --paper-2: #ecece6;
+  --paper-3: #e2e2da;
+
+  /* Type */
+  --font-sans: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale (fluid) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+  --text-xl: clamp(1.375rem, 1.2rem + 0.9vw, 1.875rem);
+  --text-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  --text-3xl: clamp(2.25rem, 1.6rem + 3vw, 4.25rem);
+  --text-display: clamp(2.5rem, 1rem + 6.2vw, 6.5rem);
+
+  --leading-tight: 0.95;
+  --leading-snug: 1.15;
+  --leading-body: 1.6;
+  --tracking-tight: -0.035em;
+  --tracking-snug: -0.02em;
+  --tracking-mono: 0.08em;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-y: clamp(4.5rem, 10vw, 9.5rem);
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --container: 1440px;
+  --measure: 64ch;
+
+  /* Shape and motion */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur-base: 420ms;
+  --dur-slow: 900ms;
+
+  /* Layering */
+  --z-header: 50;
+  --z-menu: 60;
+}
+
+/* Semantic tokens, dark default (the site opens dark) */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: var(--ink);
+  --bg-raised: var(--ink-2);
+  --bg-sunken: var(--ink-3);
+  --fg: var(--paper);
+  --fg-muted: rgba(245, 245, 240, 0.68);
+  --fg-faint: rgba(245, 245, 240, 0.56);   /* 6.0:1 on near-black */
+  --line: rgba(245, 245, 240, 0.16);
+  --line-strong: rgba(245, 245, 240, 0.32);
+  --accent: var(--signal);
+  --accent-fg: var(--ink);         /* text on accent surfaces */
+  --accent-text: var(--signal);    /* accent used as text: 6.3:1 on near-black */
+  --focus: var(--signal);
+  --grid-dot: rgba(245, 245, 240, 0.12);
+  --selection: rgba(255, 90, 31, 0.45);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: var(--paper);
+  --bg-raised: #ffffff;
+  --bg-sunken: var(--paper-2);
+  --fg: var(--ink);
+  --fg-muted: rgba(10, 10, 10, 0.68);
+  --fg-faint: rgba(10, 10, 10, 0.62);      /* 5.5:1 on warm white */
+  --line: rgba(10, 10, 10, 0.16);
+  --line-strong: rgba(10, 10, 10, 0.34);
+  --accent: var(--signal);
+  --accent-fg: var(--ink);
+  /* Orange on warm white is 2.9:1, below AA for text, so accent text on light
+     sections uses the deep variant (4.6:1) and orange stays for marks and lines. */
+  --accent-text: #b8360a;
+  --focus: var(--ink);
+  --grid-dot: rgba(10, 10, 10, 0.14);
+  --selection: rgba(255, 90, 31, 0.35);
+}

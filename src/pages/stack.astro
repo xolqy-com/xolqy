@@ -1,0 +1,136 @@
+---
+import Base from '@/layouts/Base.astro';
+import StackExplorer from '@/components/sections/StackExplorer.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import { CATALOGUE_ONLY, STACK } from '@/data/stack';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const counts = {
+  active: STACK.filter((s) => s.status === 'active').length,
+  awaiting: STACK.filter((s) => s.status === 'awaiting').length,
+  planned: STACK.filter((s) => s.status === 'planned').length,
+};
+const description = 'The architecture of xolqy.com itself: Workers with Static Assets, D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, AI Gateway, Turnstile, Access and Email Service, with each integration marked active, awaiting configuration or planned.';
+
+const flow = [
+  { step: 'Browser', detail: 'Prerendered HTML and assets from the nearest Cloudflare location. Form validated inline; Turnstile loads on demand.' },
+  { step: 'Worker: POST /api/enquiry', detail: 'Validates (zod), rate-limits, verifies the Turnstile token with Siteverify, writes the record to D1, queues a message.' },
+  { step: 'Queue: xolqy-enquiries', detail: 'Buffers the work. The consumer starts one Workflow per enquiry with a deterministic id, so duplicates are harmless.' },
+  { step: 'Workflow: EnquiryWorkflow', detail: 'Loads, marks processing, emails staff through Email Service with exponential retries, optionally acknowledges, records the outcome.' },
+  { step: 'D1 + staff view', detail: 'Status and timeline are queryable by reference (no personal data) and in full behind Cloudflare Access at /admin/.' },
+];
+---
+
+<Base
+  title="Our stack: built on Cloudflare"
+  description={description}
+  path="/stack/"
+  ogImage="/og/stack.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Our Stack', href: '/stack/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Built on Cloudflare" title="How this website actually&nbsp;works." id="stack-title" level="h1">
+        <div class="flow">
+          <p class="lead">Xolqy's own site runs entirely on Cloudflare. This page is the honest map: what each product does for a business, what it does here, and whether it is live.</p>
+          <ul class="list-reset cluster" data-stack-summary>
+            <li class="badge" data-status="active">{counts.active} active</li>
+            <li class="badge" data-status="awaiting">{counts.awaiting} awaiting configuration</li>
+            <li class="badge" data-status="planned">{counts.planned} planned</li>
+          </ul>
+          <p class="mono--lc faint" data-live-note>Declared statuses from the code. Live verification runs when JavaScript is available.</p>
+        </div>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container">
+      <StackExplorer variant="full" live={true} headingLevel="h2" />
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="flow-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">One request, end to end</p>
+          <h2 id="flow-title" class="h-3xl">What happens when you send the enquiry form.</h2>
+        </div>
+        <p class="muted flow-note">Success is reported only after D1 has the record. Email delivery is asynchronous and its failures stay visible to staff rather than to you.</p>
+      </div>
+      <ol class="list-reset flowchart">
+        {flow.map((f, i) => (
+          <li class="flowchart__step reveal" style={`--reveal-delay:${i * 80}ms`}>
+            <span class="flowchart__node" aria-hidden="true"><span class="mono">{i + 1}</span></span>
+            <h3 class="h-lg">{f.step}</h3>
+            <p class="muted">{f.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="dash-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <p class="eyebrow">Code vs dashboard</p>
+        <h2 id="dash-title" class="h-3xl">What lives in the repository, and what must be set in the Cloudflare dashboard.</h2>
+      </div>
+      <div class="flow reveal" style="--reveal-delay:100ms">
+        <h3 class="h-lg">In the repository (wrangler.jsonc, src/, migrations/)</h3>
+        <p class="muted">Worker code and routes, every binding (D1, KV, R2, Queues, Workflows, Durable Objects, AI, Vectorize, rate limits, Email), observability settings, D1 migrations, security headers, the content and the design system.</p>
+        <h3 class="h-lg">In the dashboard (documented in the README)</h3>
+        <ul class="ticks">
+          <li>DNS zone for xolqy.com, custom domain on the Worker, TLS settings, HSTS</li>
+          <li>WAF managed rules, rate limiting rules on /api/*, bot controls</li>
+          <li>Turnstile widget (sitekey + secret) for xolqy.com</li>
+          <li>Zero Trust: Access application for /admin/ and its audience tag</li>
+          <li>AI Gateway named in AI_GATEWAY_ID</li>
+          <li>Email Service: onboarding the sending domain</li>
+          <li>Web Analytics site and beacon token</li>
+          <li>Secrets: TURNSTILE_SECRET_KEY (via wrangler secret put)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="cat-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <p class="eyebrow">Also in the catalogue</p>
+        <h2 id="cat-title" class="h-3xl">Products we use for clients that this site does not need.</h2>
+        <p class="muted">We implement a product on xolqy.com only when a real feature calls for it.</p>
+      </div>
+      <ul class="list-reset catalogue reveal" style="--reveal-delay:100ms">
+        {CATALOGUE_ONLY.map((c) => (
+          <li class="catalogue__item">
+            <h3 class="h-lg">{c.name}</h3>
+            <p class="muted">{c.purpose}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <script src="../scripts/status.ts"></script>
+</Base>
+
+<style>
+  .flow-note { max-width: 44ch; font-size: var(--text-sm); }
+  .flowchart { margin-top: var(--space-7); display: grid; gap: var(--space-6); }
+  .flowchart__step { position: relative; padding-left: 3.25rem; display: grid; gap: var(--space-2); }
+  .flowchart__node { position: absolute; left: 0; top: 0; width: 2.25rem; height: 2.25rem; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; background: var(--bg); }
+  .flowchart__node .mono { font-size: 0.625rem; }
+  .flowchart__step::before { content: ''; position: absolute; left: 1.1rem; top: 2.5rem; bottom: -2.75rem; width: 1px; background: var(--line-strong); }
+  .flowchart__step:last-child::before { display: none; }
+  .two-col { display: grid; gap: var(--space-7); align-items: start; }
+  .catalogue { display: grid; border-top: 1px solid var(--line); }
+  .catalogue__item { padding-block: var(--space-4); border-bottom: 1px solid var(--line); display: grid; gap: var(--space-1); }
+  @media (min-width: 60em) {
+    .flowchart { grid-template-columns: repeat(5, 1fr); gap: var(--gutter); }
+    .flowchart__step { padding-left: 0; padding-top: 3.25rem; }
+    .flowchart__step::before { left: 2.75rem; right: calc(-1 * var(--gutter)); top: 1.1rem; bottom: auto; height: 1px; width: auto; }
+    .two-col { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+  }
+</style>

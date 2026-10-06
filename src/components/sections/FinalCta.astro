@@ -1,0 +1,33 @@
+---
+import EnquiryForm from '@/components/sections/EnquiryForm.astro';
+import XMark from '@/components/brand/XMark.astro';
+---
+<section class="section final" data-theme="dark" id="start" aria-labelledby="final-title">
+  <div class="container final__grid">
+    <div class="final__copy reveal">
+      <XMark size={48} class="final__mark" />
+      <h2 id="final-title" class="h-3xl">Make Cloudflare work harder for your business.</h2>
+      <p class="lead">Tell us what you are building, moving or protecting. We reply with questions, then a proposal with scope, deliverables and a platform cost estimate.</p>
+      <ul class="list-reset final__facts mono">
+        <li>Independent, Cloudflare-focused</li>
+        <li>Your account, your code</li>
+        <li>Written proposals, not quotes</li>
+      </ul>
+    </div>
+    <div class="final__form reveal" style="--reveal-delay:120ms">
+      <EnquiryForm id="enquiry" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .final__grid { display: grid; gap: var(--space-8); align-items: start; }
+  .final__copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .final__copy :global(.final__mark) { color: var(--signal); }
+  .final__facts { display: grid; gap: var(--space-2); color: var(--fg-muted); padding-top: var(--space-4); border-top: 1px solid var(--line); width: 100%; max-width: 40ch; }
+  .final__form { padding: var(--space-6); border: 1px solid var(--line); background: var(--bg-raised); border-radius: var(--radius-md); }
+  @media (min-width: 60em) {
+    .final__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+    .final__copy { position: sticky; top: 6rem; }
+  }
+</style>

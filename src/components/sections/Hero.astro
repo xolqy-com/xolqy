@@ -1,0 +1,56 @@
+---
+import EdgeNetwork from '@/components/brand/EdgeNetwork.astro';
+import { CTA } from '@/data/site';
+---
+
+<section class="hero section" data-theme="dark" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow fade-in" style="--d:0ms">The Cloudflare-focused agency.</p>
+      <h1 id="hero-title" class="display hero__title">
+        <span class="hero-line"><span style="--d:80ms">Your business.</span></span>
+        <span class="hero-line"><span style="--d:200ms">At the <em>edge.</em></span></span>
+      </h1>
+      <p class="lead fade-in" style="--d:420ms">
+        We build fast websites, scalable applications, and secure digital infrastructure on Cloudflare.
+      </p>
+      <div class="cluster fade-in" style="--d:560ms">
+        <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a href={CTA.secondary.href} class="btn btn--ghost">{CTA.secondary.label}</a>
+      </div>
+      <ul class="list-reset hero__strip mono fade-in" style="--d:700ms" aria-label="What this site runs on">
+        <li>Workers</li><li>D1</li><li>R2</li><li>Queues</li><li>Workflows</li><li>Workers AI</li><li>Vectorize</li>
+      </ul>
+    </div>
+    <div class="hero__art fade-in" style="--d:300ms">
+      <EdgeNetwork class="hero__net" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { overflow: hidden; padding-block: clamp(3rem, 8vw, 7rem) clamp(3rem, 6vw, 5rem); }
+  .hero__grid {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .hero__copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .hero__title { max-width: 14ch; font-size: clamp(2.5rem, 0.5rem + 6.5vw, 7rem); }
+  .hero__title em { font-style: normal; color: var(--signal); }
+  .hero__strip {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem;
+    color: var(--fg-faint);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+    width: 100%;
+  }
+  .hero__strip li + li::before { content: '/ '; color: var(--line-strong); }
+  .hero__art { max-width: 560px; width: 100%; margin-inline: auto; }
+  @media (min-width: 60em) {
+    .hero__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gutter); }
+    .hero__title { max-width: none; }
+    .hero-line { white-space: nowrap; }
+    .hero__art { max-width: none; }
+  }
+</style>

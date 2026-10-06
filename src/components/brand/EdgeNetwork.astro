@@ -1,0 +1,101 @@
+---
+/**
+ * Hero composition: the X symbol as a junction with routes leaving each arm
+ * toward edge nodes. Thin rules, labelled nodes and travelling pulses. Pure
+ * SVG + CSS; decorative, hidden from assistive technology. Pulses stop under
+ * prefers-reduced-motion (see global.css).
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const routes = [
+  { d: 'M438 202 L500 140 H640', node: [640, 140], label: 'fra', dur: '5.2s', delay: '0s' },
+  { d: 'M470 170 V60', node: [470, 60], label: 'ams', dur: '4.1s', delay: '1.3s' },
+  { d: 'M282 202 L220 140 H80', node: [80, 140], label: 'jfk', dur: '5.8s', delay: '0.6s' },
+  { d: 'M250 170 V60', node: [250, 60], label: 'lhr', dur: '4.4s', delay: '2.1s' },
+  { d: 'M438 358 L500 420 H640', node: [640, 420], label: 'sin', dur: '6.1s', delay: '1.8s' },
+  { d: 'M470 390 V500', node: [470, 500], label: 'syd', dur: '4.7s', delay: '0.3s' },
+  { d: 'M282 358 L220 420 H80', node: [80, 420], label: 'gru', dur: '5.5s', delay: '2.6s' },
+  { d: 'M250 390 V500', node: [250, 500], label: 'ath', dur: '4.2s', delay: '1.1s' },
+] as const;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 720 560"
+  class:list={['net', className]}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <pattern id="net-dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" class="net__dot" />
+    </pattern>
+  </defs>
+  <rect width="720" height="560" fill="url(#net-dots)" />
+
+  <!-- backbone rules behind the junction -->
+  <g class="net__rule">
+    <path d="M0 280 H250" />
+    <path d="M470 280 H720" />
+    <path d="M360 0 V170" />
+    <path d="M360 390 V560" />
+  </g>
+
+  <!-- routes -->
+  <g class="net__routes">
+    {routes.map((r) => <path d={r.d} />)}
+  </g>
+  <g class="net__pulses">
+    {routes.map((r) => (
+      <path d={r.d} class="pulse" style={`--pulse-dur:${r.dur};--pulse-delay:${r.delay}`} pathLength="600" />
+    ))}
+  </g>
+
+  <!-- junction: the X -->
+  <g transform="translate(360 280) rotate(45)" class="net__x">
+    <path fill-rule="evenodd" d="M-17 -110h34v220h-34z M-110 -17h220v34h-220z M-7 -7h14v14h-14z" />
+  </g>
+  <circle cx="360" cy="280" r="150" class="net__ring" />
+  <circle cx="360" cy="280" r="190" class="net__ring net__ring--faint" />
+
+  <!-- edge nodes -->
+  <g class="net__nodes">
+    {routes.map((r, i) => (
+      <g transform={`translate(${r.node[0]} ${r.node[1]})`}>
+        <circle r="9" class="net__halo blink" style={`--d:${i * 300}ms`} />
+        <circle r="3.5" class="net__node" />
+        <text
+          x={r.node[0] > 360 ? 16 : -16}
+          y={r.node[1] < 100 ? -14 : r.node[1] > 480 ? 24 : 4}
+          text-anchor={r.node[0] > 360 ? 'start' : 'end'}
+          class="net__label"
+        >
+          {r.label}
+        </text>
+      </g>
+    ))}
+  </g>
+</svg>
+
+<style>
+  .net { width: 100%; height: auto; overflow: visible; }
+  .net:global(.net--paused) * { animation-play-state: paused; }
+  .net__dot { fill: var(--grid-dot); }
+  .net__rule path { stroke: var(--line); stroke-width: 1; fill: none; }
+  .net__routes path { stroke: var(--line-strong); stroke-width: 1.25; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .net__pulses path { fill: none; stroke-width: 2; stroke-linecap: round; }
+  .net__x { fill: var(--signal); }
+  .net__ring { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 8; }
+  .net__ring--faint { stroke: var(--grid-dot); stroke-dasharray: 1 10; }
+  .net__node { fill: var(--fg); }
+  .net__halo { fill: none; stroke: var(--signal); stroke-width: 1; opacity: 0.6; }
+  .net__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    fill: var(--fg-muted);
+    text-transform: uppercase;
+  }
+</style>

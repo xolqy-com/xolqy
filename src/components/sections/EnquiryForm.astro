@@ -1,0 +1,120 @@
+---
+/**
+ * Project enquiry form. Works without JavaScript (plain POST to /api/enquiry,
+ * which answers with HTML for form submissions) and is enhanced with fetch,
+ * inline validation, Turnstile (loaded lazily) and accessible status messages.
+ */
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { SERVICE_INTERESTS, BUDGET_RANGES } from '@/data/site';
+
+interface Props {
+  id?: string;
+  heading?: string;
+  /** Heading level that fits the page outline (h2 on /contact/, h3 inside the homepage CTA). */
+  headingLevel?: 'h2' | 'h3';
+}
+const { id = 'enquiry', heading = 'Tell us about the project', headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const siteKey = PUBLIC_TURNSTILE_SITE_KEY ?? '';
+---
+
+<form
+  id={id}
+  class="enquiry"
+  method="post"
+  action="/api/enquiry"
+  novalidate
+  data-enquiry
+  data-sitekey={siteKey}
+  aria-labelledby={`${id}-heading`}
+>
+  <Heading id={`${id}-heading`} class="h-xl enquiry__heading">{heading}</Heading>
+  <p class="muted enquiry__intro">A few details and a short brief. We reply with questions or a proposal, not a sales call.</p>
+
+  <div class="enquiry__grid">
+    <div class="field">
+      <label class="field__label" for={`${id}-name`}>Name <span class="mono faint">Required</span></label>
+      <input class="input" id={`${id}-name`} name="name" type="text" autocomplete="name" required maxlength="120" />
+      <p class="field__error" data-error-for="name" hidden></p>
+    </div>
+    <div class="field">
+      <label class="field__label" for={`${id}-email`}>Work email <span class="mono faint">Required</span></label>
+      <input class="input" id={`${id}-email`} name="email" type="email" autocomplete="email" required maxlength="254" inputmode="email" />
+      <p class="field__error" data-error-for="email" hidden></p>
+    </div>
+    <div class="field">
+      <label class="field__label" for={`${id}-website`}>Website <span class="mono faint">Optional</span></label>
+      <input class="input" id={`${id}-website`} name="website" type="url" autocomplete="url" placeholder="https://" maxlength="200" inputmode="url" />
+      <p class="field__error" data-error-for="website" hidden></p>
+    </div>
+    <div class="field">
+      <label class="field__label" for={`${id}-service`}>Service interest <span class="mono faint">Required</span></label>
+      <select class="select" id={`${id}-service`} name="service" required data-interest>
+        <option value="">Choose one</option>
+        {SERVICE_INTERESTS.map((s) => <option value={s.value}>{s.label}</option>)}
+      </select>
+      <p class="field__error" data-error-for="service" hidden></p>
+    </div>
+    <div class="field enquiry__full">
+      <label class="field__label" for={`${id}-brief`}>Project brief <span class="mono faint" data-counter>Required, 40 to 2000 characters</span></label>
+      <textarea class="textarea" id={`${id}-brief`} name="brief" required minlength="40" maxlength="2000" rows="6" placeholder="What are you building or moving, what is in place today, and what does success look like?"></textarea>
+      <p class="field__hint">Please do not include passwords, API keys or personal data about other people.</p>
+      <p class="field__error" data-error-for="brief" hidden></p>
+    </div>
+    <div class="field">
+      <label class="field__label" for={`${id}-budget`}>Budget range <span class="mono faint">Optional</span></label>
+      <select class="select" id={`${id}-budget`} name="budget">
+        {BUDGET_RANGES.map((b) => <option value={b.value}>{b.label}</option>)}
+      </select>
+    </div>
+    <div class="field enquiry__hp" aria-hidden="true">
+      <label for={`${id}-company`}>Company</label>
+      <input id={`${id}-company`} name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+  </div>
+
+  <div class="enquiry__verify">
+    <div class="enquiry__turnstile" data-turnstile aria-live="polite">
+      {!siteKey && <p class="notice">Form protection is not configured on this build (PUBLIC_TURNSTILE_SITE_KEY is empty). Submissions will be rejected until it is.</p>}
+    </div>
+    <p class="field__hint">Protected by Cloudflare Turnstile. By sending this form you agree to our <a href="/privacy/">privacy policy</a>.</p>
+  </div>
+
+  <div class="enquiry__actions">
+    <button type="submit" class="btn btn--primary" data-submit>
+      <span data-submit-label>Send enquiry</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </button>
+    <p class="enquiry__status" role="status" aria-live="polite" data-status></p>
+  </div>
+
+  <div class="enquiry__done notice notice--ok" data-done hidden tabindex="-1">
+    <p class="h-lg">Received. Thank you.</p>
+    <p>Your reference is <strong data-ref></strong>. The enquiry is stored and queued for processing; you can <a data-track-link href="/labs/#enquiry-pipeline">follow its progress</a> on the Labs page. We reply by email.</p>
+  </div>
+</form>
+
+<script src="../../scripts/enquiry.ts"></script>
+
+<style>
+  .enquiry { display: grid; gap: var(--space-5); }
+  .enquiry__heading { margin-bottom: calc(-1 * var(--space-3)); }
+  .enquiry__intro { max-width: 52ch; }
+  .enquiry__grid { display: grid; gap: var(--space-5); }
+  .enquiry__full { grid-column: 1 / -1; }
+  .enquiry__hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+  .enquiry__verify { display: grid; gap: var(--space-3); }
+  .enquiry__turnstile:empty { display: none; }
+  .enquiry__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .enquiry__status { font-size: var(--text-sm); color: var(--fg-muted); }
+  .enquiry__status[data-tone='error'] { color: var(--accent-text); font-weight: 600; }
+  .enquiry__done { display: grid; gap: var(--space-3); }
+  .enquiry__done[hidden] { display: none; }
+  .enquiry[data-state='done'] .enquiry__grid,
+  .enquiry[data-state='done'] .enquiry__verify,
+  .enquiry[data-state='done'] .enquiry__actions,
+  .enquiry[data-state='done'] .enquiry__intro { display: none; }
+  @media (min-width: 40em) {
+    .enquiry__grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>

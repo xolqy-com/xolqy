@@ -1,0 +1,69 @@
+---
+import Base from '@/layouts/Base.astro';
+import EnquiryForm from '@/components/sections/EnquiryForm.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { PROCESS } from '@/data/content';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const description = 'Start your project with Xolqy. Send a short brief about what you are building, moving or protecting on Cloudflare and we reply with questions, then a proposal.';
+const next = [
+  'We read the brief and reply by email within a few working days, usually with questions.',
+  'If it is a fit, we propose an audit or a scoped project with deliverables and a platform cost estimate.',
+  'Nothing is built or billed before you have a written proposal.',
+];
+---
+
+<Base
+  title="Start your project"
+  description={description}
+  path="/contact/"
+  ogImage="/og/contact.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact/' }])]}
+>
+  <section class="section contact" data-theme="dark">
+    <div class="container contact__grid">
+      <div class="contact__copy">
+        <p class="eyebrow fade-in">Start your project</p>
+        <h1 class="h-3xl contact__title"><span class="hero-line"><span style="--d:60ms">Make Cloudflare work harder for your business.</span></span></h1>
+        <p class="lead fade-in" style="--d:240ms">Tell us what you are building, moving or protecting. A few sentences are enough; we will ask the rest.</p>
+
+        <div class="contact__next fade-in" style="--d:360ms">
+          <p class="mono faint">What happens next</p>
+          <ol class="list-reset contact__steps">
+            {next.map((n, i) => (
+              <li><span class="mono accent">0{i + 1}</span><span>{n}</span></li>
+            ))}
+          </ol>
+        </div>
+
+        <div class="contact__process fade-in" style="--d:480ms">
+          <p class="mono faint">Then, if we work together</p>
+          <p class="muted">{PROCESS.map((p) => p.stage).join(' → ')}</p>
+        </div>
+
+        <p class="mono--lc faint contact__privacy fade-in" style="--d:560ms"><XMark size={12} /> Your enquiry is stored in Cloudflare D1, processed by a Workflow and emailed to us. Details in the <a href="/privacy/">privacy policy</a>.</p>
+      </div>
+
+      <div class="contact__form fade-in" style="--d:200ms">
+        <EnquiryForm id="enquiry" heading="Project enquiry" headingLevel="h2" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact { padding-block: clamp(3rem, 7vw, 6rem); }
+  .contact__grid { display: grid; gap: var(--space-8); align-items: start; }
+  .contact__copy { display: grid; gap: var(--space-6); }
+  .contact__title { max-width: 18ch; }
+  .contact__next, .contact__process { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  .contact__steps { display: grid; gap: var(--space-3); }
+  .contact__steps li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--space-3); }
+  .contact__privacy { display: flex; gap: 0.5em; align-items: flex-start; }
+  .contact__privacy a { color: inherit; }
+  .contact__form { padding: var(--space-6); border: 1px solid var(--line); background: var(--bg-raised); border-radius: var(--radius-md); }
+  @media (min-width: 60em) {
+    .contact__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+    .contact__copy { position: sticky; top: 6rem; }
+  }
+</style>

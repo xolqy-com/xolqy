@@ -1,138 +1,276 @@
-<div align="center">
+# xolqy.com
 
-<img src="public/og/home.png" alt="Xolqy — privacy-first web analytics" width="640" />
+**Xolqy, the Cloudflare-focused agency. Built for the edge.**
 
-# Xolqy
+The website of an independent agency that designs, builds, migrates, secures and manages businesses on Cloudflare. The site is itself the first demonstration: Astro on Workers with Static Assets, with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, AI Gateway, Turnstile, Access and Email Service doing real work.
 
-**Cookieless, privacy-first web analytics — on the edge.**
+> Xolqy is not affiliated with, endorsed by or certified by Cloudflare, Inc.
 
-A simple, fast, GDPR-friendly alternative to Google Analytics. The tracker is **< 2 KB**, it sets **no cookies** and stores **no personal data**, so most sites need **no consent banner**. The whole stack — tracker, collector, dashboard, and API — runs serverless on **Cloudflare Workers + D1**, so you can self-host it for free.
+## Contents
 
-[Website](https://xolqy.com) · [Docs](https://xolqy.com/docs) · [Pricing](https://xolqy.com/pricing) · [Blog](https://xolqy.com/blog)
+1. [Architecture](#architecture)
+2. [Repository layout](#repository-layout)
+3. [Local development](#local-development)
+4. [Provisioning (once per account)](#provisioning-once-per-account)
+5. [Configuration: variables and secrets](#configuration-variables-and-secrets)
+6. [Dashboard configuration](#dashboard-configuration)
+7. [Deployment](#deployment)
+8. [Rollback](#rollback)
+9. [Operations](#operations)
+10. [Integration status](#integration-status)
+11. [Data, privacy and retention](#data-privacy-and-retention)
+12. [Missing business details](#missing-business-details)
+13. [Verification performed](#verification-performed)
 
-![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-ea580c) ![Cloudflare Workers](https://img.shields.io/badge/runtime-Cloudflare%20Workers-orange) ![Tracker < 2KB](https://img.shields.io/badge/tracker-%3C2KB-brightgreen)
+## Architecture
 
-</div>
+```
+Browser ──(prerendered HTML/CSS/JS from Static Assets)──▶ Cloudflare edge
+   │
+   ├─ POST /api/enquiry ──▶ Worker: zod validation → rate limit → Turnstile Siteverify
+   │                              → INSERT into D1 (authoritative) → Queue message
+   │                                                                     │
+   │                               Queue consumer (same Worker) ◀────────┘
+   │                                   └─▶ ENQUIRY_WORKFLOW.create({ id: enquiry-<uuid> })   (idempotent)
+   │                                           EnquiryWorkflow: load → mark → notify staff (Email Service, retries)
+   │                                                            → optional acknowledgement → record outcome in D1
+   ├─ GET  /api/enquiry/status?ref= ──▶ D1 timeline (no personal data)
+   ├─ POST /api/finder ──▶ FinderSession Durable Object ──▶ Workers AI (embed) → Vectorize (retrieve)
+   │                                                        → Workers AI (answer, via AI Gateway) | rule-based fallback
+   ├─ GET  /api/edge ──▶ request.cf metadata (Labs demo)
+   ├─ GET  /api/resources/<key> ──▶ R2 object stream (allow-listed, ETag, cache headers)
+   ├─ GET  /api/status ──▶ live integration checks (no secrets)
+   └─ /admin/ ──▶ Cloudflare Access JWT verified in code → enquiries table, archive, reindex
+```
 
----
+* **Framework:** Astro 7 + `@astrojs/cloudflare` 14 (Cloudflare Vite plugin, `workerd` locally and in production).
+* **Rendering:** every marketing page is prerendered to static assets. Only `/api/*` and `/admin/*` run on demand.
+* **Worker entry:** `src/worker.ts` exports `fetch` (Astro), `queue` (consumer), `EnquiryWorkflow` and `FinderSession`.
+* **Content:** typed content collections (`src/content.config.ts`) for services and insights. Drafts (`draft: true`) get no route, are excluded from the index, the sitemap and the finder's knowledge base.
+* **Design system:** tokens in `src/styles/tokens.css`, primitives in `src/styles/global.css`, self-hosted variable fonts (Bricolage Grotesque, JetBrains Mono, OFL).
+* **Identity:** `src/components/brand/` (X symbol, wordmark, edge-network composition), `public/favicon.svg`, generated PNG icons and social images in `public/og/`.
 
-## Features
+Data placement follows one rule: **D1 for records, KV for configuration, R2 for files, Durable Objects for coordinated session state.** KV is never the authoritative enquiry store.
 
-- **Cookieless.** Counts daily unique visitors with a salted hash of IP + User‑Agent that rotates at midnight UTC. No cookies, no IP stored, no fingerprinting — usually no consent banner needed.
-- **Tiny & fast.** The tracker is under 2 KB, async, with zero dependencies. No Core Web Vitals hit.
-- **The metrics that matter.** Pageviews, unique visitors, sessions, top pages, referrers, countries, devices, **time‑on‑page** (counted only while the tab is visible) and **scroll depth**, plus outbound‑link clicks.
-- **Multi‑tenant.** Register with email/password or Google, claim the domains you own, and see only your data.
-- **Per‑site sharing.** Invite teammates by email (with optional automatic emails via Resend) to view a specific site, read‑only.
-- **Super‑admin view.** A designated account sees *every* tracked domain plus an "All sites (combined)" aggregate — built for running 100s of sites.
-- **Fast at scale.** Headline numbers read from nightly per‑day rollups; *today* stays real‑time.
-- **Self‑hostable & open source.** Deploy to your own Cloudflare account; your data never leaves it.
+## Repository layout
 
-## Tech stack
+```
+astro.config.mjs          Astro + adapter config (passthrough images, no sessions, sitemap, env schema)
+wrangler.jsonc            Worker config: bindings, queues, workflow, DO migration, observability, vars
+worker-configuration.d.ts Generated by `wrangler types` (Env + runtime types)
+migrations/               D1 migrations (0001_enquiries.sql)
+scripts/                  build-og.mjs (social images/icons), build-resources.mjs (R2 files),
+                          seed.dev.sql + seed-r2-local.mjs (local fixtures), provision.sh
+public/                   fonts/, og/, favicon*, robots.txt, site.webmanifest, _headers (CSP etc.)
+resources/                generated downloadable files (uploaded to R2)
+src/
+  worker.ts               Worker entrypoint (fetch + queue + class exports)
+  middleware.ts           security headers for on-demand routes
+  content.config.ts       collections schema; content/services/*.md, content/insights/*.md
+  data/                   site constants, stack catalogue + statuses, homepage content, resources manifest
+  layouts/Base.astro      head, SEO, JSON-LD, header/footer, site script, optional Web Analytics beacon
+  components/             brand/, ui/, sections/ (homepage), labs/ (demos)
+  pages/                  routes incl. api/ and admin/
+  scripts/                client scripts (site, enquiry, finder, edge, tracer, status)
+  server/                 db, enquiry-schema, turnstile, access, email, queue-consumer,
+                          enquiry-workflow, finder, finder-session, knowledge, reindex, status, http
+```
 
-- **Cloudflare Workers** — single Worker serves the tracker, collector, stats API, marketing site, and dashboard.
-- **Cloudflare D1** — SQLite at the edge for storage.
-- **TypeScript**, no framework. Dashboard is vanilla JS + [Chart.js](https://www.chartjs.org/).
-- **Cron Triggers** for the nightly rollup. **Web Crypto** for password hashing (PBKDF2‑SHA256). **Resend** (optional) for invite emails.
+## Local development
 
-## Quick start (self‑host)
-
-You'll need a [Cloudflare account](https://dash.cloudflare.com/sign-up) and Node 18+.
+Requirements: Node 22+, npm. No Cloudflare account is needed for the default local mode.
 
 ```bash
-git clone https://github.com/xolqy-com/xolqy.git
-cd xolqy
 npm install
-
-# Create the D1 database and paste the returned database_id into wrangler.toml
-npx wrangler d1 create xolqy
-
-# Create the tables
-npx wrangler d1 execute xolqy --remote --file=schema.sql
-
-# Set the required secrets
-npx wrangler secret put SALT_SEED         # any long random string
-
-# Deploy
-npx wrangler deploy
+cp .env.example .env            # public build-time vars (Turnstile TEST sitekey)
+cp .dev.vars.example .dev.vars  # runtime secrets (Turnstile TEST secret, Access dev bypass)
+npm run db:migrate:local        # D1 schema in the local simulator
+npm run db:seed:local           # two clearly labelled fixture enquiries (optional)
+npm run resources && npm run r2:seed:local   # checklist file into local R2 (optional)
+npm run dev                     # http://localhost:4321
 ```
 
-Then point your domain at the Worker (Custom Domain in the dashboard) and add the snippet to any site you want to track:
+What works locally without an account: every page, the enquiry pipeline end to end (D1, Queues, Workflows are simulated by Miniflare), the pipeline tracer, R2 downloads, the edge inspector (with placeholder `cf` data), `/admin/` (through the explicit `ACCESS_DEV_BYPASS=true` in `.dev.vars`, dev server only), and the finder in **rule-based fallback mode**.
 
-```html
-<script defer src="https://your-domain.com/t.js"></script>
+**Turnstile locally.** `.env.example` and `.dev.vars.example` use Cloudflare's documented test keys (`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`). The widget issues the dummy token `XXXX.DUMMY.TOKEN.XXXX`; `src/server/turnstile.ts` reproduces the documented Siteverify result for the dummy pair without a network call, so the form can be exercised offline. Hostname checks are skipped only in the dev server (`import.meta.env.DEV`). With real keys the real Siteverify endpoint is always called.
+
+**Email locally.** `NOTIFY_EMAIL`/`EMAIL_FROM` are empty by default, so the Workflow records `EMAIL_NOT_CONFIGURED` on each enquiry (status `notification_failed`) and the staff view shows it. That is the designed behaviour, not a mock send.
+
+**Workers AI and Vectorize locally.** They have no local simulation. By default the bindings are local stubs and the finder answers in rule-based mode, labelled as such. To use the real services during development:
+
+```bash
+npx wrangler login
+CF_REMOTE_BINDINGS=true npm run dev
 ```
 
-Register an account at `/login`, add your domain, and traffic shows up live.
+Then run the reindex action in `/admin/` once so the index has vectors.
 
-## Configuration (secrets / vars)
+Other scripts: `npm run check` (types), `npm run og` (regenerate social images and icons), `npm run build` (production build into `dist/`), `npx wrangler dev --local` (serve the production build with the Workers runtime).
 
-Set with `npx wrangler secret put <NAME>` (and mirror them in a gitignored `.dev.vars` for `wrangler dev`):
+## Provisioning (once per account)
 
-| Name | Required | Purpose |
-|------|----------|---------|
-| `SALT_SEED` | ✅ | Seed for the daily visitor‑hash salt. |
-| `SUPERADMIN_EMAIL` | – | Comma‑separated emails granted the all‑sites super‑admin view. |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | – | Enable "Sign in with Google" (OAuth 2.0). |
-| `GOOGLE_REDIRECT_URI` | – | Override the callback (defaults to `<origin>/auth/google/callback`). |
-| `RESEND_API_KEY` | – | Auto‑send invite emails via [Resend](https://resend.com). If unset, invite *links* are still generated to share manually. |
-| `INVITE_FROM` | – | From address for invites, e.g. `Xolqy <invites@your-domain.com>` (domain must be verified in Resend). |
-
-### Sign in with Google
-
-1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → **Create credentials → OAuth client ID → Web application**.
-2. Authorized redirect URI: `https://your-domain.com/auth/google/callback` (and `http://localhost:8787/auth/google/callback` for dev).
-3. `npx wrangler secret put GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`. Until set, the button shows a friendly "not configured" notice and email/password still works.
-
-## How it works
-
-**Cookieless identity.** Instead of a cookie, the collector computes `sha256(IP + User-Agent + SALT_SEED + YYYYMMDD)` and keeps only the first 12 hex chars. The day component rotates the value every midnight UTC, so it can't track anyone over time. The raw IP is never stored.
-
-**Rollups for scale.** A Cron Trigger (00:15 UTC) aggregates each completed day into `daily_rollups` (one row per site per day) via [`src/rollup.ts`](src/rollup.ts). The dashboard's KPIs and chart read pre‑aggregated totals for past days and query raw `events` only for *today* — so history is cheap and today is live. Averages are stored as sum + count so they recombine across any range; because the visitor hash rotates daily, summing per‑day uniques equals the range‑wide distinct count.
-
-**Subresource Integrity.** `/t.js` is the rolling latest (short cache). For production, load the frozen, versioned build `/v1/t.js` — immutable cache + CORS — with an `integrity` hash so the browser refuses to run it if a single byte changes:
-
-```html
-<script defer
-  src="https://xolqy.com/v1/t.js"
-  integrity="sha384-pKXxF1rkM+EtLGxb5cqWrj0csxQ//a4DJH4lEGqHbUql1i5GSyVZgBxs4j+ljjOo"
-  crossorigin="anonymous"></script>
+```bash
+npx wrangler login
+bash scripts/provision.sh
 ```
 
-A breaking change ships as `/v2/t.js` with a new hash; pinned tags keep working. Recompute the hash with `curl -s https://your-domain.com/v1/t.js | openssl dgst -sha384 -binary | openssl base64 -A`.
+The script creates: D1 `xolqy-site`, KV `CONFIG`, R2 `xolqy-resources`, Queues `xolqy-enquiries` and `xolqy-enquiries-dlq`, Vectorize `xolqy-knowledge` (768 dimensions, cosine, matching `@cf/baai/bge-base-en-v1.5`). Paste the printed D1 `database_id` and KV `id` into `wrangler.jsonc`. (If you omit them, Wrangler's automatic provisioning creates KV, D1, R2 and Queues on the first `wrangler deploy` and writes the ids back; Vectorize must be created explicitly either way.)
 
-**Generating OG images.** `npm run og` renders a per‑page Open Graph PNG into `public/og/` (uses `sharp`). Re‑run after adding pages or posts.
+Workflows and Durable Objects need no provisioning: they are created by the deploy from `wrangler.jsonc` (`workflows` and `migrations[].new_sqlite_classes`).
 
-## Project layout
+Then:
 
-```
-xolqy/
-├── wrangler.toml            Cloudflare config (Worker, D1 binding, cron trigger)
-├── schema.sql               D1 tables: events, clicks, users, sessions, sites, daily_rollups, shares
-├── scripts/build-og.mjs     Per-page Open Graph image generator
-├── src/
-│   ├── worker.ts            Entry: routing, collector, stats/auth/sharing API, cron, canonical host
-│   ├── auth.ts              Accounts, sessions, password hashing, Google OAuth, sharing/invites
-│   ├── stats.ts             Aggregation queries (rollup + live-today hybrid)
-│   ├── rollup.ts            Nightly events → daily_rollups job
-│   ├── site.ts              Marketing site shell, pages, blog, sitemap/robots/llms.txt/RSS, invite page
-│   └── tracker.ts           Source of the < 2 KB tracker served at /t.js
-└── public/
-    ├── login.html           Login / register (email/password + Google)
-    ├── dashboard.html       Stats dashboard (vanilla JS + Chart.js)
-    ├── dashboard.css
-    └── og/                  Generated Open Graph images
+```bash
+npx wrangler secret put TURNSTILE_SECRET_KEY     # from the Turnstile widget (see Dashboard configuration)
+npm run deploy                                    # build + wrangler deploy
+npm run db:migrate:remote                         # apply migrations/ to the production database
+npm run resources
+npx wrangler r2 object put xolqy-resources/cloudflare-migration-checklist.md \
+  --file resources/cloudflare-migration-checklist.md --content-type "text/markdown; charset=utf-8" --remote
 ```
 
-## Privacy model
+Finally open `https://<worker>/admin/` through Cloudflare Access and press **Reindex finder knowledge** to populate Vectorize (or set `CF_REMOTE_BINDINGS=true` locally and use the dev server's `/admin/`).
 
-- IP addresses are **never stored**. Only a short, daily‑rotating salted hash is kept — enough to count daily uniques, not enough to identify or track a person.
-- **No cookies**, no `localStorage` persistence beyond a per‑tab session id.
-- **No third‑party data sharing** and no fingerprinting beyond the daily hash.
+## Configuration: variables and secrets
 
-## Contributing
+Plain variables live in `wrangler.jsonc > vars` (override per environment in the dashboard if preferred). Secrets are set with `wrangler secret put` and mirrored in `.dev.vars` for local work. Build-time public values live in `.env` locally and in the Workers Builds build variables in production.
 
-Issues and PRs welcome. Run `npm run dev` for a local Worker, and `npx tsc --noEmit` to type‑check.
+| Name | Kind | Purpose |
+|---|---|---|
+| `SITE_URL` | var | Canonical origin, used for same-origin checks and links in emails. |
+| `TURNSTILE_HOSTNAMES` | var | Comma-separated hostnames accepted from Siteverify (`xolqy.com,www.xolqy.com`). |
+| `TURNSTILE_SECRET_KEY` | **secret** | Turnstile widget secret. Required or the form is rejected (503). |
+| `PUBLIC_TURNSTILE_SITE_KEY` | build var | Turnstile sitekey inlined into the pages. |
+| `PUBLIC_CF_BEACON_TOKEN` | build var | Web Analytics token; the beacon is omitted when empty. |
+| `NOTIFY_EMAIL` | var | Inbox that receives enquiry notifications. |
+| `EMAIL_FROM`, `EMAIL_FROM_NAME` | var | Verified sender on the onboarded domain, e.g. `noreply@xolqy.com`. |
+| `ENQUIRY_ACK` | var | `"true"` to email the enquirer a receipt (requires Workers Paid: arbitrary recipients). |
+| `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` | var | Zero Trust team domain (`<team>.cloudflareaccess.com`) and the Access application AUD tag. Both required or `/admin/` returns 503. |
+| `ACCESS_DEV_BYPASS` | `.dev.vars` only | Opens `/admin/` in the dev server without Access. Ignored by production builds. |
+| `AI_GATEWAY_ID` | var | Routes Workers AI calls through AI Gateway when set. |
+| `AI_CHAT_MODEL`, `AI_EMBED_MODEL` | var | Model ids. Changing the embedding model requires a Vectorize index with matching dimensions and a reindex. |
 
-## License
+Bindings (`wrangler.jsonc`): `DB` (D1), `CONFIG` (KV), `RESOURCES` (R2), `ENQUIRY_QUEUE` (Queues producer + consumer), `ENQUIRY_WORKFLOW` (Workflows), `FINDER_SESSION` (Durable Object), `AI`, `VECTORIZE`, `EMAIL` (send_email), `ENQUIRY_LIMITER` and `FINDER_LIMITER` (rate limiting), `ASSETS`.
 
-[AGPL-3.0](LICENSE) © Xolqy — if you run a modified version as a network service, you must publish your changes.
+## Dashboard configuration
+
+Everything below is account or zone configuration that cannot (or should not) live in the repository. Each item maps to a badge on `/stack/`.
+
+### Zone, DNS, TLS, CDN
+1. Add `xolqy.com` as a zone (it already is, if the old Worker served it) and keep DNS on Cloudflare.
+2. Workers & Pages → `xolqy` → Settings → Domains & Routes → add the custom domain `xolqy.com` (and `www.xolqy.com` with a redirect rule to the apex, or as a second custom domain).
+3. SSL/TLS: encryption mode **Full (strict)** (Workers custom domains manage certificates), Edge Certificates → Always Use HTTPS on, Minimum TLS 1.2, TLS 1.3 on, HSTS enabled (the Worker also sends `Strict-Transport-Security`), HTTP/3 on.
+4. Speed → Early Hints on; Brotli is on by default.
+
+### Security
+5. Security → WAF → Managed rules: deploy the Cloudflare Managed Ruleset (start in log mode, then block). OWASP Core Ruleset at Medium.
+6. Security → WAF → Rate limiting rules: `/api/*` 60 requests / minute per IP (the Worker also rate-limits per endpoint).
+7. Security → Bots → Bot Fight Mode on (or Super Bot Fight Mode on paid plans).
+8. **Turnstile**: Turnstile → Add widget, hostname `xolqy.com` (+ `www`), mode Managed. Copy the sitekey into `PUBLIC_TURNSTILE_SITE_KEY` (build variable) and the secret into `wrangler secret put TURNSTILE_SECRET_KEY`.
+9. **Access**: Zero Trust → Access → Applications → Add self-hosted application, domain `xolqy.com`, path `admin`, session 24h, policy: Allow, emails of staff. Copy the **Application Audience (AUD) tag** into `ACCESS_AUD` and the team domain into `ACCESS_TEAM_DOMAIN`. Also protect `/admin/actions`. The Worker verifies the JWT itself; without these vars it fails closed.
+
+### AI
+10. **AI Gateway**: AI → AI Gateway → Create gateway named `xolqy`. Set `AI_GATEWAY_ID=xolqy`. Optional: enable caching and rate limits in the gateway.
+11. **Vectorize** index is created by `scripts/provision.sh`; populate it from `/admin/` → Reindex.
+
+### Email
+12. **Email Service**: Compute → Email Service → Email Sending → Onboard domain `xolqy.com` (DNS records are added automatically: MX for bounces, SPF, DKIM, DMARC). Set `EMAIL_FROM=noreply@xolqy.com`. Sending to verified destination addresses is free on all plans; sending to arbitrary recipients (the optional acknowledgement) requires the Workers Paid plan. Verify `NOTIFY_EMAIL` as a destination address (Email Routing) so staff notifications work on any plan.
+
+### Analytics and observability
+13. **Web Analytics**: Analytics & Logs → Web Analytics → Add site `xolqy.com` with manual setup; copy the token into `PUBLIC_CF_BEACON_TOKEN` (build variable) and redeploy. (Automatic setup injects the beacon at the zone level instead; use one or the other.)
+14. **Workers observability** is enabled in `wrangler.jsonc`; view logs under the Worker → Observability. Optionally add a Notification for Workers error rate.
+
+### Plan requirements
+Workers Free covers Workers, Static Assets, D1, KV, R2, Queues (10k ops/day), Workflows, SQLite-backed Durable Objects, Workers AI (daily free allocation), Vectorize, AI Gateway, Turnstile, Access (50 users) and Web Analytics. Workers Paid is needed for email to arbitrary recipients (`ENQUIRY_ACK`) and raises the Queues, D1 and Workers AI allowances.
+
+## Deployment
+
+### From a machine (recommended for the first deploy)
+
+```bash
+npm run deploy            # = npm run build && wrangler deploy
+npm run db:migrate:remote # only when migrations/ changed
+```
+
+`astro build` produces `dist/client` (assets) and `dist/server` (the Worker) plus `dist/server/wrangler.json`; `.wrangler/deploy/config.json` redirects `wrangler deploy` to it, so no `-c` flag is needed.
+
+### Workers Builds (Git-connected CI/CD)
+
+Workers & Pages → `xolqy` → Settings → Build → connect the GitHub repository `xolqy-com/xolqy`, branch `agency-site` (or `main` after merge):
+
+* Build command: `npm run build`
+* Deploy command: `npx wrangler d1 migrations apply xolqy-site --remote && npx wrangler deploy`
+* Build variables: `PUBLIC_TURNSTILE_SITE_KEY`, `PUBLIC_CF_BEACON_TOKEN`, `WRANGLER_SEND_METRICS=false`
+* Non-production branches get preview deployments (`workers_dev: true`, `preview_urls: false` keeps them off the public URL until you enable previews).
+
+Secrets (`TURNSTILE_SECRET_KEY`) are set once in the dashboard (Settings → Variables and Secrets) or with `wrangler secret put`; Workers Builds does not need them at build time.
+
+### Checklist after the first deploy
+- `https://xolqy.com/api/status` shows `d1`, `kv`, `r2`, `queue`, `workflow`, `durableObjects`, `rateLimit`, `ai` as `active`.
+- `/stack/` badges verified live.
+- Send a test enquiry; `/labs/?ref=XQ-...#enquiry-pipeline` shows `notified` once email is configured, or `notification_failed` with a clear code until then.
+- `/admin/` opens only through Access.
+
+## Rollback
+
+* **Code:** `npx wrangler rollback` (interactive list of recent versions) or `npx wrangler versions list` + `npx wrangler rollback --version-id <id>`. Assets are versioned with the Worker, so a rollback restores pages and code together.
+* **Database:** D1 Time Travel restores the database to any point in the last 30 days: `npx wrangler d1 time-travel restore xolqy-site --timestamp=<ISO>`. Migrations are forward-only; write a new migration to undo schema changes.
+* **Vectorize:** the index is fully rebuilt by Reindex; nothing to roll back.
+* **Configuration:** `wrangler.jsonc` and `migrations/` are in git; secrets are listed in this README so they can be re-entered.
+* **Domain:** removing the custom domain from the Worker in the dashboard returns the zone to its previous origin, if one exists.
+
+## Operations
+
+* **Logs:** `npm run tail` or the Observability tab. Logs never contain names, emails or briefs.
+* **Enquiries:** `/admin/` lists the latest 100 with status, attempts and the last error; **Archive** marks a record archived. `notification_failed` rows need a human: fix the email configuration, then re-send manually (a "retry" button is a sensible next addition).
+* **Dead-letter queue:** messages that fail five times land in `xolqy-enquiries-dlq`; the enquiry record still exists in D1 with its last error.
+* **Finder quality:** conversations are not persisted beyond the 30-minute session. AI Gateway logs show prompts and answers when a gateway is configured; review them before changing the system prompt in `src/server/finder.ts`.
+* **Content changes:** editing `src/content/services/*.md` changes the pages on the next deploy; run Reindex afterwards so the finder sees the new text.
+
+## Integration status
+
+Declared statuses (`src/data/stack.ts`) and what completes each one:
+
+| Integration | Status in this repo | Completes when |
+|---|---|---|
+| Workers + Static Assets, Queues, Workflows, Durable Objects, D1, KV, R2, rate limiting, observability | active | deployed (resources provisioned) |
+| Workers AI | active | deployed; falls back to rules if the binding errors |
+| Vectorize | awaiting configuration | index created and reindexed from `/admin/` |
+| AI Gateway | awaiting configuration | gateway created, `AI_GATEWAY_ID` set |
+| Turnstile | awaiting configuration | widget created, sitekey + secret set |
+| Access | awaiting configuration | application created, `ACCESS_TEAM_DOMAIN` + `ACCESS_AUD` set |
+| Email Service | awaiting configuration | domain onboarded, `EMAIL_FROM` + `NOTIFY_EMAIL` set |
+| Web Analytics | awaiting configuration | `PUBLIC_CF_BEACON_TOKEN` set at build |
+| DNS/TLS/CDN, WAF, bot controls | dashboard | zone settings above |
+| Images | planned | switch `imageService` to `cloudflare-binding` when raster media is introduced |
+
+`/api/status` reports the live state and `/stack/` renders it.
+
+## Data, privacy and retention
+
+* **Enquiries** (name, email, website, service, budget, brief, country, colo, Turnstile hostname/timestamp, status, timeline) live in D1. The client IP is never stored; rate limiting keys on a truncated SHA-256 of it in memory only.
+* **Finder sessions** live in a Durable Object for 30 minutes after the last message, then `deleteAll()` via alarm. Inputs that look like secrets or card numbers are refused before storage.
+* **Public endpoints** never return personal data: `/api/enquiry/status` exposes stages and codes only.
+* **Caching:** all `/api/*` and `/admin/*` responses are `no-store` except `/api/status` (60s, no personal data) and `/api/resources/*` (public files).
+* **Retention:** enquiries are retained until archived/deleted by staff. A fixed retention period for archived records has not been decided; the privacy page says so explicitly rather than inventing one.
+
+## Missing business details
+
+Not invented, must be supplied by Xolqy before launch to the public:
+
+* Legal entity name, registered address, company registration and VAT details (privacy page, footer if required locally).
+* A privacy contact email address.
+* `NOTIFY_EMAIL` (the inbox for enquiries) and the sending address on the onboarded domain.
+* A retention period for archived enquiries.
+* Any social profiles for `sameAs` in the Organization structured data (none are listed).
+* Pricing: engagements say "Request a proposal" by design.
+
+## Verification performed
+
+* `astro check`: 0 errors; `astro build`: 18 prerendered pages, 1 on-demand page (`/admin/`) and 7 on-demand endpoints.
+* `wrangler dev --local` against the production build: pages, 307 trailing-slash redirect, custom 404, `/api/edge`, `/api/status`, R2 download with ETag/304 and allow-list 404s.
+* Enquiry pipeline end to end locally: JSON and form-encoded submissions, validation errors with field messages, honeypot rejection, missing-token rejection, secret screening, D1 insert, queue consumption, Workflow execution and the recorded `EMAIL_NOT_CONFIGURED` outcome visible in the tracer and `/admin/`.
+* Finder: rule-based fallback answers with service links; secret input refused; session limits enforced in the Durable Object.
+* Access: `/admin/` returns 503 (fails closed) without configuration in production builds, 200 with the dev bypass in the dev server.
+* Responsive screenshots at 390, 820 and 1440 px for every route; no horizontal overflow; mobile menu open/close with Escape and focus trap.
+* Not verifiable from the build environment (no Cloudflare network access): real Turnstile Siteverify, Workers AI/Vectorize answers, Email Service delivery, Access JWTs, Web Vitals field data. These are the "awaiting configuration" items above and are exercised after the first deploy with the checklist in [Deployment](#deployment).

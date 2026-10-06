@@ -1,0 +1,118 @@
+---
+/**
+ * "Built on Cloudflare": interactive explorer of this site's own architecture.
+ * Tabs are progressively enhanced; without JavaScript every panel is visible.
+ * Badges show the declared status; a small script on /stack/ upgrades them to
+ * the live state from /api/status.
+ */
+import { STACK_CATEGORIES, stackByCategory } from '@/data/stack';
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+
+interface Props {
+  /** Compact variant for the homepage; full variant on /stack/. */
+  variant?: 'compact' | 'full';
+  live?: boolean;
+  /** Heading level of the panel titles; items use the next level down. */
+  headingLevel?: 'h2' | 'h3';
+}
+const { variant = 'compact', live = false, headingLevel = 'h3' } = Astro.props;
+const PanelHeading = headingLevel;
+const ItemHeading = headingLevel === 'h2' ? 'h3' : 'h4';
+---
+
+<div class="explorer" data-tabs data-live={live ? 'true' : undefined}>
+  <div class="explorer__tablist" role="tablist" aria-label="Architecture areas">
+    {STACK_CATEGORIES.map((c, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`tab-${c.id}`}
+        aria-controls={`panel-${c.id}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        class="explorer__tab"
+      >
+        <span class="mono explorer__tab-index" aria-hidden="true">0{i + 1}</span>
+        {c.label}
+      </button>
+    ))}
+  </div>
+
+  {STACK_CATEGORIES.map((c) => {
+    const items = stackByCategory(c.id);
+    return (
+      <section
+        role="tabpanel"
+        id={`panel-${c.id}`}
+        aria-labelledby={`tab-${c.id}`}
+        tabindex="0"
+        class="explorer__panel"
+      >
+        <PanelHeading class="h-xl explorer__panel-title">{c.label}</PanelHeading>
+        <p class="muted explorer__summary">{c.summary}</p>
+        <ul class="list-reset explorer__items">
+          {items.map((item) => (
+            <li class="explorer__item" data-stack-id={item.id} data-check={item.check}>
+              <div class="explorer__item-head">
+                <ItemHeading class="h-lg">{item.name}</ItemHeading>
+                <StatusBadge status={item.status} check={item.check} />
+              </div>
+              <p class="explorer__purpose">{item.purpose}</p>
+              <p class="muted explorer__role"><span class="mono explorer__label">On xolqy.com</span> {item.role}</p>
+              {variant === 'full' && (
+                <p class="mono--lc faint explorer__foot">
+                  Configured in: {item.configuredIn === 'both' ? 'code and dashboard' : item.configuredIn}.{' '}
+                  <a href={item.docs} rel="noopener">Cloudflare docs</a>
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  .explorer { display: grid; gap: var(--space-6); }
+  .explorer__tablist {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-4);
+  }
+  .explorer__tab {
+    display: inline-flex; align-items: baseline; gap: 0.5em;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--fg-muted);
+    transition: color var(--dur-fast), border-color var(--dur-fast), background-color var(--dur-fast);
+  }
+  .explorer__tab-index { font-size: 0.625rem; color: var(--fg-faint); }
+  .explorer__tab:hover { color: var(--fg); border-color: var(--line-strong); }
+  .explorer__tab[aria-selected='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .explorer__tab[aria-selected='true'] .explorer__tab-index { color: inherit; opacity: 0.6; }
+  /* Without JS the tablist is decorative and every panel shows */
+  .explorer:not(.tabs-ready) .explorer__tablist { display: none; }
+  .explorer:not(.tabs-ready) .explorer__panel + .explorer__panel { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); }
+  .explorer.tabs-ready .explorer__panel-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .explorer__panel { display: grid; gap: var(--space-5); }
+  .explorer__summary { max-width: 60ch; }
+  .explorer__items { display: grid; border-top: 1px solid var(--line); }
+  .explorer__item {
+    display: grid; gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+  .explorer__item-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-3); }
+  .explorer__purpose { max-width: 62ch; }
+  .explorer__role { font-size: var(--text-sm); max-width: 70ch; }
+  .explorer__label { display: block; color: var(--fg-faint); margin-bottom: 0.2rem; }
+  .explorer__foot { font-size: 0.8125rem; }
+  .explorer__foot a { color: inherit; }
+  @media (min-width: 60em) {
+    .explorer__items { grid-template-columns: 1fr 1fr; column-gap: var(--gutter); }
+    .explorer__item:nth-last-child(-n + 2):nth-child(odd) { border-bottom: 1px solid var(--line); }
+  }
+</style>

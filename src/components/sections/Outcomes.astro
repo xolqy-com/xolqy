@@ -1,0 +1,53 @@
+---
+import { OUTCOMES } from '@/data/content';
+---
+
+<section class="section outcomes" data-theme="light" aria-labelledby="outcomes-title">
+  <div class="container">
+    <div class="between reveal">
+      <div class="flow">
+        <p class="eyebrow">Core outcomes</p>
+        <h2 id="outcomes-title" class="h-3xl measure">Cloudflare is a platform.<br />We turn it into results.</h2>
+      </div>
+      <p class="muted measure outcomes__note">Cost savings and performance gains are real and project-specific. We measure them per engagement rather than promising a number here.</p>
+    </div>
+
+    <ol class="list-reset outcomes__list">
+      {OUTCOMES.map((o, i) => (
+        <li class="outcomes__item reveal" style={`--reveal-delay:${i * 80}ms`}>
+          <span class="mono outcomes__index" aria-hidden="true">{o.index}</span>
+          <div class="outcomes__body">
+            <h3 class="h-2xl">{o.title}</h3>
+            <p>{o.body}</p>
+            <p class="muted outcomes__detail">{o.detail}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .outcomes__note { font-size: var(--text-sm); max-width: 44ch; }
+  .outcomes__list {
+    margin-top: var(--space-8);
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .outcomes__item {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--line);
+  }
+  .outcomes__index { color: var(--accent-text); padding-top: 0.6rem; }
+  .outcomes__body { display: grid; gap: var(--space-3); max-width: 58ch; }
+  .outcomes__detail { font-size: var(--text-sm); }
+  @media (min-width: 60em) {
+    .outcomes__list { grid-template-columns: 1fr 1fr; column-gap: 0; }
+    .outcomes__item { padding: var(--space-7) var(--space-6) var(--space-7) 0; }
+    .outcomes__item:nth-child(even) { padding-left: var(--space-6); padding-right: 0; border-left: 1px solid var(--line); }
+    .outcomes__item:nth-last-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  }
+</style>

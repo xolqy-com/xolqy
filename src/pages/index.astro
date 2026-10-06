@@ -1,0 +1,73 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/sections/Hero.astro';
+import Outcomes from '@/components/sections/Outcomes.astro';
+import ServicesLedger from '@/components/sections/ServicesLedger.astro';
+import StackExplorer from '@/components/sections/StackExplorer.astro';
+import LabsPreview from '@/components/sections/LabsPreview.astro';
+import Process from '@/components/sections/Process.astro';
+import Engagements from '@/components/sections/Engagements.astro';
+import Faq from '@/components/ui/Faq.astro';
+import FinalCta from '@/components/sections/FinalCta.astro';
+import { HOME_FAQS } from '@/data/content';
+import { SITE } from '@/data/site';
+import { faqJsonLd } from '@/lib/seo';
+---
+
+<Base
+  title="Built for the edge"
+  description={SITE.description}
+  path="/"
+  ogImage="/og/home.png"
+  jsonLd={[faqJsonLd([...HOME_FAQS])]}
+>
+  <Hero />
+  <Outcomes />
+  <ServicesLedger />
+
+  <section class="section" data-theme="light" id="built-on-cloudflare" aria-labelledby="stack-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">Built on Cloudflare</p>
+          <h2 id="stack-title" class="h-3xl measure">How this website actually works.</h2>
+        </div>
+        <p class="muted stack-note">Every integration below runs this site. Statuses are declared in code and verified live on the <a href="/stack/">stack page</a>.</p>
+      </div>
+      <div class="stack-wrap reveal" style="--reveal-delay:120ms">
+        <StackExplorer variant="compact" />
+      </div>
+    </div>
+  </section>
+
+  <LabsPreview />
+  <Process />
+  <Engagements />
+
+  <section class="section" data-theme="light" id="faqs" aria-labelledby="faq-title">
+    <div class="container faq-grid">
+      <div class="flow reveal">
+        <p class="eyebrow">FAQs</p>
+        <h2 id="faq-title" class="h-3xl">Questions we are asked before every project.</h2>
+        <p class="muted">Migration scope, WordPress, account ownership, support, platform costs and data location.</p>
+      </div>
+      <div>
+        <Faq items={[...HOME_FAQS]} id="home-faq" />
+      </div>
+    </div>
+  </section>
+
+  <FinalCta />
+</Base>
+
+<style>
+  .stack-note { max-width: 40ch; font-size: var(--text-sm); }
+  .stack-note a { color: inherit; }
+  .stack-wrap { margin-top: var(--space-7); }
+  .faq-grid { display: grid; gap: var(--space-7); align-items: start; }
+  .faq-grid > .flow { max-width: 28ch; }
+  @media (min-width: 60em) {
+    .faq-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .faq-grid > .flow { position: sticky; top: 6rem; }
+  }
+</style>

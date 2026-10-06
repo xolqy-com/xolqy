@@ -1,0 +1,77 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import EdgeInspector from '@/components/labs/EdgeInspector.astro';
+import SolutionFinder from '@/components/labs/SolutionFinder.astro';
+import PipelineTracer from '@/components/labs/PipelineTracer.astro';
+import ResourceDownload from '@/components/labs/ResourceDownload.astro';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const description = 'Working demonstrations on xolqy.com: an edge request inspector, an AI solution finder grounded in our services, an enquiry pipeline tracer across D1, Queues and Workflows, and resource delivery from R2.';
+---
+
+<Base
+  title="Labs: working demonstrations"
+  description={description}
+  path="/labs/"
+  ogImage="/og/labs.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Labs', href: '/labs/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Labs" title="Working demonstrations, not case&nbsp;studies." id="labs-title" level="h1">
+        <p class="lead">Each demonstration below runs on this site's own Cloudflare account and is labelled as a demonstration. None of it is client work, and no demonstration collects more than it needs to function.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light"><div class="container"><EdgeInspector /></div></section>
+  <section class="section" data-theme="dark"><div class="container"><SolutionFinder /></div></section>
+  <section class="section" data-theme="light"><div class="container"><PipelineTracer /></div></section>
+  <section class="section" data-theme="dark"><div class="container"><ResourceDownload /></div></section>
+
+  <section class="section" data-theme="light">
+    <div class="container between reveal">
+      <div class="flow">
+        <p class="eyebrow">Want this for your business?</p>
+        <h2 class="h-3xl">Everything here is a service.</h2>
+      </div>
+      <div class="cluster">
+        <a href="/services/" class="btn btn--ghost">Explore services</a>
+        <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .lab { display: grid; gap: var(--space-6); }
+  .lab__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--space-4); }
+  .lab__intro { max-width: 70ch; }
+  .lab__body { display: grid; gap: var(--space-5); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg-raised); }
+  .lab__note { max-width: 70ch; }
+  .kv { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0; }
+  .kv > div { display: grid; gap: var(--space-1); padding: var(--space-4); background: var(--bg-raised); }
+  .kv dt { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--fg-muted); }
+  .kv dd { margin: 0; font-weight: 500; word-break: break-word; }
+  .finder { display: grid; gap: var(--space-5); }
+  .finder__log { display: grid; gap: var(--space-4); }
+  .finder__log:empty { display: none; }
+  .finder__msg { display: grid; gap: var(--space-2); padding: var(--space-4); border-left: 2px solid var(--line-strong); }
+  .finder__msg--you { border-left-color: var(--line); color: var(--fg-muted); }
+  .finder__msg--finder { border-left-color: var(--signal); }
+  .finder__form { display: grid; gap: var(--space-3); }
+  .finder__input { min-height: 5.5rem; }
+  .tracer__form { display: grid; gap: var(--space-2); }
+  .tracer__input { max-width: 16rem; font-family: var(--font-mono); text-transform: uppercase; }
+  .timeline { display: grid; border-top: 1px solid var(--line); }
+  .timeline__item { display: grid; gap: 0.25rem; padding-block: var(--space-3); border-bottom: 1px solid var(--line); }
+  .timeline__item--failed { border-left: 3px solid var(--signal); padding-left: var(--space-3); }
+  .resources { display: grid; gap: var(--space-4); }
+  .resources__item { display: grid; gap: var(--space-4); align-items: start; }
+  @media (min-width: 48em) {
+    .kv { grid-template-columns: repeat(3, 1fr); }
+    .timeline__item { grid-template-columns: 14rem 1fr 1fr; gap: var(--space-4); }
+    .resources__item { grid-template-columns: 1fr auto; }
+  }
+</style>

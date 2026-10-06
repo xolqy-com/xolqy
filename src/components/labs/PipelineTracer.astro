@@ -1,0 +1,27 @@
+---
+import StatusBadge from '@/components/ui/StatusBadge.astro';
+---
+<article class="lab" id="enquiry-pipeline" aria-labelledby="tracer-title" data-tracer>
+  <header class="lab__head">
+    <div class="flow">
+      <p class="eyebrow">Lab 03 / D1, Queues, Workflows, Email Service</p>
+      <h2 id="tracer-title" class="h-2xl">Enquiry pipeline tracer</h2>
+      <p class="muted lab__intro">Every enquiry gets a random reference. Enter it to see the stages it passed through: stored in D1, queued, picked up by a Workflow, staff notified, or a failure recorded for staff to handle. The timeline never includes names, emails or the brief.</p>
+    </div>
+    <StatusBadge status="demo" />
+  </header>
+
+  <div class="lab__body">
+    <form class="tracer__form" method="get" action="/api/enquiry/status" data-tracer-form>
+      <label class="field__label" for="tracer-ref">Reference</label>
+      <div class="cluster">
+        <input id="tracer-ref" name="ref" class="input tracer__input" type="text" placeholder="XQ-7F3K2A" pattern="^[Xx][Qq]-[A-Za-z2-9]{6}$" required autocomplete="off" spellcheck="false" />
+        <button type="submit" class="btn btn--primary">Trace <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <p class="field__hint">Without JavaScript this returns the raw JSON from the endpoint.</p>
+    </form>
+    <p class="mono--lc muted" role="status" aria-live="polite" data-tracer-status></p>
+    <ol class="list-reset timeline" data-tracer-timeline hidden></ol>
+  </div>
+</article>
+<script src="../../scripts/tracer.ts"></script>

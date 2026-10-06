@@ -1,0 +1,30 @@
+---
+/**
+ * The xolqy X symbol: two bars crossing at 45 degrees. The overlap is cut out
+ * by the even-odd fill rule, leaving a hollow junction with a single node at
+ * the centre, the "edge" where routes meet. One path, no backgrounds, so it
+ * sits on any surface and works down to 16px.
+ */
+interface Props {
+  size?: number | string;
+  class?: string;
+  title?: string;
+  color?: string;
+}
+const { size = 32, class: className, title, color = 'currentColor' } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width={size}
+  height={size}
+  class={className}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  {title && <title>{title}</title>}
+  <g transform="rotate(45 32 32)">
+    <path fill={color} fill-rule="evenodd" d="M27 3h10v58H27z M3 27h58v10H3z M30 30h4v4h-4z" />
+  </g>
+</svg>

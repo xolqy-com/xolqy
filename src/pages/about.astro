@@ -1,0 +1,109 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { SITE } from '@/data/site';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const description = 'Xolqy is an independent agency focused on one platform: Cloudflare. How we work, what we believe about building on the edge, and what we will not claim.';
+
+const principles = [
+  { title: 'One platform, understood deeply', body: 'Generalist agencies know a little about many clouds. We know Cloudflare: its products, its limits, its pricing, the way it changes month to month. That depth is what makes the work predictable.' },
+  { title: 'Benefit first, technology second', body: 'A faster checkout, a smaller hosting bill, a form that bots cannot flood, an assistant that answers correctly. The technology is how; the outcome is why. Proposals are written in that order.' },
+  { title: 'Your account, your code', body: 'Everything is built in a repository you own, deployed to your Cloudflare account, documented for whoever comes next. We are not a dependency you cannot leave.' },
+  { title: 'Measured, not promised', body: 'Performance and cost outcomes are measured per project from your own data. We do not publish guaranteed percentages because they would be fiction.' },
+  { title: 'Honest about limits', body: 'Some workloads do not belong on Workers. Some features need a paid plan. Some migrations are not worth doing yet. Saying so early is part of the service.' },
+  { title: 'The site is the proof', body: 'xolqy.com runs on the stack we sell. Every integration is listed on the stack page with its real status, and the Labs page shows the pieces working.' },
+];
+
+const wontClaim = [
+  'Partner status, certifications or awards we do not hold. Xolqy is independent and not affiliated with Cloudflare, Inc.',
+  'Client names, testimonials or results that are not real. Until a client agrees to be named, our work is described through demonstrations and explanations.',
+  'Uptime or latency figures for the platform. Cloudflare publishes its own; one request from one place proves nothing, and the edge demo says so.',
+  'Prices on a page. Proposals are priced per scope, and platform costs are estimated per project.',
+];
+---
+
+<Base
+  title="About"
+  description={description}
+  path="/about/"
+  ogImage="/og/about.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'About', href: '/about/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="About" title="Independent. Cloudflare-focused. Specific." id="about-title" level="h1">
+        <p class="lead">{SITE.name} is an independent agency that designs, builds, migrates, secures and manages businesses on Cloudflare. We work with business owners, ecommerce companies, publishers, SaaS founders and technical teams who want the platform's advantages without becoming experts in it.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">How we work</p>
+          <h2 id="principles-title" class="h-3xl">Six principles, applied to every engagement.</h2>
+        </div>
+      </div>
+      <ol class="list-reset principles">
+        {principles.map((p, i) => (
+          <li class="principles__item reveal" style={`--reveal-delay:${i * 60}ms`}>
+            <span class="mono accent" aria-hidden="true">0{i + 1}</span>
+            <h3 class="h-xl">{p.title}</h3>
+            <p class="muted">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="focus-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <p class="eyebrow">Why Cloudflare</p>
+        <h2 id="focus-title" class="h-3xl">Why we chose one platform.</h2>
+      </div>
+      <div class="prose reveal" style="--reveal-delay:100ms">
+        <p>Cloudflare is unusual: a global network that also runs code (Workers), stores data (D1, KV, R2, Durable Objects), processes work (Queues, Workflows), runs models (Workers AI, Vectorize, AI Gateway) and protects everything in front of it (WAF, DDoS, Access). One account, one configuration file, one bill, and the same behaviour in every location.</p>
+        <p>For most businesses that means a website that is fast everywhere, infrastructure that scales without planning, security that is on by default, and AI features built next to the data they need. For technical teams it means fewer moving parts and a platform that is pleasant to work on.</p>
+        <p>Specialising lets us go deep: we track what the platform ships, know where its limits are, and can say quickly whether a workload fits. The <a href="/insights/">Insights</a> articles are the public part of that knowledge; the <a href="/stack/">stack page</a> shows it applied to our own site.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="claims-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <XMark size={40} class="accent-mark" />
+        <h2 id="claims-title" class="h-3xl">What you will not find here.</h2>
+      </div>
+      <ul class="ticks reveal" style="--reveal-delay:100ms">
+        {wontClaim.map((w) => <li>{w}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark">
+    <div class="container between reveal">
+      <div class="flow">
+        <p class="eyebrow">Work with us</p>
+        <h2 class="h-3xl">Tell us what you are building.</h2>
+      </div>
+      <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .principles { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .principles__item { background: var(--bg); padding: var(--space-6); display: grid; gap: var(--space-3); align-content: start; }
+  .two-col { display: grid; gap: var(--space-7); align-items: start; }
+  .two-col :global(.accent-mark) { color: var(--signal); }
+  @media (min-width: 48em) { .principles { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 60em) {
+    .principles { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+  }
+</style>

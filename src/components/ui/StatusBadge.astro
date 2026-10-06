@@ -1,0 +1,18 @@
+---
+import type { StackStatus } from '@/data/stack';
+
+interface Props {
+  status: StackStatus | 'fallback' | 'demo';
+  check?: string | undefined;
+  class?: string;
+}
+const { status, check, class: className } = Astro.props;
+const labels: Record<string, string> = {
+  active: 'Active',
+  awaiting: 'Awaiting configuration',
+  planned: 'Planned',
+  fallback: 'Fallback',
+  demo: 'Demonstration',
+};
+---
+<span class:list={['badge', className]} data-status={status} data-check={check}>{labels[status] ?? status}</span>

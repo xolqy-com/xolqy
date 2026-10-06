@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /contact/received/
+
+Sitemap: https://xolqy.com/sitemap-index.xml

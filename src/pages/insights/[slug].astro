@@ -1,0 +1,97 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
+
+export async function getStaticPaths() {
+  // Drafts get no route at all.
+  const posts = await getCollection('insights', ({ data }) => !data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const services = (await getCollection('services', ({ data }) => !data.draft)).filter((s) => post.data.relatedServices.includes(s.id));
+const path = `/insights/${post.id}/`;
+const ogImage = `/og/insight-${post.id}.png`;
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  path={path}
+  ogImage={ogImage}
+  ogType="article"
+  jsonLd={[
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Insights', href: '/insights/' }, { name: post.data.title, href: path }]),
+    articleJsonLd({ title: post.data.title, description: post.data.description, path, publishedAt: post.data.publishedAt, updatedAt: post.data.updatedAt, image: ogImage }),
+  ]}
+>
+  <article>
+    <header class="section post-head" data-theme="dark">
+      <div class="container">
+        <p class="eyebrow fade-in"><a href="/insights/" class="post-head__crumb">Insights</a> / {post.data.audience === 'both' ? 'Business + technical' : post.data.audience}</p>
+        <h1 class="h-3xl post-head__title"><span class="hero-line"><span style="--d:60ms">{post.data.title}</span></span></h1>
+        <p class="lead fade-in" style="--d:240ms">{post.data.description}</p>
+        <p class="mono faint post-head__meta fade-in" style="--d:360ms">
+          <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+          {post.data.updatedAt && <span> · Updated <time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt)}</time></span>}
+          <span> · {post.data.readingMinutes} min read</span>
+        </p>
+      </div>
+    </header>
+
+    <div class="section post-body" data-theme="light">
+      <div class="container post-body__grid">
+        <aside class="post-toc">
+          <p class="mono faint">On this page</p>
+          <ol class="list-reset post-toc__list">
+            {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </aside>
+        <div class="prose post-prose">
+          <Content />
+        </div>
+      </div>
+    </div>
+
+    <footer class="section" data-theme="dark">
+      <div class="container post-foot">
+        <div class="flow">
+          <p class="eyebrow">Related services</p>
+          <ul class="list-reset post-foot__services">
+            {services.map((s) => (
+              <li><a href={`/services/${s.id}/`} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+            ))}
+          </ul>
+        </div>
+        <div class="flow">
+          <h2 class="h-2xl">Have a project like this?</h2>
+          <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post-head { padding-block: clamp(3rem, 7vw, 6rem); }
+  .post-head .container { display: grid; gap: var(--space-5); max-width: 980px; }
+  .post-head__crumb { color: inherit; }
+  .post-head__title { max-width: 22ch; }
+  .post-body__grid { display: grid; gap: var(--space-7); max-width: 980px; }
+  .post-toc { display: grid; gap: var(--space-3); align-content: start; }
+  .post-toc__list { display: grid; gap: var(--space-2); font-size: var(--text-sm); }
+  .post-toc__list a { text-decoration: none; color: var(--fg-muted); }
+  .post-toc__list a:hover { color: var(--accent-text); }
+  .post-prose { font-size: var(--text-lg); }
+  .post-prose :global(h2) { scroll-margin-top: 6rem; }
+  .post-foot { display: grid; gap: var(--space-7); }
+  .post-foot__services { display: grid; gap: var(--space-3); }
+  @media (min-width: 60em) {
+    .post-body__grid { grid-template-columns: 14rem minmax(0, 1fr); gap: var(--gutter); }
+    .post-toc { position: sticky; top: 6rem; }
+    .post-foot { grid-template-columns: 1fr 1fr; gap: var(--gutter); }
+  }
+</style>

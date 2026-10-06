@@ -1,0 +1,141 @@
+// Cloudflare Workers configuration for xolqy.com.
+//
+// Everything in this file is APPLICATION configuration that travels with the
+// code. Settings that must be made in the Cloudflare dashboard (DNS, TLS, WAF,
+// Access, Turnstile widgets, AI Gateway, Email Service domain onboarding, Web
+// Analytics) are listed in README.md under "Dashboard configuration".
+//
+// Resource IDs: run `scripts/provision.sh` (or the commands in README.md) once
+// per account, then paste the printed IDs below.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xolqy",
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-09-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // Static assets are produced by `astro build` (prerendered pages, CSS, fonts,
+  // client scripts). The adapter fills in the output directory at build time.
+  "assets": {
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+
+  // Operational visibility: Workers Logs + invocation logs (dashboard:
+  // Workers & Pages > xolqy > Observability).
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": { "enabled": true, "invocation_logs": true }
+  },
+
+  // Plain (non-secret) runtime variables. Secrets are set with
+  // `wrangler secret put <NAME>` and mirrored in `.dev.vars` for local work.
+  "vars": {
+    "SITE_URL": "https://xolqy.com",
+    // Expected hostname(s) for Turnstile siteverify checks, comma separated.
+    "TURNSTILE_HOSTNAMES": "xolqy.com,www.xolqy.com",
+    // Staff notification target and verified sender for Cloudflare Email Service.
+    // Leave empty until the sending domain is onboarded (README > Email Service).
+    "NOTIFY_EMAIL": "",
+    "EMAIL_FROM": "",
+    "EMAIL_FROM_NAME": "Xolqy",
+    // Send a short acknowledgement to the person who enquired ("true"/"false").
+    "ENQUIRY_ACK": "false",
+    // Cloudflare Access (Zero Trust) protection for /admin/. Both must be set
+    // in production or the staff view fails closed.
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    // AI Gateway id (AI > AI Gateway > create). Empty = direct Workers AI calls.
+    "AI_GATEWAY_ID": "",
+    "AI_CHAT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "AI_EMBED_MODEL": "@cf/baai/bge-base-en-v1.5"
+  },
+
+  // ---- Data -----------------------------------------------------------------
+  // D1: the authoritative store for accepted enquiries and their processing status.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "xolqy-site",
+      // "database_id": "<paste from `wrangler d1 create xolqy-site`>" (omitted = auto-provisioned on first deploy)
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // KV: public configuration and read-heavy cached data only. Never the
+  // authoritative enquiry store (KV is eventually consistent).
+  "kv_namespaces": [
+    // Add "id": "<namespace id>" after `wrangler kv namespace create CONFIG` (omitted = auto-provisioned on first deploy).
+    { "binding": "CONFIG" }
+  ],
+
+  // R2: downloadable resources (served through /api/resources/<key>).
+  "r2_buckets": [
+    { "binding": "RESOURCES", "bucket_name": "xolqy-resources" }
+  ],
+
+  // ---- Asynchronous processing ---------------------------------------------
+  // Queue: decouples form acceptance from processing. The consumer starts one
+  // Workflow instance per enquiry (idempotent by enquiry id).
+  "queues": {
+    "producers": [
+      { "queue": "xolqy-enquiries", "binding": "ENQUIRY_QUEUE" }
+    ],
+    "consumers": [
+      {
+        "queue": "xolqy-enquiries",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "dead_letter_queue": "xolqy-enquiries-dlq"
+      }
+    ]
+  },
+
+  // Workflow: durable, retried, multi-step processing of each enquiry
+  // (load, mark, notify staff, optional acknowledgement, finalise).
+  "workflows": [
+    {
+      "name": "xolqy-enquiry",
+      "binding": "ENQUIRY_WORKFLOW",
+      "class_name": "EnquiryWorkflow"
+    }
+  ],
+
+  // ---- AI --------------------------------------------------------------------
+  // Workers AI (embeddings + chat) and Vectorize (approved service content).
+  // Both have no local simulation; set `"remote": true` on each for `astro dev`
+  // against the real services after `wrangler login`.
+  "ai": { "binding": "AI" },
+  "vectorize": [
+    { "binding": "VECTORIZE", "index_name": "xolqy-knowledge" }
+  ],
+
+  // Durable Object: one bounded AI conversation session per visitor session.
+  "durable_objects": {
+    "bindings": [
+      { "name": "FINDER_SESSION", "class_name": "FinderSession" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["FinderSession"] }
+  ],
+
+  // ---- Abuse protection -------------------------------------------------------
+  // Rate limiting binding (per Cloudflare location, keyed by client IP).
+  "ratelimits": [
+    { "name": "ENQUIRY_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
+    { "name": "FINDER_LIMITER", "namespace_id": "1002", "simple": { "limit": 20, "period": 60 } }
+  ],
+
+  // ---- Email -----------------------------------------------------------------
+  // Cloudflare Email Service (sending is in beta on the Workers Paid plan).
+  // Requires the sending domain to be onboarded in the dashboard first.
+  "send_email": [
+    { "name": "EMAIL" }
+  ]
+}
