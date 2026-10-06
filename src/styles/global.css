@@ -112,6 +112,37 @@ p { text-wrap: pretty; }
 .section + .section { border-top: 1px solid var(--line); }
 .section--flush { padding-block: 0; }
 
+/* Corner field: every dark section (except the hero, which carries the edge
+   network composition) gets a quiet dot grid in its top-right corner, with the
+   brand X mark scattered over it and a soft orange glow behind it. It
+   sits under the content (z-index -1 inside the section's own stacking context),
+   fades out towards the bottom-left, and never captures pointer events. */
+.section[data-theme='dark'] { isolation: isolate; }
+.section[data-theme='dark']:not(.hero)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  width: clamp(18rem, 52%, 46rem);
+  height: clamp(16rem, 70%, 36rem);
+  max-height: 100%;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cpath d='M56 32l8 8M64 32l-8 8M152 56l8 8M160 56l-8 8M32 128l8 8M40 128l-8 8M128 152l8 8M136 152l-8 8' stroke='%23ff5a1f' stroke-opacity='0.6' stroke-width='1.8' stroke-linecap='square' fill='none'/%3E%3C/svg%3E"),
+    radial-gradient(circle at center, rgba(245, 245, 240, 0.26) 1px, transparent 1.6px),
+    radial-gradient(farthest-side at 100% 0%, rgba(255, 90, 31, 0.28), rgba(255, 90, 31, 0.08) 40%, rgba(255, 90, 31, 0) 76%);
+  background-size: 192px 192px, 24px 24px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0;
+  background-repeat: repeat, repeat, no-repeat;
+  -webkit-mask-image: radial-gradient(farthest-corner at 100% 0%, #000 0%, rgba(0, 0, 0, 0.8) 24%, transparent 62%);
+  mask-image: radial-gradient(farthest-corner at 100% 0%, #000 0%, rgba(0, 0, 0, 0.8) 24%, transparent 62%);
+}
+/* Narrow screens: headings span the full width, so the field keeps to the corner. */
+@media (max-width: 47.99em) {
+  .section[data-theme='dark']:not(.hero)::before { width: 56%; height: 40%; min-height: 12rem; opacity: 0.75; }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
