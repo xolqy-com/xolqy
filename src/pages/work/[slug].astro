@@ -1,0 +1,139 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work', ({ data }) => !data.draft);
+  return work.map((w) => ({ params: { slug: w.id }, props: { entry: w } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const all = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const idx = all.findIndex((w) => w.id === entry.id);
+const next = all[(idx + 1) % all.length]!;
+const services = (await getCollection('services', ({ data }) => !data.draft)).filter((s) => entry.data.relatedServices.includes(s.id));
+const path = `/work/${entry.id}/`;
+const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
+---
+
+<Base
+  title={`${entry.data.title}: case study`}
+  description={entry.data.summary}
+  path={path}
+  ogImage={`/og/work-${entry.id}.png`}
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Work', href: '/work/' }, { name: entry.data.title, href: path }])]}
+>
+  <section class="section cs-hero" data-theme="dark">
+    <div class="container cs-hero__grid">
+      <div class="flow-lg">
+        <p class="eyebrow fade-in">{entry.data.eyebrow} / <a href="/work/" class="cs-hero__crumb">All work</a></p>
+        <h1 class="h-3xl cs-hero__title"><span class="hero-line"><span style="--d:60ms">{entry.data.headline}</span></span></h1>
+        <p class="lead fade-in" style="--d:240ms">{entry.data.summary}</p>
+        <p class="fade-in" style="--d:360ms"><a href={entry.data.url} class="link" rel="noopener">Visit {host} <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
+      </div>
+      <aside class="cs-hero__facts fade-in" style="--d:420ms" aria-label="Project facts">
+        <XMark size={24} class="cs-hero__mark" />
+        <dl class="cs-facts">
+          <div><dt>Client</dt><dd>{entry.data.client}</dd></div>
+          <div><dt>Sector</dt><dd>{entry.data.sector}</dd></div>
+          <div><dt>Location</dt><dd>{entry.data.location}</dd></div>
+          <div><dt>Brief</dt><dd>{entry.data.brief}</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container cs-split">
+      <div class="flow reveal">
+        <p class="eyebrow">Stack</p>
+        <h2 class="h-3xl">What runs where.</h2>
+      </div>
+      <ul class="list-reset cs-stack reveal" style="--reveal-delay:100ms">
+        {entry.data.stack.map((t) => (
+          <li class="cs-stack__item">
+            <h3 class="h-lg">{t.name}</h3>
+            <p class="muted">{t.role}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark">
+    <div class="container cs-split">
+      <div class="flow reveal">
+        <p class="eyebrow">The story</p>
+        <h2 class="h-3xl">How it was built.</h2>
+      </div>
+      <div class="prose reveal" style="--reveal-delay:100ms">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container cs-split">
+      <div class="flow reveal">
+        <p class="eyebrow">Outcomes</p>
+        <h2 class="h-3xl">What changed.</h2>
+        <p class="muted">Described, not quantified: we publish figures only when the client shares them.</p>
+      </div>
+      <ul class="ticks cs-outcomes reveal" style="--reveal-delay:100ms">
+        {entry.data.outcomes.map((o) => <li>{o}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark">
+    <div class="container cs-foot">
+      <div class="flow reveal">
+        <p class="eyebrow">Related services</p>
+        <ul class="list-reset cs-foot__services">
+          {services.map((s) => (
+            <li><a href={`/services/${s.id}/`} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="flow reveal">
+        <p class="mono faint">Next case study</p>
+        <h2 class="h-2xl"><a href={`/work/${next.id}/`} class="cs-foot__next">{next.data.title}</a></h2>
+        <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cs-hero { padding-block: clamp(3rem, 7vw, 6rem); }
+  .cs-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
+  .cs-hero__crumb { color: inherit; }
+  .cs-hero__title { max-width: 20ch; }
+  .cs-hero__facts { display: grid; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg-raised); }
+  .cs-hero__facts :global(.cs-hero__mark) { color: var(--signal); }
+  .cs-facts { display: grid; gap: var(--space-3); margin: 0; }
+  .cs-facts dt { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--fg-muted); }
+  .cs-facts dd { margin: 0.2rem 0 0; }
+  .cs-split { display: grid; gap: var(--space-6); align-items: start; }
+  .cs-stack { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .cs-stack__item { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-2); }
+  .cs-outcomes { font-size: var(--text-base); gap: var(--space-4); }
+  .cs-foot { display: grid; gap: var(--space-7); }
+  .cs-foot__services { display: grid; gap: var(--space-3); }
+  .cs-foot__next { text-decoration: none; }
+  .cs-foot__next:hover { color: var(--signal); }
+  @media (min-width: 48em) {
+    .cs-split { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .cs-split > .flow { position: sticky; top: 6rem; }
+    .cs-stack { grid-template-columns: repeat(2, 1fr); }
+    /* An odd last item spans the row, so the grid's line colour never shows through an empty cell. */
+    .cs-stack__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  @media (min-width: 60em) {
+    .cs-hero__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gutter); }
+    .cs-foot { grid-template-columns: 1fr 1fr; gap: var(--gutter); }
+  }
+</style>

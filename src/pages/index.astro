@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro';
 import Hero from '@/components/sections/Hero.astro';
 import Outcomes from '@/components/sections/Outcomes.astro';
 import ServicesLedger from '@/components/sections/ServicesLedger.astro';
+import WorkLedger from '@/components/sections/WorkLedger.astro';
 import StackExplorer from '@/components/sections/StackExplorer.astro';
 import LabsPreview from '@/components/sections/LabsPreview.astro';
 import Process from '@/components/sections/Process.astro';
@@ -25,7 +26,22 @@ import { faqJsonLd } from '@/lib/seo';
   <Outcomes />
   <ServicesLedger />
 
-  <section class="section" data-theme="light" id="built-on-cloudflare" aria-labelledby="stack-title">
+  <section class="section" data-theme="light" id="work" aria-labelledby="work-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">Selected work</p>
+          <h2 id="work-title" class="h-3xl measure">Built on Cloudflare, in production.</h2>
+        </div>
+        <a href="/work/" class="link">All work <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="work-wrap reveal" style="--reveal-delay:120ms">
+        <WorkLedger variant="compact" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="built-on-cloudflare" aria-labelledby="stack-title">
     <div class="container">
       <div class="between reveal">
         <div class="flow">
@@ -40,11 +56,11 @@ import { faqJsonLd } from '@/lib/seo';
     </div>
   </section>
 
-  <LabsPreview />
-  <Process />
-  <Engagements />
+  <LabsPreview theme="light" />
+  <Process theme="dark" />
+  <Engagements theme="light" />
 
-  <section class="section" data-theme="light" id="faqs" aria-labelledby="faq-title">
+  <section class="section" data-theme="dark" id="faqs" aria-labelledby="faq-title">
     <div class="container faq-grid">
       <div class="flow reveal">
         <p class="eyebrow">FAQs</p>
@@ -57,13 +73,14 @@ import { faqJsonLd } from '@/lib/seo';
     </div>
   </section>
 
-  <FinalCta />
+  <FinalCta theme="light" />
 </Base>
 
 <style>
   .stack-note { max-width: 40ch; font-size: var(--text-sm); }
   .stack-note a { color: inherit; }
   .stack-wrap { margin-top: var(--space-7); }
+  .work-wrap { margin-top: var(--space-7); }
   .faq-grid { display: grid; gap: var(--space-7); align-items: start; }
   .faq-grid > .flow { max-width: 28ch; }
   @media (min-width: 60em) {

@@ -1,8 +1,13 @@
 ---
 import EnquiryForm from '@/components/sections/EnquiryForm.astro';
 import XMark from '@/components/brand/XMark.astro';
+
+interface Props {
+  theme?: 'dark' | 'light';
+}
+const { theme = 'dark' } = Astro.props;
 ---
-<section class="section final" data-theme="dark" id="start" aria-labelledby="final-title">
+<section class="section final" data-theme={theme} id="start" aria-labelledby="final-title">
   <div class="container final__grid">
     <div class="final__copy reveal">
       <XMark size={48} class="final__mark" />

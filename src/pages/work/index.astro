@@ -1,0 +1,43 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import WorkLedger from '@/components/sections/WorkLedger.astro';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const description = 'Client work on Cloudflare: a bilingual studio site on Cloudflare Pages with its own analytics dashboard, photoproof.io, a photo-proofing web app that runs entirely on Workers and R2, and Ravasaki, an anonymous-letters app server-rendered on Workers with D1.';
+---
+
+<Base
+  title="Work"
+  description={description}
+  path="/work/"
+  ogImage="/og/work.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Work', href: '/work/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Work" title="Real projects on&nbsp;Cloudflare." id="work-title" level="h1">
+        <p class="lead">Case studies describe what was built and why. Clients appear here with their agreement, and outcomes are described rather than quantified unless the client shares the numbers.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container">
+      <WorkLedger variant="full" />
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark">
+    <div class="container between reveal">
+      <div class="flow">
+        <p class="eyebrow">Your project</p>
+        <h2 class="h-3xl">The next one could be yours.</h2>
+      </div>
+      <div class="cluster">
+        <a href="/labs/" class="btn btn--ghost">See the Labs demos</a>
+        <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Base>

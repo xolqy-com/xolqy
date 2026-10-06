@@ -44,9 +44,9 @@ Browser ──(prerendered HTML/CSS/JS from Static Assets)──▶ Cloudflare e
 ```
 
 * **Framework:** Astro 7 + `@astrojs/cloudflare` 14 (Cloudflare Vite plugin, `workerd` locally and in production).
-* **Rendering:** every marketing page is prerendered to static assets. Only `/api/*` and `/admin/*` run on demand.
+* **Rendering:** every marketing page is prerendered to static assets. Only `/api/*` and `/admin/*` run on demand, and both are listed in `assets.run_worker_first` in `wrangler.jsonc`. Without that list, a browser navigation to an on-demand route (for example opening `/api/status` or `/admin/` directly) is answered by the asset layer's 404 page without invoking the Worker (compatibility dates from 2025-04-01 prefer asset serving for navigation requests).
 * **Worker entry:** `src/worker.ts` exports `fetch` (Astro), `queue` (consumer), `EnquiryWorkflow` and `FinderSession`.
-* **Content:** typed content collections (`src/content.config.ts`) for services and insights. Drafts (`draft: true`) get no route, are excluded from the index, the sitemap and the finder's knowledge base.
+* **Content:** typed content collections (`src/content.config.ts`) for services, insights and work (client case studies, facts the client agreed to publish, outcomes described rather than quantified). Drafts (`draft: true`) get no route, are excluded from the index, the sitemap and the finder's knowledge base.
 * **Design system:** tokens in `src/styles/tokens.css`, primitives in `src/styles/global.css`, self-hosted variable fonts (Bricolage Grotesque, JetBrains Mono, OFL).
 * **Identity:** `src/components/brand/` (X symbol, wordmark, edge-network composition), `public/favicon.svg`, generated PNG icons and social images in `public/og/`.
 
@@ -66,7 +66,7 @@ resources/                generated downloadable files (uploaded to R2)
 src/
   worker.ts               Worker entrypoint (fetch + queue + class exports)
   middleware.ts           security headers for on-demand routes
-  content.config.ts       collections schema; content/services/*.md, content/insights/*.md
+  content.config.ts       collections schema; content/services/*.md, content/insights/*.md, content/work/*.md
   data/                   site constants, stack catalogue + statuses, homepage content, resources manifest
   layouts/Base.astro      head, SEO, JSON-LD, header/footer, site script, optional Web Analytics beacon
   components/             brand/, ui/, sections/ (homepage), labs/ (demos)
@@ -166,18 +166,18 @@ Everything below is account or zone configuration that cannot (or should not) li
 5. Security → WAF → Managed rules: deploy the Cloudflare Managed Ruleset (start in log mode, then block). OWASP Core Ruleset at Medium.
 6. Security → WAF → Rate limiting rules: `/api/*` 60 requests / minute per IP (the Worker also rate-limits per endpoint).
 7. Security → Bots → Bot Fight Mode on (or Super Bot Fight Mode on paid plans).
-8. **Turnstile**: Turnstile → Add widget, hostname `xolqy.com` (+ `www`), mode Managed. Copy the sitekey into `PUBLIC_TURNSTILE_SITE_KEY` (build variable) and the secret into `wrangler secret put TURNSTILE_SECRET_KEY`.
-9. **Access**: Zero Trust → Access → Applications → Add self-hosted application, domain `xolqy.com`, path `admin`, session 24h, policy: Allow, emails of staff. Copy the **Application Audience (AUD) tag** into `ACCESS_AUD` and the team domain into `ACCESS_TEAM_DOMAIN`. Also protect `/admin/actions`. The Worker verifies the JWT itself; without these vars it fails closed.
+8. **Turnstile**: Turnstile → Add widget, hostname `xolqy.com`, mode Managed (done on this account: widget "xolqy.com enquiry form", sitekey `0x4AAAAAAFPXpOox5sO1wCbR`). Put the sitekey in `PUBLIC_TURNSTILE_SITE_KEY` (build variable / `.env`) and the secret into `wrangler secret put TURNSTILE_SECRET_KEY`.
+9. **Access**: Zero Trust requires an active plan first (the Free plan, selected once in the Zero Trust dashboard; Cloudflare asks for a payment method on file). Then Access controls → Applications → Add self-hosted application, domain `xolqy.com`, path `admin`, session 24h, policy: Allow, emails of staff. Copy the **Application Audience (AUD) tag** into `ACCESS_AUD` and the team domain into `ACCESS_TEAM_DOMAIN`. Also protect `/admin/actions`. The Worker verifies the JWT itself; without these vars it fails closed.
 
 ### AI
-10. **AI Gateway**: AI → AI Gateway → Create gateway named `xolqy`. Set `AI_GATEWAY_ID=xolqy`. Optional: enable caching and rate limits in the gateway.
+10. **AI Gateway**: AI → AI Gateway → Create gateway named `xolqy` (done on this account; authenticated gateway, Worker binding requests are authenticated automatically). `AI_GATEWAY_ID=xolqy` is set. Optional: enable caching and rate limits in the gateway.
 11. **Vectorize** index is created by `scripts/provision.sh`; populate it from `/admin/` → Reindex.
 
 ### Email
-12. **Email Service**: Compute → Email Service → Email Sending → Onboard domain `xolqy.com` (DNS records are added automatically: MX for bounces, SPF, DKIM, DMARC). Set `EMAIL_FROM=noreply@xolqy.com`. Sending to verified destination addresses is free on all plans; sending to arbitrary recipients (the optional acknowledgement) requires the Workers Paid plan. Verify `NOTIFY_EMAIL` as a destination address (Email Routing) so staff notifications work on any plan.
+12. **Email Service**: Compute → Email Service → Email Sending → Onboard domain. On this account the subdomain `notify.xolqy.com` is onboarded (DNS records added automatically: MX for bounces, SPF, DKIM) because the apex `xolqy.com` already has an MX record pointing at an external mail host that must not be disturbed. `EMAIL_FROM` is `noreply@notify.xolqy.com`. Sending to verified destination addresses is free on all plans; sending to arbitrary recipients (the optional acknowledgement) requires the Workers Paid plan. Verify `NOTIFY_EMAIL` as a destination address (Email Routing) so staff notifications work on any plan.
 
 ### Analytics and observability
-13. **Web Analytics**: Analytics & Logs → Web Analytics → Add site `xolqy.com` with manual setup; copy the token into `PUBLIC_CF_BEACON_TOKEN` (build variable) and redeploy. (Automatic setup injects the beacon at the zone level instead; use one or the other.)
+13. **Web Analytics**: Analytics & Logs → Web Analytics → Add site `xolqy.com` with manual setup (done on this account; token `6048606bc96843f1898529a3608944f3`); copy the token into `PUBLIC_CF_BEACON_TOKEN` (build variable / `.env`) and redeploy. (Automatic setup injects the beacon at the zone level instead; use one or the other.)
 14. **Workers observability** is enabled in `wrangler.jsonc`; view logs under the Worker → Observability. Optionally add a Notification for Workers error rate.
 
 ### Plan requirements

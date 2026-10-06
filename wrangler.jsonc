@@ -10,18 +10,31 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "xolqy",
+  // Wooprodigy@gmail.com's account; pinned so wrangler never asks which of the
+  // user's accounts to deploy to.
+  "account_id": "b12bc31e1898e5bf3ba4acfb4becea21",
   "main": "./src/worker.ts",
   "compatibility_date": "2026-09-15",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": false,
+  // No scheduled handler. The empty list also removes the cron trigger left
+  // behind by the Worker that previously ran under this name.
+  "triggers": { "crons": [] },
 
   // Static assets are produced by `astro build` (prerendered pages, CSS, fonts,
   // client scripts). The adapter fills in the output directory at build time.
+  //
+  // run_worker_first: with a compatibility date on or after 2025-04-01,
+  // navigation requests (Sec-Fetch-Mode: navigate) that match no asset are
+  // answered by the asset layer's 404 page WITHOUT invoking the Worker. The
+  // on-demand routes below must therefore be routed to the Worker explicitly,
+  // otherwise opening /api/status or /admin/ in a browser shows the 404 page.
   "assets": {
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/admin", "/admin/*"]
   },
 
   // Operational visibility: Workers Logs + invocation logs (dashboard:
@@ -39,9 +52,9 @@
     // Expected hostname(s) for Turnstile siteverify checks, comma separated.
     "TURNSTILE_HOSTNAMES": "xolqy.com,www.xolqy.com",
     // Staff notification target and verified sender for Cloudflare Email Service.
-    // Leave empty until the sending domain is onboarded (README > Email Service).
+    // notify.xolqy.com is onboarded for sending (the apex keeps its existing mail host).
     "NOTIFY_EMAIL": "",
-    "EMAIL_FROM": "",
+    "EMAIL_FROM": "noreply@notify.xolqy.com",
     "EMAIL_FROM_NAME": "Xolqy",
     // Send a short acknowledgement to the person who enquired ("true"/"false").
     "ENQUIRY_ACK": "false",
@@ -49,8 +62,8 @@
     // in production or the staff view fails closed.
     "ACCESS_TEAM_DOMAIN": "",
     "ACCESS_AUD": "",
-    // AI Gateway id (AI > AI Gateway > create). Empty = direct Workers AI calls.
-    "AI_GATEWAY_ID": "",
+    // AI Gateway id (AI > AI Gateway). Empty = direct Workers AI calls.
+    "AI_GATEWAY_ID": "xolqy",
     "AI_CHAT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     "AI_EMBED_MODEL": "@cf/baai/bge-base-en-v1.5"
   },
@@ -61,7 +74,7 @@
     {
       "binding": "DB",
       "database_name": "xolqy-site",
-      // "database_id": "<paste from `wrangler d1 create xolqy-site`>" (omitted = auto-provisioned on first deploy)
+      "database_id": "5845ab5b-370d-454b-adc8-e2a549457c90",
       "migrations_dir": "migrations"
     }
   ],
@@ -69,8 +82,7 @@
   // KV: public configuration and read-heavy cached data only. Never the
   // authoritative enquiry store (KV is eventually consistent).
   "kv_namespaces": [
-    // Add "id": "<namespace id>" after `wrangler kv namespace create CONFIG` (omitted = auto-provisioned on first deploy).
-    { "binding": "CONFIG" }
+    { "binding": "CONFIG", "id": "f81dbc9a67bc4ad69439eef73725eb2e" }
   ],
 
   // R2: downloadable resources (served through /api/resources/<key>).

@@ -1,7 +1,12 @@
 ---
 import { ENGAGEMENTS } from '@/data/content';
+
+interface Props {
+  theme?: 'dark' | 'light';
+}
+const { theme = 'dark' } = Astro.props;
 ---
-<section class="section engagements" data-theme="dark" aria-labelledby="engagements-title">
+<section class="section engagements" data-theme={theme} aria-labelledby="engagements-title">
   <div class="container">
     <div class="between reveal">
       <div class="flow">

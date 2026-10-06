@@ -118,6 +118,10 @@ const pages = [
   { file: 'insight-websites-on-cloudflare-workers', eyebrow: 'Insights', title: 'Why your next website belongs on Workers.', subtitle: 'What changes, what breaks, and the three questions that decide it.' },
   { file: 'insight-cloudflare-migration-runbook', eyebrow: 'Insights', title: 'The migration runbook that keeps your rankings.', subtitle: 'Inventory, TTLs, redirects as code, protection in log mode, rollback.' },
   { file: 'insight-d1-vs-kv-vs-r2', eyebrow: 'Insights', title: 'D1, KV or R2: choosing a data store.', subtitle: 'Records, configuration, files, and the failure modes of getting it wrong.' },
+  { file: 'work', eyebrow: 'Work', title: 'Real projects on Cloudflare.', subtitle: 'Case studies: a bilingual studio site on Pages, a photo-proofing SaaS on Workers and R2, and an anonymous-letters app on Workers and D1.' },
+  { file: 'work-la-house-of-pulse', eyebrow: 'Case study', title: 'La House of Pulse', subtitle: 'Bilingual studio site on Cloudflare Pages with its own analytics dashboard.' },
+  { file: 'work-photoproof-io', eyebrow: 'Case study', title: 'photoproof.io', subtitle: 'Photo proofing for photographers, running entirely on Workers and R2.' },
+  { file: 'work-ravasaki', eyebrow: 'Case study', title: 'Ravasaki', subtitle: 'Anonymous letters, no accounts, server-rendered on Workers and D1.' },
 ];
 
 for (const p of pages) {

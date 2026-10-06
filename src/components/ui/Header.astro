@@ -53,9 +53,9 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
               </a>
             </li>
           ))}
-          <li style="--d:360ms">
+          <li style="--d:380ms">
             <a href="/contact/" aria-current={isCurrent('/contact/') ? 'page' : undefined}>
-              <span class="mono mobile-menu__index">06</span>
+              <span class="mono mobile-menu__index">0{NAV.length + 1}</span>
               <span class="mobile-menu__label">Contact</span>
             </a>
           </li>

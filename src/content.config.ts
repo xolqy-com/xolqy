@@ -50,4 +50,30 @@ const insights = defineCollection({
   }),
 });
 
-export const collections = { services, insights };
+/** Client work. Only facts the client has agreed to publish; no invented results. */
+const work = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/work' }),
+  schema: z.object({
+    title: z.string(),
+    client: z.string(),
+    url: z.string().url(),
+    sector: z.string(),
+    location: z.string(),
+    order: z.number().int(),
+    eyebrow: z.string(),
+    headline: z.string(),
+    summary: z.string().max(320),
+    /** What Xolqy was asked to do, in one sentence. */
+    brief: z.string(),
+    /** Cloudflare products and other key technologies, with their role. */
+    stack: z.array(z.object({ name: z.string(), role: z.string() })).min(2),
+    /** Capability tags shown on cards. */
+    tags: z.array(z.string()).min(1),
+    /** Qualitative outcomes only, never figures. */
+    outcomes: z.array(z.string()).min(2),
+    relatedServices: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { services, insights, work };

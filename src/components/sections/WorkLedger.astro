@@ -1,0 +1,59 @@
+---
+/**
+ * Selected work: real client projects, described without invented figures.
+ * Used on the homepage (compact) and as the list on /work/.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  variant?: 'compact' | 'full';
+}
+const { variant = 'compact' } = Astro.props;
+const work = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
+---
+
+<ol class="list-reset work">
+  {work.map((w, i) => (
+    <li class="work__item reveal" style={`--reveal-delay:${i * 80}ms`}>
+      <a href={`/work/${w.id}/`} class="work__link">
+        <span class="work__meta">
+          <span class="mono faint">{w.data.eyebrow}</span>
+          <span class="mono faint work__host">{host(w.data.url)}</span>
+        </span>
+        <span class="work__title h-2xl">{w.data.title}</span>
+        <span class="work__sector">{w.data.sector} · {w.data.location}</span>
+        <span class="work__summary muted">{variant === 'full' ? w.data.summary : w.data.headline}</span>
+        <span class="work__tags">
+          {w.data.tags.map((t) => <span class="badge">{t}</span>)}
+        </span>
+        <span class="work__cta link">Read the case study <span class="arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .work { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .work__link {
+    display: grid; gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--bg);
+    text-decoration: none;
+    height: 100%;
+    transition: background-color var(--dur-base);
+  }
+  .work__link:hover { background: var(--bg-raised); }
+  .work__link:hover .work__title { color: var(--accent-text); }
+  .work__meta { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .work__title { display: block; transition: color var(--dur-fast); }
+  .work__sector { font-weight: 500; }
+  .work__summary { max-width: 60ch; }
+  .work__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .work__cta { justify-self: start; margin-top: var(--space-2); }
+  @media (min-width: 48em) {
+    .work { grid-template-columns: 1fr 1fr; }
+    /* An odd last item spans the row, so the grid's line colour never shows through an empty cell. */
+    .work__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+</style>

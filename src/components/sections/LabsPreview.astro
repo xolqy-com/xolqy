@@ -1,8 +1,13 @@
 ---
 import { LABS } from '@/data/content';
 import StatusBadge from '@/components/ui/StatusBadge.astro';
+
+interface Props {
+  theme?: 'dark' | 'light';
+}
+const { theme = 'dark' } = Astro.props;
 ---
-<section class="section labs-preview" data-theme="dark" aria-labelledby="labs-title">
+<section class="section labs-preview" data-theme={theme} aria-labelledby="labs-title">
   <div class="container">
     <div class="between reveal">
       <div class="flow">
