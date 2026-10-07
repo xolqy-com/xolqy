@@ -248,14 +248,18 @@ p { text-wrap: pretty; }
   letter-spacing: 0.01em;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast) var(--ease-out);
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
+/* Hover elevates instead of tinting: the colour stays exact, the button lifts
+   and casts a shadow in its own colour. */
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(10, 10, 10, 0.45); }
+.btn:active { transform: translateY(0); box-shadow: 0 2px 6px -4px rgba(10, 10, 10, 0.35); transition-duration: 60ms; }
 .btn--primary { --btn-bg: var(--signal); --btn-fg: var(--ink); }
-.btn--primary:hover { --btn-bg: #ff7a4a; }
+.btn--primary:hover { box-shadow: 0 14px 28px -10px rgba(255, 90, 31, 0.6), 0 4px 10px -4px rgba(255, 90, 31, 0.45); }
+.btn--primary:active { box-shadow: 0 3px 8px -4px rgba(255, 90, 31, 0.5); }
 .btn--ghost { --btn-bg: transparent; --btn-fg: var(--fg); --btn-line: var(--line-strong); }
-.btn--ghost:hover { --btn-line: var(--fg); }
+.btn--ghost:hover, .btn--ghost:active { --btn-line: var(--fg); box-shadow: none; }
 .btn--sm { min-height: 2.5rem; padding: 0.5rem 1rem; }
 .btn[aria-disabled='true'], .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 .btn .arrow { transition: transform var(--dur-fast) var(--ease-out); }

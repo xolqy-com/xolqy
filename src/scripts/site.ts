@@ -131,7 +131,7 @@ function wrapTables(): void {
     const wrap = document.createElement('div');
     wrap.className = 'table-wrap';
     table.replaceWith(wrap);
-    wrap.append(table);
+    wrap.appendChild(table);
   });
 }
 

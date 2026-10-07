@@ -110,5 +110,39 @@ export async function collectStatus(env: EnvWithSecrets, opts: { beaconConfigure
     ? { state: 'active', detail: 'Beacon token set at build time.' }
     : { state: 'awaiting', detail: 'PUBLIC_CF_BEACON_TOKEN not set at build time.' };
 
+  out.images = await checkImages(env);
+
   return out;
+}
+
+/**
+ * Images: ask the edge to transform one small public asset and read the
+ * `cf-resized` header it adds. "internal=ok" means Transformations are enabled
+ * for the zone and the /cdn-cgi/image/ URLs the pages emit will be served;
+ * "err=<code>" means the zone setting is off or the fetch was refused.
+ */
+async function checkImages(env: EnvWithSecrets): Promise<StatusEntry> {
+  const site = env.SITE_URL || 'https://xolqy.com';
+  if (!/^https:\/\//.test(site) || /localhost|127\.0\.0\.1/.test(site)) {
+    return { state: 'awaiting', detail: 'Transformations only run at the edge; nothing to verify locally.' };
+  }
+  try {
+    const res = await withTimeout(
+      fetch(new URL('/icon-192.png', site).toString(), {
+        cf: { image: { width: 16, format: 'webp' }, cacheTtl: 300 },
+      }),
+      4000,
+    );
+    const resized = res.headers.get('cf-resized') ?? '';
+    const type = res.headers.get('content-type') ?? '';
+    if (res.ok && /internal=ok/.test(resized)) {
+      return { state: 'active', detail: `Transformations enabled for the zone; the edge returned ${type || 'an image'} (${resized}).` };
+    }
+    if (/err=/.test(resized)) {
+      return { state: 'awaiting', detail: `The edge refused the transformation (cf-resized: ${resized}). Enable Images > Transformations for the zone.` };
+    }
+    return { state: 'awaiting', detail: `The probe came back untransformed (HTTP ${res.status}, no cf-resized header). Check Images > Transformations for the zone.` };
+  } catch (err) {
+    return { state: 'awaiting', detail: `Probe failed: ${String(err).slice(0, 120)}.` };
+  }
 }

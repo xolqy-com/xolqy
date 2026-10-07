@@ -53,7 +53,7 @@ const insights = defineCollection({
 /** Client work. Only facts the client has agreed to publish; no invented results. */
 const work = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/work' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     client: z.string(),
     url: z.string().url(),
@@ -63,6 +63,13 @@ const work = defineCollection({
     eyebrow: z.string(),
     headline: z.string(),
     summary: z.string().max(320),
+    /**
+     * Screenshot of the live site (src/assets/work/<slug>.jpg, 1540x700). Served
+     * through Cloudflare Images (see astro.config.mjs), so the repository holds
+     * one master per project and every size and format is derived on request.
+     */
+    image: image().optional(),
+    imageAlt: z.string().optional(),
     /** What Xolqy was asked to do, in one sentence. */
     brief: z.string(),
     /** Cloudflare products and other key technologies, with their role. */

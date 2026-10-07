@@ -1,7 +1,7 @@
 {
   "name": "xolqy",
   "version": "1.0.0",
-  "description": "xolqy.com, the Cloudflare-focused agency. Astro on Cloudflare Workers with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, Turnstile and Email Service.",
+  "description": "xolqy.com, the Cloudflare-focused agency. Astro on Cloudflare Workers with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, Turnstile, Email Service and Images.",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "wrangler types --strict-vars=false && astro dev",
-    "build": "wrangler types --strict-vars=false && npm run og && astro check && astro build",
+    "build": "wrangler types --strict-vars=false && npm run og && astro check && astro build && node scripts/postbuild.mjs",
     "preview": "astro preview",
     "check": "wrangler types --strict-vars=false && astro check",
     "og": "node scripts/build-og.mjs",

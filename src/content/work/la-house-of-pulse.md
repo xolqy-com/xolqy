@@ -8,6 +8,8 @@ order: 1
 eyebrow: Case study 01
 headline: A bilingual studio site that runs on Cloudflare Pages and reports its own traffic.
 summary: Multilingual marketing site for a hot yoga, Pilates and barre studio on the Côte d'Azur, prerendered and served from Cloudflare Pages, with a password-protected staff dashboard that reads Cloudflare Web Analytics directly.
+image: ../../assets/work/la-house-of-pulse.jpg
+imageAlt: "Homepage of lahouseofpulse.com: the studio's hero image with the class menu and booking buttons."
 brief: Build a fast bilingual studio site that the owners can keep up to date without a CMS, and give them a simple view of their traffic without a Google Analytics account.
 stack:
   - name: Cloudflare Pages

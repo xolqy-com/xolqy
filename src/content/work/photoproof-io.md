@@ -8,6 +8,8 @@ order: 2
 eyebrow: Case study 02
 headline: A photo-proofing web app that runs entirely on Cloudflare.
 summary: Photographers upload a shoot, share one link, and clients mark favourites, comment, approve and download without an account. The whole application, from upload to delivery, runs on Cloudflare.
+image: ../../assets/work/photoproof-io.jpg
+imageAlt: "Homepage of photoproof.io: a plain headline, one sentence of explanation and the sign-up button."
 brief: Build a photo-proofing product that is simple for clients, fast for large uploads, and cheap enough to offer free, without a server to run.
 stack:
   - name: Workers

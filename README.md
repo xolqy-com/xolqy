@@ -2,7 +2,7 @@
 
 **Xolqy, the Cloudflare-focused agency. Built for the edge.**
 
-The website of an independent agency that designs, builds, migrates, secures and manages businesses on Cloudflare. The site is itself the first demonstration: Astro on Workers with Static Assets, with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, AI Gateway, Turnstile, Access and Email Service doing real work.
+The website of an independent agency that designs, builds, migrates, secures and manages businesses on Cloudflare. The site is itself the first demonstration: Astro on Workers with Static Assets, with D1, KV, R2, Queues, Workflows, Durable Objects, Workers AI, Vectorize, AI Gateway, Turnstile, Access, Email Service and Images doing real work.
 
 > Xolqy is not affiliated with, endorsed by or certified by Cloudflare, Inc.
 
@@ -46,7 +46,7 @@ Browser ──(prerendered HTML/CSS/JS from Static Assets)──▶ Cloudflare e
 * **Framework:** Astro 7 + `@astrojs/cloudflare` 14 (Cloudflare Vite plugin, `workerd` locally and in production).
 * **Rendering:** every marketing page is prerendered to static assets. Only `/api/*` and `/admin/*` run on demand, and both are listed in `assets.run_worker_first` in `wrangler.jsonc`. Without that list, a browser navigation to an on-demand route (for example opening `/api/status` or `/admin/` directly) is answered by the asset layer's 404 page without invoking the Worker (compatibility dates from 2025-04-01 prefer asset serving for navigation requests).
 * **Worker entry:** `src/worker.ts` exports `fetch` (Astro), `queue` (consumer), `EnquiryWorkflow` and `FinderSession`.
-* **Content:** typed content collections (`src/content.config.ts`) for services, insights, work (client case studies, facts the client agreed to publish, outcomes described rather than quantified) and the wiki (`/wiki/`, one entry per Cloudflare product or term, each pointing at the pillar service pages and insights; entries carry `updatedAt` and are reviewed against Cloudflare's docs). Drafts (`draft: true`) get no route, are excluded from the index, the sitemap and the finder's knowledge base.
+* **Content:** typed content collections (`src/content.config.ts`) for services, insights, work (client case studies, facts the client agreed to publish, outcomes described rather than quantified, one screenshot of the live site per project in `src/assets/work/`, 1540×700, served through Cloudflare Images) and the wiki (`/wiki/`, one entry per Cloudflare product or term, each pointing at the pillar service pages and insights; entries carry `updatedAt` and are reviewed against Cloudflare's docs). Drafts (`draft: true`) get no route, are excluded from the index, the sitemap and the finder's knowledge base.
 * **Design system:** tokens in `src/styles/tokens.css`, primitives in `src/styles/global.css`, self-hosted variable fonts (Bricolage Grotesque, JetBrains Mono, OFL).
 * **Identity:** `src/components/brand/` (X symbol, wordmark, edge-network composition), `public/favicon.svg`, generated PNG icons and social images in `public/og/`.
 
@@ -94,7 +94,7 @@ What works locally without an account: every page, the enquiry pipeline end to e
 
 **Turnstile locally.** `.env.example` and `.dev.vars.example` use Cloudflare's documented test keys (`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`). The widget issues the dummy token `XXXX.DUMMY.TOKEN.XXXX`; `src/server/turnstile.ts` reproduces the documented Siteverify result for the dummy pair without a network call, so the form can be exercised offline. Hostname checks are skipped only in the dev server (`import.meta.env.DEV`). With real keys the real Siteverify endpoint is always called.
 
-**Email locally.** `NOTIFY_EMAIL`/`EMAIL_FROM` are empty by default, so the Workflow records `EMAIL_NOT_CONFIGURED` on each enquiry (status `notification_failed`) and the staff view shows it. That is the designed behaviour, not a mock send.
+**Email locally.** `NOTIFY_EMAIL` (`it@symbols.gr`) and `EMAIL_FROM` are set in `wrangler.jsonc`; in `wrangler dev` the `send_email` binding is emulated, so nothing leaves the machine. If either variable is emptied, the Workflow records `EMAIL_NOT_CONFIGURED` on each enquiry (status `notification_failed`) and the staff view shows it. That is the designed behaviour, not a mock send.
 
 **Workers AI and Vectorize locally.** They have no local simulation. By default the bindings are local stubs and the finder answers in rule-based mode, labelled as such. To use the real services during development:
 
@@ -174,11 +174,14 @@ Everything below is account or zone configuration that cannot (or should not) li
 11. **Vectorize** index is created by `scripts/provision.sh`; populate it from `/admin/` → Reindex.
 
 ### Email
-12. **Email Service**: Compute → Email Service → Email Sending → Onboard domain. On this account the subdomain `notify.xolqy.com` is onboarded (DNS records added automatically: MX for bounces, SPF, DKIM) because the apex `xolqy.com` already has an MX record pointing at an external mail host that must not be disturbed. `EMAIL_FROM` is `noreply@notify.xolqy.com`. Sending to verified destination addresses is free on all plans; sending to arbitrary recipients (the optional acknowledgement) requires the Workers Paid plan. Verify `NOTIFY_EMAIL` as a destination address (Email Routing) so staff notifications work on any plan.
+12. **Email Service**: Compute → Email Service → Email Sending → Onboard domain. On this account the subdomain `notify.xolqy.com` is onboarded (DNS records added automatically: MX for bounces, SPF, DKIM) because the apex `xolqy.com` already has an MX record pointing at an external mail host that must not be disturbed. `EMAIL_FROM` is `noreply@notify.xolqy.com` and `NOTIFY_EMAIL` is `it@symbols.gr`: every accepted enquiry is delivered there by the EnquiryWorkflow, with the enquirer's address as Reply-To. The account is on Workers Paid, which includes sending to any recipient (on Workers Free only verified destination addresses can receive mail).
+
+### Images
+13. **Images → Transformations**: enabled for the zone `xolqy.com` (done on this account). The case-study screenshots in `src/assets/work/` are rendered through `/cdn-cgi/image/` URLs (`imageService: 'cloudflare'` in `astro.config.mjs`); the edge produces each width and format on request and `/api/status` probes it with a `cf.image` fetch. Without the zone setting the URLs fall back to the original file (`onerror=redirect`).
 
 ### Analytics and observability
-13. **Web Analytics**: Analytics & Logs → Web Analytics → Add site `xolqy.com` with manual setup (done on this account; token `6048606bc96843f1898529a3608944f3`); copy the token into `PUBLIC_CF_BEACON_TOKEN` (build variable / `.env`) and redeploy. (Automatic setup injects the beacon at the zone level instead; use one or the other.)
-14. **Workers observability** is enabled in `wrangler.jsonc`; view logs under the Worker → Observability. Optionally add a Notification for Workers error rate.
+14. **Web Analytics**: Analytics & Logs → Web Analytics → Add site `xolqy.com` with manual setup (done on this account; token `6048606bc96843f1898529a3608944f3`); copy the token into `PUBLIC_CF_BEACON_TOKEN` (build variable / `.env`) and redeploy. (Automatic setup injects the beacon at the zone level instead; use one or the other.)
+15. **Workers observability** is enabled in `wrangler.jsonc`; view logs under the Worker → Observability. Optionally add a Notification for Workers error rate.
 
 ### Plan requirements
 Workers Free covers Workers, Static Assets, D1, KV, R2, Queues (10k ops/day), Workflows, SQLite-backed Durable Objects, Workers AI (daily free allocation), Vectorize, AI Gateway, Turnstile, Access (50 users) and Web Analytics. Workers Paid is needed for email to arbitrary recipients (`ENQUIRY_ACK`) and raises the Queues, D1 and Workers AI allowances.
@@ -239,10 +242,10 @@ Declared statuses (`src/data/stack.ts`) and what completes each one:
 | AI Gateway | awaiting configuration | gateway created, `AI_GATEWAY_ID` set |
 | Turnstile | awaiting configuration | widget created, sitekey + secret set |
 | Access | awaiting configuration | application created, `ACCESS_TEAM_DOMAIN` + `ACCESS_AUD` set |
-| Email Service | awaiting configuration | domain onboarded, `EMAIL_FROM` + `NOTIFY_EMAIL` set |
+| Email Service | active | domain onboarded, `EMAIL_FROM` + `NOTIFY_EMAIL` set (done) |
 | Web Analytics | awaiting configuration | `PUBLIC_CF_BEACON_TOKEN` set at build |
 | DNS/TLS/CDN, WAF, bot controls | dashboard | zone settings above |
-| Images | planned | switch `imageService` to `cloudflare-binding` when raster media is introduced |
+| Images | active | Transformations enabled for the zone (done); verified live by `/api/status` |
 
 `/api/status` reports the live state and `/stack/` renders it.
 

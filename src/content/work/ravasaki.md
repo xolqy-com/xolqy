@@ -8,6 +8,8 @@ order: 3
 eyebrow: Case study 03
 headline: Anonymous letters with no accounts, running on Workers and D1.
 summary: "Ravasaki lets anyone write the letter they never sent, share it through an unguessable link and receive an anonymous reply. No accounts, no AI drafting, no cookies. A server-rendered Astro application on Cloudflare Workers with D1 as its only database."
+image: ../../assets/work/ravasaki.jpg
+imageAlt: "Homepage of ravasaki.com: a serif headline over a background of handwritten letters and stamps."
 brief: Build a consumer product where strangers exchange sensitive, human-written letters safely, with nothing to sign up for and nothing to run.
 stack:
   - name: Workers

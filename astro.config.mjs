@@ -11,10 +11,13 @@ export default defineConfig({
   trailingSlash: 'ignore',
   output: 'static',
   adapter: cloudflare({
-    // The site carries no raster media (SVG identity, prerendered OG images), so
-    // runtime image transformation is deliberately off. Switch to
-    // 'cloudflare-binding' and add an `images` binding when real media arrives.
-    imageService: 'passthrough',
+    // Raster media (the case-study screenshots in src/assets/work) is served
+    // through Cloudflare Images: every <Image> becomes a /cdn-cgi/image/ URL and
+    // the edge produces each width and format on request, so the repository
+    // keeps one master per picture. Requires "Transformations" enabled for the
+    // zone (Images > Transformations). During `astro dev` the originals are
+    // served untouched.
+    imageService: 'cloudflare',
     // Workers AI and Vectorize have no local simulation. By default they are
     // local stubs (the finder falls back to its rule-based mode). Run
     // `CF_REMOTE_BINDINGS=true npm run dev` after `wrangler login` to use the

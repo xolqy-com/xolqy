@@ -53,7 +53,8 @@
     "TURNSTILE_HOSTNAMES": "xolqy.com,www.xolqy.com",
     // Staff notification target and verified sender for Cloudflare Email Service.
     // notify.xolqy.com is onboarded for sending (the apex keeps its existing mail host).
-    "NOTIFY_EMAIL": "",
+    // Every accepted enquiry is delivered to NOTIFY_EMAIL by the EnquiryWorkflow.
+    "NOTIFY_EMAIL": "it@symbols.gr",
     "EMAIL_FROM": "noreply@notify.xolqy.com",
     "EMAIL_FROM_NAME": "Xolqy",
     // Send a short acknowledgement to the person who enquired ("true"/"false").

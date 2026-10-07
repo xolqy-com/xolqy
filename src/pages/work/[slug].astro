@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
+import Screenshot from '@/components/ui/Screenshot.astro';
 import { breadcrumbJsonLd } from '@/lib/seo';
 
 export async function getStaticPaths() {
@@ -44,9 +45,21 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
         </dl>
       </aside>
     </div>
+    {entry.data.image && (
+      <figure class="container cs-shot fade-in" style="--d:520ms">
+        <Screenshot
+          src={entry.data.image}
+          alt={entry.data.imageAlt ?? `Homepage of ${host}`}
+          host={host}
+          sizes="(min-width: 90em) 84rem, calc(100vw - 2rem)"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    )}
   </section>
 
-  <section class="section" data-theme="light">
+  <section class:list={['section', { 'cs-after-shot': Boolean(entry.data.image) }]} data-theme="light">
     <div class="container cs-split">
       <div class="flow reveal">
         <p class="eyebrow">Stack</p>
@@ -109,6 +122,14 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
 
 <style>
   .cs-hero { padding-block: clamp(3rem, 7vw, 6rem); }
+  /* The screenshot sits on the seam between the dark hero and the light stack
+     section: the hero is lifted above its sibling and the figure hangs over
+     the edge by --cs-overlap, which the next section adds to its own padding. */
+  .cs-hero, .cs-after-shot { --cs-overlap: clamp(2.5rem, 7vw, 6rem); }
+  .cs-hero:has(.cs-shot) { display: flow-root; z-index: 1; padding-bottom: 0; }
+  .cs-shot { display: block; margin: var(--space-7) auto calc(-1 * var(--cs-overlap)); }
+  .cs-shot :global(.shot) { box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04); }
+  .cs-after-shot { padding-top: calc(var(--section-y) + var(--cs-overlap)); }
   .cs-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
   .cs-hero__crumb { color: inherit; }
   .cs-hero__title { max-width: 20ch; }

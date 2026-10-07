@@ -4,6 +4,7 @@
  * Used on the homepage (compact) and as the list on /work/.
  */
 import { getCollection } from 'astro:content';
+import Screenshot from '@/components/ui/Screenshot.astro';
 
 interface Props {
   variant?: 'compact' | 'full';
@@ -16,10 +17,20 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
 <ol class="list-reset work">
   {work.map((w, i) => (
     <li class="work__item reveal" style={`--reveal-delay:${i * 80}ms`}>
-      <a href={`/work/${w.id}/`} class="work__link">
+      <a href={`/work/${w.id}/`} class:list={['work__link', { 'work__link--shot': Boolean(w.data.image) }]}>
+        {w.data.image && (
+          <Screenshot
+            src={w.data.image}
+            alt={w.data.imageAlt ?? `Homepage of ${host(w.data.url)}`}
+            host={host(w.data.url)}
+            widths={[480, 768, 1024]}
+            sizes="(min-width: 90em) 38rem, (min-width: 48em) calc(50vw - 5rem), calc(100vw - 6rem)"
+            class="work__shot"
+          />
+        )}
         <span class="work__meta">
           <span class="mono faint">{w.data.eyebrow}</span>
-          <span class="mono faint work__host">{host(w.data.url)}</span>
+          {!w.data.image && <span class="mono faint work__host">{host(w.data.url)}</span>}
         </span>
         <span class="work__title h-2xl">{w.data.title}</span>
         <span class="work__sector">{w.data.sector} · {w.data.location}</span>
@@ -37,14 +48,22 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
   .work { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .work__link {
     display: grid; gap: var(--space-3);
+    /* The summary row absorbs any spare height, so tags and the call to action
+       sit at the same depth in every card of a row. */
+    grid-template-rows: auto auto auto 1fr auto auto;
     padding: var(--space-6);
     background: var(--bg);
     text-decoration: none;
     height: 100%;
     transition: background-color var(--dur-base);
   }
+  .work__link--shot { grid-template-rows: auto auto auto auto 1fr auto auto; }
   .work__link:hover { background: var(--bg-raised); }
   .work__link:hover .work__title { color: var(--accent-text); }
+  .work__link :global(.work__shot) { margin-bottom: var(--space-2); transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base); }
+  .work__link:hover :global(.work__shot) { border-color: var(--signal); }
+  .work__link :global(.shot__img) { transition: transform var(--dur-slow) var(--ease-out); }
+  .work__link:hover :global(.shot__img) { transform: scale(1.02); }
   .work__meta { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
   .work__title { display: block; transition: color var(--dur-fast); }
   .work__sector { font-weight: 500; }
