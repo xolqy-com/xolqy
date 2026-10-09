@@ -112,9 +112,11 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
           ))}
         </ul>
       </div>
-      <div class="flow reveal">
-        <p class="mono faint">Next case study</p>
-        <h2 class="h-2xl"><a href={`/work/${next.id}/`} class="cs-foot__next">{next.data.title}</a></h2>
+      <div class="cs-foot__nextcol reveal">
+        <div class="flow">
+          <p class="mono faint">Next case study</p>
+          <h2 class="h-2xl"><a href={`/work/${next.id}/`} class="cs-foot__next">{next.data.title}</a></h2>
+        </div>
         <a href="/contact/" class="btn btn--primary">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
@@ -145,6 +147,18 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
   .cs-outcomes { font-size: var(--text-base); gap: var(--space-4); }
   .cs-foot { display: grid; gap: var(--space-7); }
   .cs-foot__services { display: grid; gap: var(--space-3); }
+  /* The next-case link stays on the left of this column. The button
+     sits on the right edge, including when the row wraps, so the two
+     hit areas are not on top of each other. */
+  .cs-foot__nextcol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-6);
+  }
+  .cs-foot__nextcol > .flow { max-width: 100%; }
+  .cs-foot__nextcol > .btn { margin-left: auto; }
   .cs-foot__next { text-decoration: none; }
   .cs-foot__next:hover { color: var(--signal); }
   @media (min-width: 48em) {
