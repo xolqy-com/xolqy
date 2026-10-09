@@ -2,11 +2,11 @@
 import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
 import Faq from '@/components/ui/Faq.astro';
-import { SHOP, SHOP_CATEGORIES, shopByCategory, formatPrice, isPurchasable, type ShopItem } from '@/data/shop';
+import { SHOP, SHOP_CATEGORIES, shopByCategory, formatPrice, formatCompare, isPurchasable, type ShopItem } from '@/data/shop';
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
 import { SITE } from '@/data/site';
 
-const description = 'Fixed-scope Cloudflare packages (audit, migration, security hardening, Zero Trust, AI assistant), monthly management and prepaid hours, and the kits we build with. Clear deliverables and delivery times.';
+const description = 'Fixed-scope Cloudflare packages, including Cloudflare OS at the pre-Black Friday price, plus audit, migration, security hardening, Zero Trust, an AI assistant, monthly management, prepaid hours and kits.';
 
 const requestHref = (item: ShopItem) =>
   `/contact/?interest=${encodeURIComponent(item.interest)}&package=${encodeURIComponent(item.name)}#enquiry`;
@@ -73,6 +73,7 @@ const offerCatalog = {
             <li class="shop-card reveal" style={`--reveal-delay:${i * 70}ms`} id={item.id}>
               <div class="shop-card__head">
                 <h3 class="h-xl">{item.name}</h3>
+                {item.compareAt && <span class="badge" data-status="demo">Half price</span>}
                 {item.availability === 'waitlist' && <span class="badge" data-status="planned">Waitlist</span>}
               </div>
               <p class="shop-card__tagline">{item.tagline}</p>
@@ -85,8 +86,19 @@ const offerCatalog = {
               </dl>
               <div class="shop-card__foot">
                 <div class="shop-card__price">
-                  <span class="mono faint">Price</span>
-                  <span class="h-lg">{formatPrice(item) ?? 'Fixed, quoted on request'}</span>
+                  <span class="mono faint">{item.compareAt ? 'Pre-Black Friday, half price' : 'Price'}</span>
+                  <span class="shop-card__amount">
+                    {formatCompare(item) && (
+                      <s class="shop-card__was"><span class="visually-hidden">Regular price </span>{formatCompare(item)}</s>
+                    )}
+                    <span class="h-lg">
+                      {formatPrice(item) ? (
+                        <>{formatCompare(item) && <span class="visually-hidden">Sale price </span>}{formatPrice(item)}</>
+                      ) : (
+                        'Fixed, quoted on request'
+                      )}
+                    </span>
+                  </span>
                 </div>
                 {isPurchasable(item) ? (
                   <form method="post" action="/api/checkout" class="shop-card__buy">
@@ -156,6 +168,8 @@ const offerCatalog = {
      buttons line up across the row whatever the length of the text above. */
   .shop-card__foot { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--line); display: grid; gap: var(--space-4); justify-items: start; }
   .shop-card__price { display: grid; gap: 0.2rem; }
+  .shop-card__amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.7rem; }
+  .shop-card__was { color: var(--fg-muted); font-size: var(--text-base); text-decoration-thickness: 2px; }
   .shop-card__buy { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
   .shop-card__alt { font-size: var(--text-sm); color: var(--fg-muted); text-underline-offset: 3px; }
   .shop-card__alt:hover { color: var(--accent-hover); }

@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import { PUBLIC_CF_BEACON_TOKEN } from 'astro:env/client';
 import Header from '@/components/ui/Header.astro';
+import SaleBanner from '@/components/ui/SaleBanner.astro';
 import Footer from '@/components/ui/Footer.astro';
 import CookieNote from '@/components/ui/CookieNote.astro';
 import { SITE } from '@/data/site';
@@ -80,6 +81,7 @@ const ld = [organizationJsonLd(), websiteJsonLd(), ...jsonLd];
   </head>
   <body class={bodyClass}>
     <a class="skip-link" href="#main">Skip to content</a>
+    <SaleBanner />
     <Header />
     <main id="main" tabindex="-1">
       <slot />

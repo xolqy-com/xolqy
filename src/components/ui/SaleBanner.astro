@@ -1,0 +1,77 @@
+---
+/**
+ * Pre-Black Friday offer. In normal flow above the header, so the header
+ * starts below it. The countdown is enhanced by sale-countdown.ts; the
+ * deadline stays in the HTML when that script does not run.
+ */
+const href = '/shop/#cloudflare-os';
+---
+
+<div class="sale-banner" data-sale-banner>
+  <div class="container sale-banner__inner">
+    <p class="sale-banner__copy">
+      <span class="mono sale-banner__kicker">Pre-Black Friday sale</span>
+      <span>Cloudflare OS at half price, <s class="sale-banner__was">$5,000</s> <strong>$2,500</strong>.</span>
+    </p>
+    <p class="sale-banner__count">
+      <span class="sale-banner__until">Until Black Friday, 27 Nov, 00:00 Athens</span>
+      <span data-sale-countdown aria-live="off">––d ––h ––m ––s</span>
+    </p>
+    <a class="sale-banner__cta" href={href}>See the offer <span class="arrow" aria-hidden="true">&rarr;</span></a>
+  </div>
+</div>
+<script src="../../scripts/sale-countdown.ts"></script>
+
+<style>
+  .sale-banner {
+    background: var(--signal);
+    color: var(--ink);
+  }
+  .sale-banner__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem 1rem;
+    padding-block: 0.65rem;
+    font-size: var(--text-sm);
+    line-height: 1.35;
+  }
+  .sale-banner__copy { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.7rem; margin: 0; min-width: 0; }
+  .sale-banner__kicker { font-weight: 650; letter-spacing: 0.04em; }
+  .sale-banner__was { text-decoration-thickness: 2px; }
+  .sale-banner strong { font-weight: 700; }
+  .sale-banner__count {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .sale-banner__until { font-family: var(--font-sans); font-size: var(--text-sm); }
+  .sale-banner__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.85rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    font-weight: 650;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
+  .sale-banner__cta:hover { background: #000; }
+  .sale-banner__cta .arrow { transition: transform var(--dur-fast) var(--ease-out); }
+  .sale-banner__cta:hover .arrow { transform: translateX(3px); }
+  @media (max-width: 40em) {
+    .sale-banner__inner { align-items: flex-start; }
+    .sale-banner__cta { width: 100%; justify-content: center; }
+  }
+</style>

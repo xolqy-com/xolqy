@@ -33,6 +33,11 @@ export interface ShopItem {
   billing?: 'once' | 'monthly';
   /** Shown before the price, e.g. "from". Only for display; checkout charges `amount`. */
   pricePrefix?: string;
+  /**
+   * Regular price in minor units, shown struck through. Display only.
+   * Checkout still charges `amount`.
+   */
+  compareAt?: number;
   /** Enquiry form service preselected by the button. */
   interest: string;
   /** Optional proof: a case study or page where this was done. */
@@ -64,6 +69,25 @@ export const SHOP_CATEGORIES: { id: ShopCategory; label: string; title: string; 
 
 export const SHOP: ShopItem[] = [
   // ---- Packages ---------------------------------------------------------------
+  {
+    id: 'cloudflare-os',
+    amount: 250000,
+    compareAt: 500000,
+    currency: 'usd',
+    name: 'Cloudflare OS',
+    category: 'packages',
+    tagline: 'Pre-Black Friday, half price. Cloudflare designed as the operating system for the business, in your account.',
+    includes: [
+      'Audit: current architecture, DNS and TLS, a performance baseline, security gaps, a cost model and a prioritised plan',
+      'Architecture naming each Cloudflare product and why, with the rollback plan',
+      'Build and migration in your own Cloudflare account: repository, Wrangler configuration, staging and a rehearsed cutover',
+      'Handover documentation. Ongoing Optimize & Support stays the separate monthly engagement',
+    ],
+    delivery: 'The audit is typically one to two weeks. The build is scoped per project.',
+    forWho: 'Businesses that want compute, data, security, AI and delivery designed as one system, in an account they own.',
+    interest: 'not-sure',
+    proof: { label: 'Read Cloudflare OS', href: '/cloudflare-os/' },
+  },
   {
     id: 'cloudflare-audit',
     amount: 150000,
@@ -249,14 +273,24 @@ export const SHOP: ShopItem[] = [
   },
 ];
 
+function money(cents: number, currency: 'usd' | 'eur'): string {
+  return new Intl.NumberFormat(currency === 'usd' ? 'en-US' : 'en-IE', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: cents % 100 === 0 ? 0 : 2,
+  }).format(cents / 100);
+}
+
 export function formatPrice(item: ShopItem): string | null {
   if (!item.amount || !item.currency) return null;
-  const value = new Intl.NumberFormat(item.currency === 'usd' ? 'en-US' : 'en-IE', {
-    style: 'currency',
-    currency: item.currency.toUpperCase(),
-    maximumFractionDigits: item.amount % 100 === 0 ? 0 : 2,
-  }).format(item.amount / 100);
+  const value = money(item.amount, item.currency);
   return `${item.pricePrefix ? `${item.pricePrefix} ` : ''}${value}${item.billing === 'monthly' ? ' / month' : ''}`;
+}
+
+/** Struck-through regular price. Not sent to checkout. */
+export function formatCompare(item: ShopItem): string | null {
+  if (!item.compareAt || !item.currency) return null;
+  return money(item.compareAt, item.currency);
 }
 
 export function isPurchasable(item: ShopItem): boolean {

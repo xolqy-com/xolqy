@@ -44,7 +44,15 @@ function setupMenu(): void {
   const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
   if (!toggle || !menu) return;
 
+  const header = document.querySelector<HTMLElement>('.site-header');
+  // The sale banner sits above the sticky header. The menu is fixed, so its
+  // top has to follow the header's real bottom or it covers the banner.
+  const place = () => {
+    if (!header) return;
+    menu.style.top = `${Math.max(0, Math.round(header.getBoundingClientRect().bottom))}px`;
+  };
   const open = () => {
+    place();
     menu.hidden = false;
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
@@ -77,6 +85,9 @@ function setupMenu(): void {
   });
   window.matchMedia('(min-width: 60em)').addEventListener('change', (e) => {
     if (e.matches && !menu.hidden) close(false);
+  });
+  window.addEventListener('resize', () => {
+    if (!menu.hidden) place();
   });
 }
 
