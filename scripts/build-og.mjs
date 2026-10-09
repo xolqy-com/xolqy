@@ -126,7 +126,7 @@ const pages = [
   { file: 'insight-dnssec-on-cloudflare', eyebrow: 'Insights', title: 'DNSSEC on Cloudflare.', subtitle: 'What it protects, how to turn it on, and the step everyone forgets.' },
   { file: 'insight-cookieless-analytics-cloudflare', eyebrow: 'Insights', title: 'Cookieless analytics.', subtitle: 'Measuring a website without a consent banner, with Cloudflare Web Analytics.' },
   { file: 'insight-cloudflare-as-an-operating-system', eyebrow: 'Insights', title: 'Cloudflare as an operating system.', subtitle: 'What the phrase means for a business, and what it does not mean.' },
-  { file: 'insight-cloudflare-os-kai-agentic-mcp', eyebrow: 'Insights', title: 'One system. Then agents.', subtitle: 'The mix, the one-way road, and the $2,500 Cloudflare OS offer.' },
+  { file: 'insight-cloudflare-os-kai-agentic-mcp', eyebrow: 'Insights', title: 'The one-way road I learned late.', subtitle: 'Cloudflare OS, agents and MCP. The offer is $2,500.' },
   { file: 'insight-which-cloudflare-products-a-business-needs', eyebrow: 'Insights', title: 'Which Cloudflare products you need.', subtitle: 'Choose by the job in front of you, not by the catalogue.' },
   { file: 'insight-your-cloudflare-account-should-be-yours', eyebrow: 'Insights', title: 'The account should be yours.', subtitle: 'What client-owned Cloudflare means, and what breaks when it is not.' },
   { file: 'insight-cloudflare-in-front-or-rebuild-on-workers', eyebrow: 'Insights', title: 'In front, or a rebuild.', subtitle: 'Two projects that both get called a Cloudflare migration.' },
