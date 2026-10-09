@@ -445,7 +445,9 @@ html:not(.js) .prose table { display: block; overflow-x: auto; }
   }
   html.js .reveal.in { opacity: 1; transform: none; }
 
-  .hero-line { overflow: hidden; }
+  /* Hide the rise without slicing descenders. The clip extends past the line
+     so the tail of y stays inside it. */
+  .hero-line { clip-path: inset(-0.08em -0.04em -0.24em -0.04em); }
   .hero-line > span { animation: rise 1s var(--ease-out) both; animation-delay: var(--d, 0ms); }
   @keyframes rise {
     from { transform: translateY(110%); }
@@ -471,8 +473,12 @@ html:not(.js) .prose table { display: block; overflow-x: auto; }
   .pulse { display: none; }
 }
 
-/* Headline lines are blocks regardless of motion preference */
+/* Headline lines are blocks regardless of motion preference.
+   The gradient fill only paints inside the line box. A line-height under 1
+   cuts off the tail of y. 1.22 holds the tail; the negative margin keeps
+   the stacked lines tight. */
 .hero-line, .hero-line > span { display: block; }
+.hero-line > span { line-height: 1.22; margin-bottom: -0.2em; }
 
 /* Shade: white display type on a dark background, lit from the top-left.
    A gradient fill clipped to the glyphs plus a one-pixel highlight and shadow,
