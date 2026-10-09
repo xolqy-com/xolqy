@@ -1,10 +1,12 @@
 ---
 import Wordmark from '@/components/brand/Wordmark.astro';
 import XMark from '@/components/brand/XMark.astro';
+import SiteSearch from '@/components/ui/SiteSearch.astro';
 import { NAV, CTA } from '@/data/site';
 
 const current = Astro.url.pathname;
 const isCurrent = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
+const desktopNav = NAV.filter((item) => item.href !== '/wiki/');
 ---
 
 <header class="site-header" data-header>
@@ -15,7 +17,7 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
 
     <nav class="site-header__nav" aria-label="Primary">
       <ul class="list-reset site-header__links">
-        {NAV.map((item) => (
+        {desktopNav.map((item) => (
           <li>
             <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
           </li>
@@ -24,6 +26,7 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
     </nav>
 
     <div class="site-header__actions">
+      <SiteSearch id="site-search-header" overlay />
       <a href={CTA.primary.href} class="btn btn--primary btn--sm site-header__cta">{CTA.primary.label}</a>
       <button
         type="button"
@@ -62,6 +65,7 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
         </ol>
       </nav>
       <div class="mobile-menu__foot">
+        <SiteSearch id="site-search-menu" />
         <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label}</a>
         <p class="mono mobile-menu__tag"><XMark size={14} /> Built for the edge.</p>
       </div>
@@ -115,6 +119,7 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   .site-header__links a:hover::after, .site-header__links a[aria-current='page']::after { transform: scaleX(1); }
 
   .site-header__actions { display: flex; align-items: center; gap: var(--space-3); }
+  .site-header__actions :global(.site-search) { display: none; }
   .site-header__cta { display: none; }
   .site-header__toggle {
     width: 2.75rem; height: 2.75rem;
@@ -133,10 +138,10 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   [aria-expanded='true'] .burger i:first-child { top: 5px; transform: rotate(45deg); }
   [aria-expanded='true'] .burger i:last-child { top: 5px; transform: rotate(-45deg); }
 
-  /* Nine items plus the project button need about 1280px before they sit
-     on one line. Below that, the full-height menu is the navigation. */
+  /* Eight items, search and the project button need about 1280px. */
   @media (min-width: 80em) {
     .site-header__nav { display: block; }
+    .site-header__actions :global(.site-search) { display: flex; }
     .site-header__cta { display: inline-flex; }
     .site-header__toggle { display: none; }
   }
@@ -172,7 +177,8 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   }
   .mobile-menu__links a[aria-current='page'] .mobile-menu__label { color: var(--signal); }
   .mobile-menu__index { color: rgba(245, 245, 240, 0.5); min-width: 2ch; }
-  .mobile-menu__foot { display: grid; gap: var(--space-5); }
+  .mobile-menu__foot { display: grid; gap: var(--space-4); }
+  .mobile-menu__foot :global(.site-search) { width: 100%; }
   .mobile-menu__tag { display: inline-flex; align-items: center; gap: var(--space-2); color: rgba(245, 245, 240, 0.6); }
   @media (prefers-reduced-motion: no-preference) {
     .mobile-menu:not([hidden]) .mobile-menu__links li { animation: menu-in 0.5s var(--ease-out) both; animation-delay: var(--d, 0ms); }
@@ -180,3 +186,5 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   }
   @media (min-width: 80em) { .mobile-menu { display: none !important; } }
 </style>
+
+<script src="../../scripts/site-search.ts"></script>

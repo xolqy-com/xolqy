@@ -30,7 +30,7 @@ export default defineConfig({
   session: false,
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/admin') && !page.includes('/contact/received') && !page.includes('/shop/thanks'),
+      filter: (page) => !page.includes('/admin') && !page.includes('/contact/received') && !page.includes('/shop/thanks') && !page.includes('search-index'),
     }),
   ],
   build: {

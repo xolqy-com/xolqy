@@ -27,10 +27,12 @@ function run(): void {
   };
 
   input.addEventListener('input', apply);
-  // Restore a filter carried in the hash, e.g. /wiki/#q=d1
+  // Header search falls back to /wiki/?q= when JavaScript is off. The hash form still works.
+  const fromQuery = new URLSearchParams(location.search).get('q');
   const m = /[#&]q=([^&]+)/.exec(location.hash);
-  if (m?.[1]) {
-    input.value = decodeURIComponent(m[1]);
+  const initial = fromQuery ?? (m?.[1] ? decodeURIComponent(m[1]) : '');
+  if (initial) {
+    input.value = initial;
     apply();
   }
 }

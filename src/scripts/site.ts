@@ -71,7 +71,7 @@ function setupMenu(): void {
   // Keep focus inside the panel while it is open.
   menu.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab' || menu.hidden) return;
-    const focusables = menu.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    const focusables = menu.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled])');
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
     if (!first || !last) return;
