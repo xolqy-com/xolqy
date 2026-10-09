@@ -18,6 +18,11 @@ const href = '/shop/#cloudflare-os';
       <span data-sale-countdown aria-live="off">––d ––h ––m ––s</span>
     </p>
     <a class="sale-banner__cta" href={href}>See the offer <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    <button type="button" class="sale-banner__close" data-sale-close aria-label="Close">
+      <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
+        <path d="M2 2l10 10M12 2L2 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+      </svg>
+    </button>
   </div>
 </div>
 <script src="../../scripts/sale-countdown.ts"></script>
@@ -28,12 +33,14 @@ const href = '/shop/#cloudflare-os';
     color: var(--ink);
   }
   .sale-banner__inner {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.45rem 1rem;
     padding-block: 0.65rem;
+    padding-right: calc(var(--gutter) + 3rem);
     font-size: var(--text-sm);
     line-height: 1.35;
   }
@@ -70,6 +77,20 @@ const href = '/shop/#cloudflare-os';
   .sale-banner__cta:hover { background: #000; }
   .sale-banner__cta .arrow { transition: transform var(--dur-fast) var(--ease-out); }
   .sale-banner__cta:hover .arrow { transform: translateX(3px); }
+  .sale-banner__close {
+    position: absolute;
+    top: 0.4rem;
+    right: var(--gutter);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--ink);
+    border-radius: var(--radius-pill);
+  }
+  .sale-banner__close:hover { background: rgba(10, 10, 10, 0.12); }
+  .sale-banner__close:focus-visible { outline-color: var(--ink); }
   @media (max-width: 40em) {
     .sale-banner__inner { align-items: flex-start; }
     .sale-banner__cta { width: 100%; justify-content: center; }

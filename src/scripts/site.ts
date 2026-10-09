@@ -89,6 +89,10 @@ function setupMenu(): void {
   window.addEventListener('resize', () => {
     if (!menu.hidden) place();
   });
+  // Closing the sale banner pulls the header up. Re-measure if the menu is open.
+  window.addEventListener('sale-banner-closed', () => {
+    if (!menu.hidden) place();
+  });
 }
 
 /* ---- Accessible tabs (stack explorer) -------------------------------------- */
