@@ -21,6 +21,8 @@ interface Props {
   loading?: 'lazy' | 'eager';
   fetchpriority?: 'high' | 'low' | 'auto';
   class?: string;
+  /** Optional muted loop (public path to an MP4) that plays over the image. */
+  video?: string | undefined;
 }
 
 const {
@@ -32,10 +34,11 @@ const {
   loading = 'lazy',
   fetchpriority = 'auto',
   class: className,
+  video,
 } = Astro.props;
 ---
 
-<span class:list={['shot', className]}>
+<span class:list={['shot', className, { 'shot--video': Boolean(video) }]}>
   <span class="shot__bar" aria-hidden="true">
     <span class="shot__dots"><i></i><i></i><i></i></span>
     <span class="shot__host">{host}</span>
@@ -52,6 +55,18 @@ const {
     fetchpriority={fetchpriority}
     class="shot__img"
   />
+  {video && (
+    <video
+      class="shot__video"
+      data-shot-video={video}
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+    />
+  )}
 </span>
 
 <style>
@@ -90,6 +105,24 @@ const {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .shot--video { position: relative; }
+  /* The video sits exactly over the image (below the bar) and fades in once
+     it is actually playing; until then, and for reduced motion or data saver,
+     the screenshot is what people see. */
+  .shot__video {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--shot-bar);
+    width: 100%;
+    aspect-ratio: 11 / 5;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+    pointer-events: none;
+  }
+  .shot__video.is-playing { opacity: 1; }
   .shot :global(.shot__img) {
     display: block;
     width: 100%;

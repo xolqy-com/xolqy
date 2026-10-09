@@ -1,9 +1,9 @@
 ---
 /**
- * The xolqy X symbol: two bars crossing at 45 degrees. The overlap is cut out
- * by the even-odd fill rule, leaving a hollow junction with a single node at
- * the centre, the "edge" where routes meet. One path, no backgrounds, so it
- * sits on any surface and works down to 16px.
+ * The xolqy X symbol: four round-ended arms on the diagonals around a single
+ * dot, the "edge" where routes meet. Same geometry as the x of the wordmark,
+ * no backgrounds, so it sits on any surface. Below about 20px the gaps close
+ * and it reads as a solid x.
  */
 interface Props {
   size?: number | string;
@@ -24,7 +24,8 @@ const { size = 32, class: className, title, color = 'currentColor' } = Astro.pro
   focusable="false"
 >
   {title && <title>{title}</title>}
-  <g transform="rotate(45 32 32)">
-    <path fill={color} fill-rule="evenodd" d="M27 3h10v58H27z M3 27h58v10H3z M30 30h4v4h-4z" />
+  <g transform="translate(32 32) rotate(45)" fill="none" stroke={color} stroke-width="9.31" stroke-linecap="round">
+    <path d="M0 -26.95V-11.03M0 26.95V11.03M-26.95 0H-11.03M26.95 0H11.03" />
   </g>
+  <circle cx="32" cy="32" r="3.11" fill={color} />
 </svg>

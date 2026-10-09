@@ -152,6 +152,12 @@ Plain variables live in `wrangler.jsonc > vars` (override per environment in the
 
 Bindings (`wrangler.jsonc`): `DB` (D1), `CONFIG` (KV), `RESOURCES` (R2), `ENQUIRY_QUEUE` (Queues producer + consumer), `ENQUIRY_WORKFLOW` (Workflows), `FINDER_SESSION` (Durable Object), `AI`, `VECTORIZE`, `EMAIL` (send_email), `ENQUIRY_LIMITER` and `FINDER_LIMITER` (rate limiting), `ASSETS`.
 
+## Shop and Health Check
+
+* `/shop/` lists the productised offers from `src/data/shop.ts`: fixed-scope packages, subscriptions and kits. An item without `price` shows "Fixed, quoted on request"; its button opens `/contact/?interest=…&package=…`, which preselects the service and starts the brief with the package name. Set `price` to publish a price; `availability: 'waitlist'` marks kits that are not packaged yet.
+* **Stripe Checkout.** Give an item `amount` (cents), `currency` and optionally `billing: 'monthly'` in `src/data/shop.ts` and its button becomes "Buy now" / "Subscribe": a plain form posts to `/api/checkout`, which creates a Checkout Session with inline prices (no products to maintain in Stripe) and redirects with 303. Stripe collects the billing address, tax ID and the customer's website. `POST /api/stripe-webhook` verifies the `Stripe-Signature` (HMAC-SHA256, five-minute tolerance), stores `checkout.session.completed` once per session in the `orders` table (`migrations/0002_orders.sql`) and emails `NOTIFY_EMAIL`. Orders are listed in `/admin/`. Setup: `wrangler secret put STRIPE_SECRET_KEY`; in Stripe, add the webhook endpoint `https://xolqy.com/api/stripe-webhook` for `checkout.session.completed` and `wrangler secret put STRIPE_WEBHOOK_SECRET` with its `whsec_` value; `npm run db:migrate:remote`. Invoices for myDATA are issued separately (Elorus).
+* `/health-check/` is a free outside check of any domain (`src/server/health-check.ts`, `GET /api/health-check?domain=`): HTTPS, redirect, HTTP/3, Cloudflare proxying, security headers, DNSSEC, IPv6, CAA, SPF and DMARC through Cloudflare DNS-over-HTTPS. Rate limited by `HEALTH_LIMITER` (6 per minute per visitor) and cached at the edge for ten minutes per domain. It ends with a call to action for the Cloudflare Audit.
+
 ## Dashboard configuration
 
 Everything below is account or zone configuration that cannot (or should not) live in the repository. Each item maps to a badge on `/stack/`.

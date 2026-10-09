@@ -135,8 +135,79 @@ function wrapTables(): void {
   });
 }
 
+/* ---- Cookie note: shown once, remembered with one localStorage flag ---------- */
+function setupCookieNote(): void {
+  const note = document.querySelector<HTMLElement>('[data-cookie-note]');
+  if (!note) return;
+  const KEY = 'xq-cookie-note';
+  let seen = false;
+  try { seen = localStorage.getItem(KEY) === '1'; } catch { return; }
+  if (seen) return;
+  window.setTimeout(() => {
+    note.hidden = false;
+    requestAnimationFrame(() => note.classList.add('is-in'));
+  }, 1200);
+  note.querySelector('[data-cookie-note-close]')?.addEventListener('click', () => {
+    try { localStorage.setItem(KEY, '1'); } catch { /* storage blocked: the note just closes */ }
+    note.classList.remove('is-in');
+    window.setTimeout(() => { note.hidden = true; }, 250);
+  });
+}
+
+/* ---- Horizontal work rail: previous/next buttons and edge state -------------- */
+function setupRails(): void {
+  document.querySelectorAll<HTMLElement>('[data-rail]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-rail-track]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-rail-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-rail-next]');
+    if (!track || !prev || !next) return;
+    const step = () => {
+      const item = track.querySelector<HTMLElement>(':scope > *');
+      return item ? item.getBoundingClientRect().width + 1 : track.clientWidth * 0.8;
+    };
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max;
+      root.dataset.scrollable = String(max > 0);
+    };
+    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+}
+
+/* ---- Screenshot videos: load and play only while visible ------------------- */
+function setupShotVideos(): void {
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-shot-video]');
+  if (videos.length === 0 || !('IntersectionObserver' in window)) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+  if (reduce || saveData) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) {
+          if (!v.src) v.src = v.dataset.shotVideo ?? '';
+          v.play().then(() => v.classList.add('is-playing')).catch(() => { /* autoplay refused: keep the image */ });
+        } else {
+          v.pause();
+        }
+      }
+    },
+    { threshold: 0.25 },
+  );
+  videos.forEach((v) => io.observe(v));
+}
+
 setupReveals();
 setupMenu();
 setupTabs();
 setupAnimationPausing();
 wrapTables();
+setupCookieNote();
+setupRails();
+setupShotVideos();

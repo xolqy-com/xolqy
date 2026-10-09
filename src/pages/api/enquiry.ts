@@ -90,7 +90,11 @@ export const POST: APIRoute = async ({ request }) => {
       ok: [200, ''],
     };
     const [status, message] = messages[turnstile.code] ?? [400, 'Verification failed.'];
-    return fail(status, `turnstile-${turnstile.code}`, message);
+    // Siteverify error codes (e.g. invalid-input-secret, timeout-or-duplicate) carry
+    // no personal data and are the only way to tell a bad secret from an expired token.
+    const reason = turnstile.errorCodes?.length ? turnstile.errorCodes.join(',') : turnstile.hostname ? `hostname=${turnstile.hostname}` : '';
+    console.warn(JSON.stringify({ event: 'turnstile-failed', code: turnstile.code, reason }));
+    return fail(status, `turnstile-${turnstile.code}${reason ? `:${reason}` : ''}`, message);
   }
 
   // 4. Store (authoritative) in D1

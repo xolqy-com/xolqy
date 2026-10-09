@@ -55,6 +55,10 @@ function setup(form: HTMLFormElement): void {
   const wanted = new URLSearchParams(location.search).get('interest');
   if (wanted && interest && Array.from(interest.options).some((o) => o.value === wanted)) interest.value = wanted;
 
+  // Arriving from the shop: start the brief with the package name.
+  const pkg = (new URLSearchParams(location.search).get('package') ?? '').replace(/[^\p{L}\p{N} &+.,()-]/gu, '').slice(0, 80);
+  if (pkg && !brief.value) brief.value = `Package: ${pkg}\n\nWebsite and what we need: `;
+
   // Live character count for the brief
   const updateCounter = () => {
     if (!counter) return;

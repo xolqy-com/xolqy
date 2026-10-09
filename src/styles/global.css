@@ -129,7 +129,7 @@ p { text-wrap: pretty; }
   max-height: 100%;
   pointer-events: none;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cpath d='M56 32l8 8M64 32l-8 8M152 56l8 8M160 56l-8 8M32 128l8 8M40 128l-8 8M128 152l8 8M136 152l-8 8' stroke='%23ff5a1f' stroke-opacity='0.6' stroke-width='1.8' stroke-linecap='square' fill='none'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cg fill='%23ff5a1f' stroke='%23ff5a1f' fill-opacity='0.6' stroke-opacity='0.6'%3E%3Cpath d='M63.73 39.73L61.53 37.53M63.73 32.27L61.53 34.47M56.27 39.73L58.47 37.53M56.27 32.27L58.47 34.47M159.73 63.73L157.53 61.53M159.73 56.27L157.53 58.47M152.27 63.73L154.47 61.53M152.27 56.27L154.47 58.47M39.73 135.73L37.53 133.53M39.73 128.27L37.53 130.47M32.27 135.73L34.47 133.53M32.27 128.27L34.47 130.47M135.73 159.73L133.53 157.53M135.73 152.27L133.53 154.47M128.27 159.73L130.47 157.53M128.27 152.27L130.47 154.47' stroke-width='1.82' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='60' cy='36' r='0.61'/%3E%3Ccircle cx='156' cy='60' r='0.61'/%3E%3Ccircle cx='36' cy='132' r='0.61'/%3E%3Ccircle cx='132' cy='156' r='0.61'/%3E%3C/g%3E%3C/svg%3E"),
     radial-gradient(circle at center, rgba(245, 245, 240, 0.26) 1px, transparent 1.6px),
     radial-gradient(farthest-side at 100% 0%, rgba(255, 90, 31, 0.28), rgba(255, 90, 31, 0.08) 0%, rgba(255, 90, 31, 0) 72%);
   background-size: 192px 192px, 24px 24px, 100% 100%;
@@ -253,11 +253,14 @@ p { text-wrap: pretty; }
 }
 /* Hover elevates instead of tinting: the colour stays exact, the button lifts
    and casts a shadow in its own colour. */
-.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(10, 10, 10, 0.45); }
-.btn:active { transform: translateY(0); box-shadow: 0 2px 6px -4px rgba(10, 10, 10, 0.35); transition-duration: 60ms; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.45); }
+.btn:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); transition-duration: 60ms; }
+/* Primary keeps the exact brand orange on hover: no tint, no coloured glow
+   (an orange blur on the page reads as a smudge). It lifts on a tight neutral
+   shadow with a hairline highlight along the top edge. */
 .btn--primary { --btn-bg: var(--signal); --btn-fg: var(--ink); }
-.btn--primary:hover { box-shadow: 0 14px 28px -10px rgba(255, 90, 31, 0.6), 0 4px 10px -4px rgba(255, 90, 31, 0.45); }
-.btn--primary:active { box-shadow: 0 3px 8px -4px rgba(255, 90, 31, 0.5); }
+.btn--primary:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 16px -8px rgba(0, 0, 0, 0.5); }
+.btn--primary:active { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3); }
 .btn--ghost { --btn-bg: transparent; --btn-fg: var(--fg); --btn-line: var(--line-strong); }
 .btn--ghost:hover, .btn--ghost:active { --btn-line: var(--fg); box-shadow: none; }
 .btn--sm { min-height: 2.5rem; padding: 0.5rem 1rem; }
@@ -275,7 +278,8 @@ p { text-wrap: pretty; }
   padding-bottom: 2px;
   transition: border-color var(--dur-fast), color var(--dur-fast);
 }
-.link:hover { border-color: var(--accent); color: var(--accent-text); }
+/* Links turn the vivid brand orange on hover: text, underline and arrow. */
+.link:hover { border-color: var(--accent-hover); color: var(--accent-hover); }
 .link .arrow { transition: transform var(--dur-fast) var(--ease-out); }
 .link:hover .arrow { transform: translateX(3px); }
 

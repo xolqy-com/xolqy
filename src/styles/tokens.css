@@ -84,6 +84,7 @@
   --accent: var(--signal);
   --accent-fg: var(--ink);         /* text on accent surfaces */
   --accent-text: var(--signal);    /* accent used as text: 6.3:1 on near-black */
+  --accent-hover: var(--signal);   /* hover colour for large headings */
   --focus: var(--signal);
   --grid-dot: rgba(245, 245, 240, 0.12);
   --selection: rgba(255, 90, 31, 0.45);
@@ -104,6 +105,9 @@
   /* Orange on warm white is 2.9:1, below AA for text, so accent text on light
      sections uses the deep variant (4.6:1) and orange stays for marks and lines. */
   --accent-text: #b8360a;
+  /* Hover on links: the exact brand orange, as on the buttons. Text is black
+     at rest; the orange only appears while the pointer is on the link. */
+  --accent-hover: var(--signal);
   --focus: var(--ink);
   --grid-dot: rgba(10, 10, 10, 0.14);
   --selection: rgba(255, 90, 31, 0.35);

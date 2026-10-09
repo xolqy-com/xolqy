@@ -112,6 +112,11 @@ export async function collectStatus(env: EnvWithSecrets, opts: { beaconConfigure
 
   out.images = await checkImages(env);
 
+  const stripe = env as EnvWithSecrets & { STRIPE_SECRET_KEY?: string; STRIPE_WEBHOOK_SECRET?: string };
+  out.stripe = stripe.STRIPE_SECRET_KEY && stripe.STRIPE_WEBHOOK_SECRET
+    ? { state: 'active', detail: `Checkout and webhook secrets set (${/_live_/.test(stripe.STRIPE_SECRET_KEY) ? 'live' : 'test'} mode).` }
+    : { state: 'awaiting', detail: 'STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET not set; shop items show "Request this package".' };
+
   return out;
 }
 

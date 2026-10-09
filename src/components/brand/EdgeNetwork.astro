@@ -54,8 +54,11 @@ const routes = [
   </g>
 
   <!-- junction: the X -->
-  <g transform="translate(360 280) rotate(45)" class="net__x">
-    <path fill-rule="evenodd" d="M-17 -110h34v220h-34z M-110 -17h220v34h-220z M-7 -7h14v14h-14z" />
+  <g class="net__x">
+    <g transform="translate(360 280) rotate(45)" fill="none" stroke-width="35.26" stroke-linecap="round">
+      <path d="M0 -102.08V-41.76M0 102.08V41.76M-102.08 0H-41.76M102.08 0H41.76" />
+    </g>
+    <circle cx="360" cy="280" r="11.79" />
   </g>
   <circle cx="360" cy="280" r="150" class="net__ring" />
   <circle cx="360" cy="280" r="190" class="net__ring net__ring--faint" />
@@ -86,7 +89,8 @@ const routes = [
   .net__rule path { stroke: var(--line); stroke-width: 1; fill: none; }
   .net__routes path { stroke: var(--line-strong); stroke-width: 1.25; fill: none; stroke-linejoin: round; stroke-linecap: round; }
   .net__pulses path { fill: none; stroke-width: 2; stroke-linecap: round; }
-  .net__x { fill: var(--signal); }
+  .net__x { fill: var(--signal); stroke: var(--signal); }
+  .net__x circle { stroke: none; }
   .net__ring { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 8; }
   .net__ring--faint { stroke: var(--grid-dot); stroke-dasharray: 1 10; }
   .net__node { fill: var(--fg); }

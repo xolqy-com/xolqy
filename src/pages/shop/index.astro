@@ -1,0 +1,180 @@
+---
+import Base from '@/layouts/Base.astro';
+import XMark from '@/components/brand/XMark.astro';
+import Faq from '@/components/ui/Faq.astro';
+import { SHOP, SHOP_CATEGORIES, shopByCategory, formatPrice, isPurchasable, type ShopItem } from '@/data/shop';
+import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
+import { SITE } from '@/data/site';
+
+const description = 'Fixed-scope Cloudflare packages (audit, migration, security hardening, Zero Trust, AI assistant), monthly management and prepaid hours, and the kits we build with. Clear deliverables and delivery times.';
+
+const requestHref = (item: ShopItem) =>
+  `/contact/?interest=${encodeURIComponent(item.interest)}&package=${encodeURIComponent(item.name)}#enquiry`;
+
+const faqs = [
+  { q: 'Why are some prices not shown?', a: 'Every package has a fixed scope. Where a price is not published yet, we quote it in our first reply, as a fixed figure for the scope listed, before any work starts.' },
+  { q: 'What if my site needs more than the package covers?', a: 'We say so before starting and quote the difference separately. A package never grows in scope without your written agreement.' },
+  { q: 'Do I need to be on Cloudflare already?', a: 'No. The Migration Sprint moves you there. The other packages assume the domain is on Cloudflare or will be by the time the work starts; the free plan is enough for most of them.' },
+  { q: 'Who owns the result?', a: 'You do. Configuration lives in your Cloudflare account, code in your repository, and you receive the documentation. Nothing of ours keeps running in your account after we hand over.' },
+  { q: 'How do I pay?', a: 'Packages with a price shown can be paid by card through Stripe Checkout; an invoice follows within one working day. Anything else is paid by card or bank transfer against an invoice. Subscriptions are billed monthly in advance and can be cancelled with 30 days notice.' },
+];
+
+const offerCatalog = {
+  '@context': 'https://schema.org',
+  '@type': 'OfferCatalog',
+  name: `${SITE.name} packages`,
+  url: `${SITE.url}/shop/`,
+  itemListElement: SHOP.map((i) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name: i.name, description: i.tagline, provider: { '@type': 'Organization', name: SITE.name, url: SITE.url } },
+  })),
+};
+---
+
+<Base
+  title="Shop: Cloudflare packages, subscriptions and kits"
+  description={description}
+  path="/shop/"
+  ogImage="/og/shop.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Shop', href: '/shop/' }]), faqJsonLd(faqs), offerCatalog]}
+>
+  <section class="section shop-hero" data-theme="dark">
+    <div class="container shop-hero__grid">
+      <div class="flow">
+        <p class="eyebrow fade-in">Shop</p>
+        <h1 class="display shade shop-hero__title"><span class="hero-line"><span style="--d:60ms">Cloudflare work, sold as products.</span></span></h1>
+        <p class="lead fade-in shop-hero__lead" style="--d:240ms">Fixed scope, a delivery time and a deliverable you can check. Pick a package, or start with the free health check and see where you stand.</p>
+        <nav class="cluster fade-in shop-hero__nav" style="--d:360ms" aria-label="Shop sections">
+          {SHOP_CATEGORIES.map((c) => <a href={`#${c.id}`} class="badge shop-hero__jump">{c.label}</a>)}
+        </nav>
+      </div>
+      <a href="/health-check/" class="shop-check fade-in" style="--d:420ms">
+        <XMark size={28} class="shop-check__mark" />
+        <span class="mono faint">Free tool</span>
+        <span class="h-xl">Cloudflare Health Check</span>
+        <span class="muted">Enter a domain and get a score for HTTPS, Cloudflare, security headers, DNSSEC and email authentication in a few seconds.</span>
+        <span class="link">Check your domain <span class="arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </div>
+  </section>
+
+  {SHOP_CATEGORIES.map((cat, ci) => (
+    <section class="section" data-theme={ci % 2 === 0 ? 'light' : 'dark'} id={cat.id} aria-labelledby={`${cat.id}-title`}>
+      <div class="container">
+        <div class="between reveal">
+          <div class="flow">
+            <p class="eyebrow">{cat.label}</p>
+            <h2 id={`${cat.id}-title`} class="h-3xl measure">{cat.title}</h2>
+          </div>
+          <p class="muted shop-note">{cat.summary}</p>
+        </div>
+        <ul class="list-reset shop-grid">
+          {shopByCategory(cat.id).map((item, i) => (
+            <li class="shop-card reveal" style={`--reveal-delay:${i * 70}ms`} id={item.id}>
+              <div class="shop-card__head">
+                <h3 class="h-xl">{item.name}</h3>
+                {item.availability === 'waitlist' && <span class="badge" data-status="planned">Waitlist</span>}
+              </div>
+              <p class="shop-card__tagline">{item.tagline}</p>
+              <ul class="ticks shop-card__includes">
+                {item.includes.map((x) => <li>{x}</li>)}
+              </ul>
+              <dl class="shop-card__facts">
+                <div><dt class="mono faint">Delivery</dt><dd>{item.delivery}</dd></div>
+                <div><dt class="mono faint">For</dt><dd>{item.forWho}</dd></div>
+              </dl>
+              <div class="shop-card__foot">
+                <div class="shop-card__price">
+                  <span class="mono faint">Price</span>
+                  <span class="h-lg">{formatPrice(item) ?? 'Fixed, quoted on request'}</span>
+                </div>
+                {isPurchasable(item) ? (
+                  <form method="post" action="/api/checkout" class="shop-card__buy">
+                    <input type="hidden" name="itemId" value={item.id} />
+                    <button type="submit" class="btn btn--primary">
+                      {item.billing === 'monthly' ? 'Subscribe' : 'Buy now'} <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </button>
+                    <a href={requestHref(item)} class="shop-card__alt">or ask a question first</a>
+                  </form>
+                ) : (
+                  <a href={requestHref(item)} class:list={['btn', item.availability === 'waitlist' ? 'btn--ghost' : 'btn--primary']}>
+                    {item.availability === 'waitlist' ? 'Join the waitlist' : 'Request this package'}
+                    <span class="arrow" aria-hidden="true">&rarr;</span>
+                  </a>
+                )}
+              </div>
+              {item.proof
+                ? <a href={item.proof.href} class="shop-card__proof">{item.proof.label} <span aria-hidden="true">&rarr;</span></a>
+                : shopByCategory(cat.id).some((x) => x.proof) && <span class="shop-card__proof" aria-hidden="true">&nbsp;</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <section class="section" data-theme="light" aria-labelledby="shop-faq-title">
+    <div class="container shop-faq">
+      <div class="flow reveal">
+        <p class="eyebrow">Questions</p>
+        <h2 id="shop-faq-title" class="h-3xl">How buying works.</h2>
+        <p class="muted">Something that does not fit a package? <a href="/contact/">Describe it</a> and we will scope it.</p>
+      </div>
+      <Faq items={faqs} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .shop-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
+  .shop-hero__title { max-width: 14ch; }
+  .shop-hero__lead { max-width: 52ch; margin-top: var(--space-5); }
+  .shop-hero__nav { margin-top: var(--space-6); }
+  .shop-hero__jump { text-decoration: none; }
+  .shop-hero__jump:hover { color: var(--fg); border-color: var(--fg); }
+  .shop-check {
+    display: grid; gap: var(--space-3);
+    padding: var(--space-6);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-raised);
+    text-decoration: none;
+    transition: border-color var(--dur-base), transform var(--dur-base) var(--ease-out);
+  }
+  .shop-check:hover { border-color: var(--signal); transform: translateY(-2px); }
+  .shop-check :global(.shop-check__mark) { color: var(--signal); }
+  .shop-note { max-width: 44ch; }
+  .shop-grid { display: grid; gap: 1px; margin-top: var(--space-7); background: var(--line); border: 1px solid var(--line); }
+  .shop-card { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6); background: var(--bg); }
+  .shop-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .shop-card__tagline { font-size: var(--text-lg, 1.125rem); }
+  .shop-card__includes { gap: var(--space-2); font-size: var(--text-sm); }
+  .shop-card__facts { margin: 0; display: grid; gap: var(--space-3); font-size: var(--text-sm); }
+  .shop-card__facts dd { margin: 0.2rem 0 0; }
+  /* The price block sits at the bottom of every card, and every card in a row
+     reserves the same space for the proof link underneath, so prices and
+     buttons line up across the row whatever the length of the text above. */
+  .shop-card__foot { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--line); display: grid; gap: var(--space-4); justify-items: start; }
+  .shop-card__price { display: grid; gap: 0.2rem; }
+  .shop-card__buy { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+  .shop-card__alt { font-size: var(--text-sm); color: var(--fg-muted); text-underline-offset: 3px; }
+  .shop-card__alt:hover { color: var(--accent-hover); }
+  .shop-card__proof { font-size: var(--text-sm); color: var(--fg-muted); text-underline-offset: 3px; }
+  .shop-card__proof:hover { color: var(--accent-hover); }
+  .shop-faq { display: grid; gap: var(--space-7); align-items: start; }
+  @media (min-width: 48em) {
+    .shop-grid { grid-template-columns: repeat(2, 1fr); }
+    .shop-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  @media (min-width: 72em) {
+    .shop-grid { grid-template-columns: repeat(3, 1fr); }
+    .shop-card:last-child:nth-child(odd) { grid-column: auto; }
+    .shop-card:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+    .shop-card:last-child:nth-child(3n + 2) { grid-column: span 2; }
+  }
+  @media (min-width: 60em) {
+    .shop-hero__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gutter); }
+    .shop-faq { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .shop-faq > .flow { position: sticky; top: 6rem; }
+  }
+</style>

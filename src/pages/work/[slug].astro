@@ -54,6 +54,7 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
           sizes="(min-width: 90em) 84rem, calc(100vw - 2rem)"
           loading="eager"
           fetchpriority="high"
+          video={entry.data.video}
         />
       </figure>
     )}

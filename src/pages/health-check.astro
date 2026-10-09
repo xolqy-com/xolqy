@@ -1,0 +1,147 @@
+---
+import Base from '@/layouts/Base.astro';
+import XMark from '@/components/brand/XMark.astro';
+import Faq from '@/components/ui/Faq.astro';
+import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
+
+const description = 'Free Cloudflare Health Check: enter a domain and get a score for HTTPS, HTTP/3, Cloudflare proxying, security headers, DNSSEC, CAA, SPF and DMARC in a few seconds.';
+
+const covers = [
+  { group: 'Connection', items: ['HTTPS and the certificate', 'HTTP to HTTPS redirect', 'HTTP/3', 'Response time from the edge'] },
+  { group: 'Cloudflare', items: ['Whether the site is proxied', 'Homepage cache status', 'Where DNS is hosted'] },
+  { group: 'Headers', items: ['HSTS', 'Content-Security-Policy', 'nosniff, framing, referrer'] },
+  { group: 'DNS and email', items: ['DNSSEC and IPv6', 'CAA records', 'SPF and DMARC'] },
+];
+
+const faqs = [
+  { q: 'What does the check actually do?', a: 'It requests your homepage over HTTPS and plain HTTP, reads the response headers, and looks up a few DNS records through Cloudflare\'s public resolver. It sees what any browser or mail server sees. It does not log in, scan ports, submit forms or crawl your site.' },
+  { q: 'Is the score the same as an audit?', a: 'No. It is an outside view of one page and your DNS. The Cloudflare Audit looks inside your account: firewall rules, cache rules, Workers, costs and logs, and ranks what to fix.' },
+  { q: 'Do you store the domains people check?', a: 'The domain and its score are written to our Worker logs, which expire automatically, and the result is cached for ten minutes so repeated checks do not hit your site again. Nothing is linked to you.' },
+  { q: 'Why is my score low even though the site works?', a: 'Most of the checks are protections that are invisible when everything is fine: email authentication, DNSSEC, security headers. A working site and a well-protected site are different things.' },
+];
+---
+
+<Base
+  title="Free Cloudflare Health Check"
+  description={description}
+  path="/health-check/"
+  ogImage="/og/health-check.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Shop', href: '/shop/' }, { name: 'Health Check', href: '/health-check/' }]), faqJsonLd(faqs)]}
+>
+  <section class="section hc-hero" data-theme="dark">
+    <div class="container">
+      <p class="eyebrow fade-in">Free tool</p>
+      <h1 class="display shade hc-hero__title"><span class="hero-line"><span style="--d:60ms">How healthy is your domain?</span></span></h1>
+      <p class="lead fade-in hc-hero__lead" style="--d:240ms">Enter a domain. In a few seconds you get a score for HTTPS, Cloudflare, security headers and email authentication, with what each result means.</p>
+
+      <form class="hc-form fade-in" style="--d:360ms" data-health-form action="/health-check/" method="get" novalidate>
+        <label class="visually-hidden" for="hc-domain">Domain</label>
+        <input class="input hc-form__input" id="hc-domain" name="domain" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="yourcompany.com" required maxlength="253" />
+        <button type="submit" class="btn btn--primary hc-form__btn" data-health-submit>Run the check <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </form>
+      <p class="mono--lc faint hc-hero__note fade-in" style="--d:420ms">Read-only: two page requests and a few DNS lookups. No crawling, no logins, no forms.</p>
+      <p class="hc-status" data-health-status role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" data-health-result hidden aria-labelledby="hc-result-title">
+    <div class="container">
+      <div class="hc-summary">
+        <div class="hc-score" data-health-grade-wrap>
+          <span class="hc-score__grade" data-health-grade>A</span>
+          <span class="hc-score__num"><span data-health-score>0</span>/100</span>
+        </div>
+        <div class="flow">
+          <p class="eyebrow">Result</p>
+          <h2 id="hc-result-title" class="h-3xl" data-health-domain>example.com</h2>
+          <p class="muted" data-health-summary></p>
+        </div>
+      </div>
+      <div class="hc-groups" data-health-groups></div>
+      <div class="hc-cta">
+        <div class="flow">
+          <XMark size={32} class="hc-cta__mark" />
+          <h3 class="h-2xl">This was the outside. The audit looks inside.</h3>
+          <p class="muted">Firewall and cache rules, Workers, costs and logs, every finding ranked by impact, delivered as a report in five working days.</p>
+        </div>
+        <div class="hc-cta__actions">
+          <a class="btn btn--primary" data-health-audit href="/contact/?interest=audit&package=Cloudflare%20Audit#enquiry">Get the full audit <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="link" href="/shop/">See all packages <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="hc-covers-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">What it checks</p>
+          <h2 id="hc-covers-title" class="h-3xl measure">What a visitor, a browser and a mail server can see.</h2>
+        </div>
+      </div>
+      <ul class="list-reset hc-covers">
+        {covers.map((c, i) => (
+          <li class="hc-covers__item reveal" style={`--reveal-delay:${i * 70}ms`}>
+            <h3 class="h-lg">{c.group}</h3>
+            <ul class="ticks">{c.items.map((x) => <li>{x}</li>)}</ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="hc-faq-title">
+    <div class="container hc-faq">
+      <div class="flow reveal">
+        <p class="eyebrow">Questions</p>
+        <h2 id="hc-faq-title" class="h-3xl">About the check.</h2>
+      </div>
+      <Faq items={faqs} />
+    </div>
+  </section>
+</Base>
+
+<script src="../scripts/health-check.ts"></script>
+
+<style>
+  .hc-hero__title { max-width: 14ch; margin-top: var(--space-4); }
+  .hc-hero__lead { max-width: 56ch; margin-top: var(--space-5); }
+  .hc-form { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-7); max-width: 40rem; }
+  .hc-form__input { flex: 1 1 18rem; min-height: 3.25rem; font-size: var(--text-base); }
+  .hc-form__btn { min-height: 3.25rem; }
+  .hc-hero__note { margin-top: var(--space-4); }
+  .hc-status { margin-top: var(--space-4); min-height: 1.5em; }
+  .hc-status[data-tone='error'] { color: var(--signal); }
+  .hc-summary { display: grid; gap: var(--space-6); align-items: center; }
+  .hc-score { display: grid; place-items: center; width: 9rem; height: 9rem; border-radius: 50%; border: 2px solid var(--line-strong); }
+  .hc-score[data-grade='A'], .hc-score[data-grade='B'] { border-color: var(--fg); }
+  .hc-score[data-grade='D'], .hc-score[data-grade='F'] { border-color: var(--signal); }
+  .hc-score__grade { font-size: 3.5rem; font-weight: 700; line-height: 1; }
+  .hc-score__num { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--fg-muted); margin-top: -1.5rem; }
+  .hc-groups { display: grid; gap: 1px; margin-top: var(--space-7); background: var(--line); border: 1px solid var(--line); }
+  .hc-groups :global(.hc-group) { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-4); align-content: start; }
+  .hc-groups :global(.hc-item) { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem var(--space-3); }
+  .hc-groups :global(.hc-dot) { width: 0.7rem; height: 0.7rem; border-radius: 50%; margin-top: 0.45rem; background: var(--line-strong); }
+  .hc-groups :global(.hc-dot[data-s='pass']) { background: #2f9e5b; }
+  .hc-groups :global(.hc-dot[data-s='warn']) { background: #e0a100; }
+  .hc-groups :global(.hc-dot[data-s='fail']) { background: var(--signal); }
+  .hc-groups :global(.hc-item__label) { font-weight: 600; }
+  .hc-groups :global(.hc-item__detail) { grid-column: 2; font-size: var(--text-sm); color: var(--fg-muted); }
+  .hc-cta { display: grid; gap: var(--space-6); margin-top: var(--space-7); padding: var(--space-6); border: 1px solid var(--line-strong); border-radius: var(--radius-md); align-items: end; }
+  .hc-cta :global(.hc-cta__mark) { color: var(--signal); }
+  .hc-cta__actions { display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap; }
+  .hc-covers { display: grid; gap: 1px; margin-top: var(--space-7); background: var(--line); border: 1px solid var(--line); }
+  .hc-covers__item { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-3); align-content: start; }
+  .hc-faq { display: grid; gap: var(--space-7); align-items: start; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (min-width: 48em) {
+    .hc-summary { grid-template-columns: auto 1fr; }
+    .hc-groups, .hc-covers { grid-template-columns: repeat(2, 1fr); }
+    .hc-cta { grid-template-columns: 1fr auto; }
+  }
+  @media (min-width: 72em) { .hc-covers { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 60em) {
+    .hc-faq { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+  }
+</style>

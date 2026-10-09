@@ -1,0 +1,41 @@
+---
+import Base from '@/layouts/Base.astro';
+import XMark from '@/components/brand/XMark.astro';
+
+const steps = [
+  { title: 'Receipt', body: 'Stripe has emailed your receipt. Our invoice follows separately within one working day.' },
+  { title: 'Onboarding', body: 'We reply from a person, not a robot, with a short list of what we need: access, the domain, and any constraints.' },
+  { title: 'Delivery', body: 'Work starts once we have access. The delivery time on the package counts from that day.' },
+];
+---
+
+<Base title="Thank you for your order" description="Your order has been received." path="/shop/thanks/" noindex={true}>
+  <section class="section thanks" data-theme="dark">
+    <div class="container flow-lg">
+      <XMark size={40} class="thanks__mark" />
+      <p class="eyebrow">Order received</p>
+      <h1 class="display shade thanks__title">Thank you. We are on it.</h1>
+      <p class="lead thanks__lead">Your payment went through and your order is with us. Here is what happens next.</p>
+      <ol class="list-reset thanks__steps">
+        {steps.map((s, i) => (
+          <li class="thanks__step">
+            <span class="mono faint">0{i + 1}</span>
+            <h2 class="h-lg">{s.title}</h2>
+            <p class="muted">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="muted">Questions in the meantime? Reply to the receipt email or <a href="/contact/">write to us</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .thanks { min-height: 70vh; }
+  .thanks :global(.thanks__mark) { color: var(--signal); }
+  .thanks__title { max-width: 14ch; }
+  .thanks__lead { max-width: 52ch; }
+  .thanks__steps { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .thanks__step { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-2); align-content: start; }
+  @media (min-width: 48em) { .thanks__steps { grid-template-columns: repeat(3, 1fr); } }
+</style>

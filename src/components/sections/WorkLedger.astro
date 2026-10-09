@@ -14,9 +14,10 @@ const work = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b
 const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
 ---
 
-<ol class="list-reset work">
+<div class:list={['work-root', { 'work-root--rail': variant === 'compact' }]} data-rail={variant === 'compact' ? '' : undefined}>
+<ol class:list={['list-reset', 'work', { 'work--rail': variant === 'compact' }]} data-rail-track={variant === 'compact' ? '' : undefined} tabindex={variant === 'compact' ? 0 : undefined} aria-label={variant === 'compact' ? 'Case studies, scroll sideways for more' : undefined}>
   {work.map((w, i) => (
-    <li class="work__item reveal" style={`--reveal-delay:${i * 80}ms`}>
+    <li class:list={['work__item', { reveal: variant !== 'compact' }]} style={variant !== 'compact' ? `--reveal-delay:${i * 80}ms` : undefined}>
       <a href={`/work/${w.id}/`} class:list={['work__link', { 'work__link--shot': Boolean(w.data.image) }]}>
         {w.data.image && (
           <Screenshot
@@ -26,6 +27,7 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
             widths={[480, 768, 1024]}
             sizes="(min-width: 90em) 38rem, (min-width: 48em) calc(50vw - 5rem), calc(100vw - 6rem)"
             class="work__shot"
+            video={w.data.video}
           />
         )}
         <span class="work__meta">
@@ -42,7 +44,30 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
       </a>
     </li>
   ))}
+  {variant !== 'compact' && work.length % 2 === 1 && (
+    <li class="work__item work__item--next">
+      <a href="/contact/" class="work__link work__next">
+        <span class="work__next-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+        </span>
+        <span class="mono faint">Case study {String(work.length + 1).padStart(2, '0')}</span>
+        <span class="work__title h-2xl">Your project here.</span>
+        <span class="work__summary muted">A site, an application or a migration that needs to be fast, secure and cheap to run. Tell us what you are building.</span>
+        <span class="work__cta link">Start your project <span class="arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
+    </li>
+  )}
 </ol>
+{variant === 'compact' && (
+  <div class="work-rail__controls">
+    <span class="mono faint work-rail__count">{work.length} case studies</span>
+    <span class="work-rail__buttons">
+      <button type="button" class="work-rail__btn" data-rail-prev aria-label="Previous case study"><span aria-hidden="true">&larr;</span></button>
+      <button type="button" class="work-rail__btn" data-rail-next aria-label="Next case study"><span aria-hidden="true">&rarr;</span></button>
+    </span>
+  </div>
+)}
+</div>
 
 <style>
   .work { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
@@ -59,20 +84,56 @@ const host = (u: string) => new URL(u).hostname.replace(/^www\./, '');
   }
   .work__link--shot { grid-template-rows: auto auto auto auto 1fr auto auto; }
   .work__link:hover { background: var(--bg-raised); }
-  .work__link:hover .work__title { color: var(--accent-text); }
+  .work__link:hover .work__title { color: var(--signal); }
   .work__link :global(.work__shot) { margin-bottom: var(--space-2); transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base); }
   .work__link:hover :global(.work__shot) { border-color: var(--signal); }
   .work__link :global(.shot__img) { transition: transform var(--dur-slow) var(--ease-out); }
   .work__link:hover :global(.shot__img) { transform: scale(1.02); }
+  .work__next { grid-template-rows: auto auto auto 1fr auto; align-content: start; }
+  .work__next-mark { color: var(--signal); }
   .work__meta { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
   .work__title { display: block; transition: color var(--dur-fast); }
   .work__sector { font-weight: 500; }
   .work__summary { max-width: 60ch; }
   .work__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .work__cta { justify-self: start; margin-top: var(--space-2); }
+  /* Rail (homepage): one row that scrolls sideways with snap points, so new
+     case studies extend the row instead of the page. */
+  .work--rail {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    scrollbar-width: none;
+  }
+  .work--rail::-webkit-scrollbar { display: none; }
+  .work--rail:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .work--rail > .work__item { flex: 0 0 min(86%, 36rem); scroll-snap-align: start; }
+  .work-rail__controls { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-5); }
+  .work-rail__buttons { display: inline-flex; gap: var(--space-2); }
+  .work-rail__btn {
+    display: inline-grid; place-items: center;
+    width: 3rem; height: 3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--fg);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+  }
+  .work-rail__btn:hover:not(:disabled) { background: var(--signal); border-color: var(--signal); color: var(--ink); transform: translateY(-2px); }
+  .work-rail__btn:disabled { opacity: 0.35; cursor: default; }
+  /* data-scrollable is set by the script, so without JavaScript (where the
+     track is still scrollable by touch, wheel and keyboard) the buttons stay hidden. */
+  .work-root--rail:not([data-scrollable='true']) .work-rail__buttons { visibility: hidden; }
   @media (min-width: 48em) {
-    .work { grid-template-columns: 1fr 1fr; }
+    .work:not(.work--rail) { grid-template-columns: 1fr 1fr; }
     /* An odd last item spans the row, so the grid's line colour never shows through an empty cell. */
-    .work__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .work:not(.work--rail) > .work__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    /* With an odd number of case studies the grid ends on an invitation card,
+       so every case study keeps the same size. */
+    .work:not(.work--rail) > .work__item--next:last-child { grid-column: auto; }
   }
 </style>

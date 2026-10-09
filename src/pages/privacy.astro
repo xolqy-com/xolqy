@@ -60,7 +60,7 @@ const updated = '6 October 2026';
         <p>Cloudflare, as the network that serves the site, keeps its own request logs for security and operational purposes under its own policies.</p>
 
         <h2 id="cookies">Cookies and storage</h2>
-        <p>The site sets no advertising or tracking cookies and no first-party cookies of its own. Cloudflare Turnstile, which protects the enquiry form, may set a cookie on the <code>challenges.cloudflare.com</code> domain as part of its challenge (see Cloudflare's documentation for details). If staff open the protected administration area, Cloudflare Access sets an authorisation cookie for that session; visitors never encounter it.</p>
+        <p>The site sets no advertising or tracking cookies and no first-party cookies of its own. Cloudflare Turnstile, which protects the enquiry form, may set a cookie on the <code>challenges.cloudflare.com</code> domain as part of its challenge (see Cloudflare's documentation for details). If staff open the protected administration area, Cloudflare Access sets an authorisation cookie for that session; visitors never encounter it. The short note that tells first-time visitors the site uses no cookies remembers that you dismissed it with one <code>localStorage</code> entry (<code>xq-cookie-note</code>); it holds no identifier and is never sent to us. For how the analytics work, see <a href="/insights/cookieless-analytics-cloudflare/">Cookieless analytics</a>.</p>
         <p>The finder keeps its session identifier in page memory only; reloading the page starts a new session.</p>
 
         <h2 id="security">Security and abuse protection</h2>
@@ -88,7 +88,7 @@ const updated = '6 October 2026';
   .privacy__aside { display: grid; gap: var(--space-3); }
   .privacy__toc { display: grid; gap: var(--space-2); font-size: var(--text-sm); }
   .privacy__toc a { text-decoration: none; color: var(--fg-muted); }
-  .privacy__toc a:hover { color: var(--accent-text); }
+  .privacy__toc a:hover { color: var(--accent-hover); }
   .privacy__prose :global(h2) { scroll-margin-top: 6rem; }
   .privacy__prose :global(h2:first-child) { margin-top: 0; padding-top: 0; border-top: 0; }
   @media (min-width: 60em) {

@@ -70,6 +70,12 @@ const work = defineCollection({
      */
     image: image().optional(),
     imageAlt: z.string().optional(),
+    /**
+     * Optional muted loop of the live site (public/media/work/<slug>.mp4,
+     * 1100x500 H.264). Plays over the screenshot, which stays as its poster
+     * and as the fallback for reduced motion and data saver.
+     */
+    video: z.string().optional(),
     /** What Xolqy was asked to do, in one sentence. */
     brief: z.string(),
     /** Cloudflare products and other key technologies, with their role. */

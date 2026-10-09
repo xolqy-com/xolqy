@@ -10,6 +10,7 @@ import { verifyAccess } from '@/server/access';
 import { listEnquiries, countByStatus } from '@/server/db';
 import { lastReindex } from '@/server/reindex';
 import { serviceLabel } from '@/server/email';
+import { listOrders, formatAmount } from '@/server/orders';
 
 export const prerender = false;
 
@@ -21,6 +22,7 @@ if (!access.ok) {
 const enquiries = access.ok ? await listEnquiries(env.DB, 100).catch(() => null) : null;
 const counts: Record<string, number> = access.ok ? await countByStatus(env.DB).catch(() => ({})) : {};
 const manifest = access.ok ? await lastReindex(env) : null;
+const orders = access.ok ? await listOrders(env.DB, 100).catch(() => null) : null;
 const reindexMsg = Astro.url.searchParams.get('reindex');
 const archived = Astro.url.searchParams.get('archived');
 
@@ -152,6 +154,40 @@ const fmt = (iso: string) => iso.replace('T', ' ').slice(0, 16) + ' UTC';
                 </table>
               </div>
             )}
+
+            <div class="flow admin__orders">
+              <h2 class="h-xl">Orders</h2>
+              {orders === null ? (
+                <p class="notice notice--error">The orders table is missing. Apply the migrations (`npm run db:migrate:remote`).</p>
+              ) : orders.length === 0 ? (
+                <p class="muted">No orders yet. Paid Stripe Checkout sessions appear here.</p>
+              ) : (
+                <div class="admin__table-wrap">
+                  <table class="admin__table">
+                    <thead>
+                      <tr><th>Date</th><th>Package</th><th>Amount</th><th>Customer</th><th>Website</th><th>Tax ID</th><th>Email sent</th></tr>
+                    </thead>
+                    <tbody>
+                      {orders.map((o) => (
+                        <tr>
+                          <td class="mono--lc">{fmt(o.created_at)}{!o.livemode && <><br /><strong class="accent">TEST</strong></>}</td>
+                          <td>{o.item_name}{o.mode === 'subscription' && <><br /><span class="faint mono--lc">subscription</span></>}</td>
+                          <td class="mono--lc">{formatAmount(o.amount_total, o.currency)}</td>
+                          <td>
+                            {o.customer_name ?? '-'}
+                            {o.customer_email && <><br /><a href={`mailto:${o.customer_email}`}>{o.customer_email}</a></>}
+                            <br /><span class="faint mono--lc">{o.customer_country ?? '?'}</span>
+                          </td>
+                          <td>{o.website ?? '-'}</td>
+                          <td class="mono--lc">{o.tax_id ?? '-'}</td>
+                          <td class="mono--lc">{o.notified_at ? fmt(o.notified_at) : 'no'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </>
         )
       }
@@ -171,4 +207,5 @@ const fmt = (iso: string) => iso.replace('T', ' ').slice(0, 16) + ' UTC';
   .admin__brief { white-space: pre-wrap; max-width: 90ch; margin-top: var(--space-2); color: var(--fg-muted); }
   .admin__error { color: var(--accent-text); font-family: var(--font-mono); font-size: 0.75rem; max-width: 24ch; word-break: break-word; }
   .notice { margin-top: var(--space-5); }
+  .admin__orders { margin-top: var(--space-8, 4rem); }
 </style>

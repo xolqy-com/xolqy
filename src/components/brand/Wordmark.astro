@@ -1,7 +1,12 @@
 ---
 /**
- * Custom lowercase "xolqy" wordmark. The x is the symbol itself at x-height;
- * o, l, q and y are monoline geometric strokes of the same weight.
+ * Custom lowercase "xolqy" wordmark. The x is the symbol itself at x-height,
+ * drawn as four separate round-ended arms around a dot (legible down to 14px,
+ * where the gaps close and it reads as a solid x);
+ * o, l, q and y are monoline geometric strokes of the same weight, with the
+ * y set close to the q (its diagonal opens optical space) and its arms
+ * starting at the x-height. Round letters (o, q) overshoot the x-height and
+ * baseline slightly, as in a typeface, so they do not look smaller than x, l, y.
  */
 interface Props {
   height?: number;
@@ -9,11 +14,11 @@ interface Props {
   title?: string;
 }
 const { height = 22, class: className, title = 'xolqy' } = Astro.props;
-const width = Math.round((height * 98) / 40);
+const width = Math.round((height * 93) / 40);
 ---
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 98 40"
+  viewBox="0 0 93 40"
   width={width}
   height={height}
   class={className}
@@ -21,15 +26,18 @@ const width = Math.round((height * 98) / 40);
   aria-label={title}
   focusable="false"
 >
-  <g transform="translate(10.5 18) rotate(45)">
-    <path fill="currentColor" fill-rule="evenodd" d="M-1.9 -13h3.8v26h-3.8z M-13 -1.9h26v3.8h-26z M-0.95 -0.95h1.9v1.9h-1.9z" />
+  <g transform="translate(10.5 18)">
+    <g transform="rotate(45)" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round">
+      <path d="M0 -11V-4.5M0 11V4.5M-11 0H-4.5M11 0H4.5" />
+    </g>
+    <circle r="1.27" fill="currentColor" />
   </g>
   <g fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="31.5" cy="18" r="8.1" />
-    <path d="M46.5 2V28" />
+    <path d="M46.5 2V25.7" />
     <circle cx="61" cy="18" r="8.1" />
     <path d="M69.1 18V36.5" />
-    <path d="M78 8.5L86 27" />
-    <path d="M94 8.5L82 36.5" />
+    <path d="M74.2 10.3L82.3 27" />
+    <path d="M89.5 10.3L78.2 36.5" />
   </g>
 </svg>

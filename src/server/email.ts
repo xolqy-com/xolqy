@@ -111,3 +111,51 @@ export async function sendAcknowledgement(env: Env, enquiry: EnquiryRow, siteUrl
   });
   return result.messageId;
 }
+
+/** Staff notification for a paid Stripe Checkout order. */
+export async function sendOrderNotification(
+  env: Env,
+  order: { id: string; item_name: string; mode: string; amount: string; customer_email: string | null; customer_name: string | null; customer_country: string | null; website: string | null; tax_id: string | null; livemode: number },
+  siteUrl: string,
+): Promise<string> {
+  const cfg = emailConfig(env);
+  if (!cfg.ok) throw new EmailNotConfiguredError(cfg.reason);
+
+  const test = order.livemode ? '' : '[TEST] ';
+  const subject = `${test}New order: ${order.item_name} (${order.amount}) from ${order.customer_name ?? order.customer_email ?? 'a customer'}`;
+  const rows: [string, string][] = [
+    ['Package', order.item_name],
+    ['Amount', `${order.amount}${order.mode === 'subscription' ? ' per month (subscription)' : ''}`],
+    ['Customer', order.customer_name ?? '(not given)'],
+    ['Email', order.customer_email ?? '(not given)'],
+    ['Website', order.website ?? '(not given)'],
+    ['Country', order.customer_country ?? '?'],
+    ['Tax ID', order.tax_id ?? '(none)'],
+    ['Stripe session', order.id],
+  ];
+  const text = [
+    ...rows.map(([k, v]) => `${k}: ${v}`),
+    '',
+    'Next: issue the invoice (myDATA) and send the onboarding email.',
+    `Orders: ${siteUrl}/admin/`,
+  ].join('\n');
+  const html = `<!doctype html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#0a0a0a">
+<h2 style="margin:0 0 12px">${escapeHtml(test)}New order: ${escapeHtml(order.item_name)}</h2>
+<table cellpadding="4" style="border-collapse:collapse">
+${rows.map(([k, v]) => `<tr><td><b>${escapeHtml(k)}</b></td><td>${escapeHtml(v)}</td></tr>`).join('\n')}
+</table>
+<p>Next: issue the invoice (myDATA) and send the onboarding email.</p>
+<p><a href="${escapeHtml(siteUrl)}/admin/">Open the staff view</a></p>
+</body></html>`;
+
+  const result = await env.EMAIL.send({
+    from: { name: cfg.fromName, email: cfg.from },
+    to: cfg.notify,
+    ...(order.customer_email ? { replyTo: order.customer_email } : {}),
+    subject,
+    text,
+    html,
+    headers: { 'X-Xolqy-Order': order.id },
+  });
+  return result.messageId;
+}

@@ -36,6 +36,8 @@ const year = new Date().getUTCFullYear();
             <li><a href="/labs/">Labs</a></li>
             <li><a href="/insights/">Insights</a></li>
             <li><a href="/wiki/">Wiki</a></li>
+            <li><a href="/shop/">Shop</a></li>
+            <li><a href="/health-check/">Health Check</a></li>
             <li><a href="/stack/">Our stack</a></li>
             <li><a href="/contact/">Contact</a></li>
           </ul>
@@ -73,7 +75,10 @@ const year = new Date().getUTCFullYear();
     padding-bottom: var(--space-7);
     border-bottom: 1px solid rgba(245, 245, 240, 0.12);
   }
-  .site-footer__brand { display: grid; gap: var(--space-4); justify-items: start; max-width: 34ch; }
+  /* align-content: start keeps the rows at their natural height when the link
+     columns beside them are taller (otherwise the button row stretches). */
+  .site-footer__brand { display: grid; gap: var(--space-4); justify-items: start; align-content: start; max-width: 34ch; }
+  .site-footer__brand .btn { margin-top: var(--space-2); }
   .site-footer__brand a:first-child { color: var(--paper); }
   .site-footer__tagline { font-size: var(--text-xl); font-weight: 650; letter-spacing: var(--tracking-snug); line-height: 1.1; }
   .site-footer__blurb { font-size: var(--text-sm); }

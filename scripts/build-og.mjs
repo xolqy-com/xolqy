@@ -53,15 +53,15 @@ function wrap(text, max) {
 
 const xmark = (x, y, size, color) => {
   const s = size / 64;
-  return `<g transform="translate(${x} ${y}) scale(${s}) rotate(45 32 32)"><path fill="${color}" fill-rule="evenodd" d="M27 3h10v58H27z M3 27h58v10H3z M30 30h4v4h-4z"/></g>`;
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g transform="translate(32 32) rotate(45)" fill="none" stroke="${color}" stroke-width="9.31" stroke-linecap="round"><path d="M0 -26.95V-11.03M0 26.95V11.03M-26.95 0H-11.03M26.95 0H11.03"/></g><circle cx="32" cy="32" r="3.11" fill="${color}"/></g>`;
 };
 
 const wordmark = (x, y, height, color) => {
   const s = height / 40;
   return `<g transform="translate(${x} ${y}) scale(${s})" fill="none">
-    <g transform="translate(10.5 18) rotate(45)"><path fill="${color}" fill-rule="evenodd" d="M-1.9 -13h3.8v26h-3.8z M-13 -1.9h26v3.8h-26z M-0.95 -0.95h1.9v1.9h-1.9z"/></g>
+    <g transform="translate(10.5 18)"><g transform="rotate(45)" stroke="${color}" stroke-width="3.8" stroke-linecap="round"><path d="M0 -11V-4.5M0 11V4.5M-11 0H-4.5M11 0H4.5"/></g><circle r="1.27" fill="${color}"/></g>
     <g stroke="${color}" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="31.5" cy="18" r="8.1"/><path d="M46.5 2V28"/><circle cx="61" cy="18" r="8.1"/><path d="M69.1 18V36.5"/><path d="M78 8.5L86 27"/><path d="M94 8.5L82 36.5"/>
+      <circle cx="31.5" cy="18" r="8.1"/><path d="M46.5 2V25.7"/><circle cx="61" cy="18" r="8.1"/><path d="M69.1 18V36.5"/><path d="M74.2 10.3L82.3 27"/><path d="M89.5 10.3L78.2 36.5"/>
     </g></g>`;
 };
 
@@ -114,18 +114,23 @@ const pages = [
   { file: 'insights', eyebrow: 'Insights', title: 'Technical and business articles on Cloudflare.', subtitle: 'Workers websites, migration runbooks, choosing D1, KV or R2.' },
   { file: 'about', eyebrow: 'About', title: 'Independent. Cloudflare-focused. Specific.', subtitle: 'One platform, understood deeply, applied to business outcomes.' },
   { file: 'contact', eyebrow: 'Start your project', title: 'Make Cloudflare work harder for your business.', subtitle: 'Send a short brief. We reply with questions, then a proposal.' },
+  { file: 'shop', eyebrow: 'Shop', title: 'Cloudflare work, sold as products.', subtitle: 'Fixed-scope packages, monthly management and the kits we build with.' },
+  { file: 'health-check', eyebrow: 'Free tool', title: 'How healthy is your domain?', subtitle: 'HTTPS, Cloudflare, security headers, DNSSEC and email authentication, scored in seconds.' },
   { file: 'security', eyebrow: 'Security', title: 'Security, in practice.', subtitle: 'How we protect client accounts, code and data, and how to report a vulnerability.' },
   { file: 'privacy', eyebrow: 'Privacy', title: 'What this site stores, and why.', subtitle: 'Enquiries in D1, no advertising cookies, Cloudflare Web Analytics.' },
   { file: 'insight-websites-on-cloudflare-workers', eyebrow: 'Insights', title: 'Why your next website belongs on Workers.', subtitle: 'What changes, what breaks, and the three questions that decide it.' },
   { file: 'insight-cloudflare-migration-runbook', eyebrow: 'Insights', title: 'The migration runbook that keeps your rankings.', subtitle: 'Inventory, TTLs, redirects as code, protection in log mode, rollback.' },
   { file: 'insight-d1-vs-kv-vs-r2', eyebrow: 'Insights', title: 'D1, KV or R2: choosing a data store.', subtitle: 'Records, configuration, files, and the failure modes of getting it wrong.' },
   { file: 'insight-cloudflare-vectorize-explained', eyebrow: 'Insights', title: 'Cloudflare Vectorize, explained.', subtitle: 'What a vector database is for, what it costs, and when to use it.' },
+  { file: 'insight-dnssec-on-cloudflare', eyebrow: 'Insights', title: 'DNSSEC on Cloudflare.', subtitle: 'What it protects, how to turn it on, and the step everyone forgets.' },
+  { file: 'insight-cookieless-analytics-cloudflare', eyebrow: 'Insights', title: 'Cookieless analytics.', subtitle: 'Measuring a website without a consent banner, with Cloudflare Web Analytics.' },
   { file: 'wiki', eyebrow: 'Wiki', title: 'Cloudflare, one term at a time.', subtitle: 'What each product is, when to use it, what it costs, and where it fits.' },
-  { file: 'work', eyebrow: 'Work', title: 'Real projects on Cloudflare.', subtitle: 'Case studies: sites on Pages and Workers, a photo-proofing SaaS on R2, an anonymous-letters app on D1, and Cloudflare in front of a classic host.' },
+  { file: 'work', eyebrow: 'Work', title: 'Real projects on Cloudflare.', subtitle: 'Case studies: sites on Pages and Workers, a photo-proofing SaaS on R2, an anonymous-letters app on D1, a sailing-tours site and Cloudflare in front of a classic host.' },
   { file: 'work-la-house-of-pulse', eyebrow: 'Case study', title: 'La House of Pulse', subtitle: 'Bilingual studio site on Cloudflare Pages with its own analytics dashboard.' },
   { file: 'work-photoproof-io', eyebrow: 'Case study', title: 'photoproof.io', subtitle: 'Photo proofing for photographers, running entirely on Workers and R2.' },
   { file: 'work-ravasaki', eyebrow: 'Case study', title: 'Ravasaki', subtitle: 'Anonymous letters, no accounts, server-rendered on Workers and D1.' },
   { file: 'work-thracean-zeolite', eyebrow: 'Case study', title: 'Thracean Zeolite', subtitle: 'Bilingual export site, Cloudflare in front of a conventional host.' },
+  { file: 'work-11knots', eyebrow: 'Case study', title: '11 Knots', subtitle: 'Sailing-day booking site on Cloudflare Pages with a video hero.' },
 ];
 
 for (const p of pages) {
