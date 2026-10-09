@@ -4,7 +4,8 @@
  * templates, using the self-hosted brand fonts. Runs in Node only; the
  * output is committed to public/og/ so the Worker build never needs it.
  *
- *   node scripts/build-og.mjs            # all pages
+ *   node scripts/build-og.mjs            # all pages, plus the 300x700 banner
+ *   node scripts/build-og.mjs --banner   # banner only
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -98,6 +99,42 @@ function render(svg, width, file) {
   const r = new Resvg(svg, { fitTo: { mode: 'width', value: width }, font: { fontFiles, loadSystemFonts: false, defaultFontFamily: 'Bricolage Grotesque Variable' } });
   return writeFile(file, r.render().asPng());
 }
+
+function bannerSvg() {
+  const dots = Array.from({ length: 8 }, (_, i) =>
+    Array.from({ length: 18 }, (_, j) => `<circle cx="${22 + i * 38}" cy="${22 + j * 38}" r="1"/>`).join(''),
+  ).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="700" viewBox="0 0 300 700">
+    <rect width="300" height="700" fill="${INK}"/>
+    <g fill="${PAPER}" fill-opacity="0.08">${dots}</g>
+    ${wordmark(24, 32, 30, PAPER)}
+    <text x="24" y="96" font-family="JetBrains Mono Variable" font-size="12" font-weight="500" letter-spacing="1.8" fill="${SIGNAL}">THE NEXT WEB</text>
+    <text x="24" y="154" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">The tool</text>
+    <text x="24" y="206" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">for the</text>
+    <text x="24" y="258" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">AI wave.</text>
+    <text x="24" y="312" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="500" fill="${PAPER}" fill-opacity="0.78">Cloudflare OS, introduced.</text>
+    <text x="24" y="336" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.62">Counselling. Not the build.</text>
+    <line x1="24" y1="368" x2="276" y2="368" stroke="${PAPER}" stroke-opacity="0.2"/>
+    <text x="24" y="430" font-family="Bricolage Grotesque Variable" font-size="56" font-weight="700" letter-spacing="-2" fill="${PAPER}">€600</text>
+    <text x="24" y="462" font-family="JetBrains Mono Variable" font-size="12" font-weight="500" letter-spacing="1.6" fill="${SIGNAL}">ONE SESSION</text>
+    <text x="24" y="508" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="500" fill="${PAPER}">A written recommendation:</text>
+    <text x="24" y="534" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.78">stay, transition, or the</text>
+    <text x="24" y="558" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.78">full Cloudflare OS package.</text>
+    <rect x="0" y="620" width="300" height="80" fill="${SIGNAL}"/>
+    <text x="24" y="654" font-family="Bricolage Grotesque Variable" font-size="20" font-weight="700" fill="${INK}">xolqy.com</text>
+    <text x="24" y="678" font-family="JetBrains Mono Variable" font-size="12" font-weight="500" letter-spacing="0.6" fill="${INK}">€600 introduction</text>
+  </svg>`;
+}
+
+async function writeBanner() {
+  const bannerDir = path.join(root, 'public', 'banners');
+  await mkdir(bannerDir, { recursive: true });
+  await render(bannerSvg(), 300, path.join(bannerDir, 'xolqy-ai-wave-300x700.png'));
+  console.log('banner: public/banners/xolqy-ai-wave-300x700.png');
+}
+
+await writeBanner();
+if (process.argv.includes('--banner')) process.exit(0);
 
 const pages = [
   { file: 'default', eyebrow: 'The Cloudflare-focused agency', title: 'Your business. At the edge.', subtitle: 'Fast websites, scalable applications and secure infrastructure on Cloudflare.' },

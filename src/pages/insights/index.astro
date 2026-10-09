@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import SectionIntro from '@/components/ui/SectionIntro.astro';
+import PromoBanner from '@/components/ui/PromoBanner.astro';
 import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
 
 // Drafts never reach the public index.
@@ -25,7 +26,7 @@ const description = 'Technical and business articles on running a business on Cl
   </section>
 
   <section class="section" data-theme="light">
-    <div class="container">
+    <div class="container insights-layout">
       <ol class="list-reset posts">
         {posts.map((p, i) => (
           <li class="posts__item reveal" style={`--reveal-delay:${i * 60}ms`}>
@@ -44,6 +45,9 @@ const description = 'Technical and business articles on running a business on Cl
           </li>
         ))}
       </ol>
+      <aside class="insights-ad">
+        <PromoBanner />
+      </aside>
     </div>
   </section>
 </Base>
@@ -55,4 +59,19 @@ const description = 'Technical and business articles on running a business on Cl
   .posts__link:hover .posts__title { color: var(--signal); }
   .posts__meta { display: flex; flex-wrap: wrap; gap: var(--space-4); }
   .posts__title { transition: color var(--dur-fast); }
+  .insights-ad { display: none; }
+  @media (min-width: 80em) {
+    .insights-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: var(--gutter);
+      align-items: start;
+    }
+    .insights-ad {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      justify-self: end;
+    }
+  }
 </style>

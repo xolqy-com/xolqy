@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
+import PromoBanner from '@/components/ui/PromoBanner.astro';
 import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
 
 export async function getStaticPaths() {
@@ -53,6 +54,9 @@ const toc = headings.filter((h) => h.depth === 2);
         <div class="prose post-prose">
           <Content />
         </div>
+        <aside class="post-ad">
+          <PromoBanner />
+        </aside>
       </div>
     </div>
 
@@ -81,6 +85,7 @@ const toc = headings.filter((h) => h.depth === 2);
   .post-head__crumb { color: inherit; }
   .post-head__title { max-width: 22ch; }
   .post-body__grid { display: grid; gap: var(--space-7); max-width: 980px; }
+  .post-ad { display: none; }
   .post-toc { display: grid; gap: var(--space-3); align-content: start; }
   .post-toc__list { display: grid; gap: var(--space-2); font-size: var(--text-sm); }
   .post-toc__list a { text-decoration: none; color: var(--fg-muted); }
@@ -94,5 +99,18 @@ const toc = headings.filter((h) => h.depth === 2);
     .post-body__grid { grid-template-columns: 14rem minmax(0, 1fr); gap: var(--gutter); }
     .post-toc { position: sticky; top: 6rem; }
     .post-foot { grid-template-columns: 1fr 1fr; gap: var(--gutter); }
+  }
+  @media (min-width: 80em) {
+    .post-body__grid {
+      max-width: none;
+      grid-template-columns: 14rem minmax(0, 1fr) 300px;
+      align-items: start;
+    }
+    .post-ad {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      justify-self: end;
+    }
   }
 </style>
