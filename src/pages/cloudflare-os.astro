@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Faq from '@/components/ui/Faq.astro';
 import XMark from '@/components/brand/XMark.astro';
+import EdgeGlobe from '@/components/sections/EdgeGlobe.astro';
 import { LABS, ENGAGEMENTS } from '@/data/content';
 import { CTA } from '@/data/site';
 import {
@@ -85,6 +86,8 @@ const jumps = [
       </ol>
     </div>
   </section>
+
+  <EdgeGlobe theme="dark" />
 
   <section class="section" data-theme="light" id="what" aria-labelledby="what-title">
     <div class="container os-split">
