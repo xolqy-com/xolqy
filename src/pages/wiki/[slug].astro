@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
+import { insightHref } from '@/lib/insights';
 import { breadcrumbJsonLd, definedTermJsonLd, formatDate } from '@/lib/seo';
 
 export async function getStaticPaths() {
@@ -98,7 +99,7 @@ const title = `${entry.data.term}: what it is, when to use it, what it costs`;
             <div class="wk-list">
               <p class="mono faint">Read next</p>
               <ul class="ticks">
-                {insights.map((p) => <li><a href={`/insights/${p.id}/`}>{p.data.title}</a></li>)}
+                {insights.map((p) => <li><a href={insightHref(p)}>{p.data.title}</a></li>)}
               </ul>
             </div>
           )}

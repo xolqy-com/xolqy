@@ -4,6 +4,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SHOP } from '@/data/shop';
+import { insightHref } from '@/lib/insights';
 
 export const prerender = true;
 
@@ -16,6 +17,7 @@ const PAGES: Item[] = [
   { title: 'Our stack', kind: 'Page', href: '/stack/', text: 'How this website runs on Cloudflare.' },
   { title: 'Labs', kind: 'Page', href: '/labs/', text: 'Edge inspector, solution finder, enquiry pipeline and R2 delivery.' },
   { title: 'Insights', kind: 'Page', href: '/insights/', text: 'Articles on running a business on Cloudflare.' },
+  { title: 'Research', kind: 'Page', href: '/insights/research/', text: 'Long-form research. The edge cloud landscape: Cloudflare compared with hyperscalers, edge networks, app hosts and backend services.' },
   { title: 'Wiki', kind: 'Page', href: '/wiki/', text: 'Cloudflare products and terms, one at a time.' },
   { title: 'Shop', kind: 'Page', href: '/shop/', text: 'Fixed-scope packages, subscriptions and kits.' },
   { title: 'About', kind: 'Page', href: '/about/', text: 'Independent Cloudflare-focused agency.' },
@@ -42,8 +44,8 @@ export const GET: APIRoute = async () => {
   for (const post of insights) {
     items.push({
       title: post.data.title,
-      kind: 'Insight',
-      href: `/insights/${post.id}/`,
+      kind: post.data.type === 'research' ? 'Research' : 'Insight',
+      href: insightHref(post),
       text: post.data.description,
     });
   }

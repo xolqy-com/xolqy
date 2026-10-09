@@ -317,6 +317,9 @@ p { text-wrap: pretty; }
 .badge[data-status='fallback']::before { background: currentColor; opacity: 0.5; }
 .badge[data-status='demo'] { color: var(--accent-text); border-color: var(--accent); }
 .badge[data-status='demo']::before { background: var(--signal); }
+/* Research is a format, not a topic. Diamond mark, signal border, accent text. */
+.badge--research { color: var(--accent-text); border-color: var(--signal); }
+.badge--research::before { background: var(--signal); border-radius: 1px; transform: rotate(45deg); }
 
 /* ---------------------------------------------------------------------------
    Lists

@@ -6,7 +6,7 @@ import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
 
 export async function getStaticPaths() {
   // Drafts get no route at all.
-  const posts = await getCollection('insights', ({ data }) => !data.draft);
+  const posts = await getCollection('insights', ({ data }) => !data.draft && data.type !== 'research');
   return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
 }
 

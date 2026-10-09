@@ -16,12 +16,13 @@ import {
   NOT_THIS,
   OS_FAQS,
 } from '@/data/cloudflare-os';
+import { insightHref } from '@/lib/insights';
 import { breadcrumbJsonLd, faqJsonLd, serviceJsonLd, formatDate } from '@/lib/seo';
 
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const cluster = posts.filter((p) => p.data.topics.includes(OS_TOPIC));
-const further = posts.filter((p) => !p.data.topics.includes(OS_TOPIC));
+const further = posts.filter((p) => !p.data.topics.includes(OS_TOPIC) && p.data.type !== 'research');
 
 const jumps = [
   { href: '#what', label: 'What it is' },
@@ -281,7 +282,7 @@ const jumps = [
       <ol class="list-reset os-posts">
         {cluster.map((p, i) => (
           <li class="reveal" style={`--reveal-delay:${i * 40}ms`}>
-            <a href={`/insights/${p.id}/`} class="os-posts__link">
+            <a href={insightHref(p)} class="os-posts__link">
               <span class="mono faint os-posts__meta">
                 <time datetime={p.data.publishedAt.toISOString()}>{formatDate(p.data.publishedAt)}</time>
                 <span>{p.data.readingMinutes} min</span>
@@ -298,7 +299,7 @@ const jumps = [
           <h3 class="mono faint">Also on Insights</h3>
           <ul class="ticks">
             {further.map((p) => (
-              <li><a href={`/insights/${p.id}/`}>{p.data.title}</a></li>
+              <li><a href={insightHref(p)}>{p.data.title}</a></li>
             ))}
           </ul>
         </div>

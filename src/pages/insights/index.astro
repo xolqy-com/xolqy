@@ -3,11 +3,15 @@ import { getCollection } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import SectionIntro from '@/components/ui/SectionIntro.astro';
 import PromoBanner from '@/components/ui/PromoBanner.astro';
+import { insightHref } from '@/lib/insights';
 import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
 
-// Drafts never reach the public index.
-const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
-const description = 'Technical and business articles on running a business on Cloudflare: the operating system series, Workers websites, migration runbooks, data stores and Vectorize.';
+// Drafts never reach the public index. Research has its own index and badge.
+const published = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const posts = published.filter((p) => p.data.type !== 'research');
+const research = published.filter((p) => p.data.type === 'research').sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+const hub = research.find((p) => p.data.researchRole === 'hub');
+const description = 'Technical and business articles on running a business on Cloudflare, plus long-form research. The first research series compares Cloudflare with the rest of the edge-cloud landscape.';
 ---
 
 <Base
@@ -20,17 +24,31 @@ const description = 'Technical and business articles on running a business on Cl
   <section class="section" data-theme="dark">
     <div class="container">
       <SectionIntro eyebrow="Insights" title="Notes from building on&nbsp;Cloudflare." id="insights-title" level="h1">
-        <p class="lead">Technical and business articles. Written to be useful whether or not you ever hire us. The <a href="/cloudflare-os/">Cloudflare OS</a> series is the map; the <a href="/wiki/">wiki</a> defines the products.</p>
+        <p class="lead">Technical and business articles, plus <a href="/insights/research/">research</a> when a question needs a comparison rather than a how-to. Written to be useful whether or not you ever hire us. The <a href="/cloudflare-os/">Cloudflare OS</a> series is the map; the <a href="/wiki/">wiki</a> defines the products.</p>
       </SectionIntro>
     </div>
   </section>
 
   <section class="section" data-theme="light">
     <div class="container insights-layout">
+      <div class="insights-main">
+      {hub && (
+        <article class="research-feature reveal">
+          <div class="research-feature__meta">
+            <a class="badge badge--research" href="/insights/research/">Research</a>
+            <span class="mono faint">{research.length} {research.length === 1 ? 'piece' : 'pieces'} in the series</span>
+          </div>
+          <h2 class="h-2xl"><a href={insightHref(hub)}>{hub.data.title}</a></h2>
+          <p class="muted">{hub.data.description}</p>
+          <p class="research-feature__more">
+            <a href="/insights/research/" class="link">The research index <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </p>
+        </article>
+      )}
       <ol class="list-reset posts">
         {posts.map((p, i) => (
           <li class="posts__item reveal" style={`--reveal-delay:${i * 60}ms`}>
-            <a href={`/insights/${p.id}/`} class="posts__link">
+            <a href={insightHref(p)} class="posts__link">
               <div class="posts__meta mono faint">
                 <time datetime={p.data.publishedAt.toISOString()}>{formatDate(p.data.publishedAt)}</time>
                 <span>{p.data.readingMinutes} min</span>
@@ -45,6 +63,7 @@ const description = 'Technical and business articles on running a business on Cl
           </li>
         ))}
       </ol>
+      </div>
       <aside class="insights-ad">
         <PromoBanner />
       </aside>
@@ -53,6 +72,18 @@ const description = 'Technical and business articles on running a business on Cl
 </Base>
 
 <style>
+  .research-feature {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--signal);
+    max-width: 76ch;
+  }
+  .research-feature__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .research-feature h2 a { text-decoration: none; }
+  .research-feature h2 a:hover { color: var(--signal); }
+  .research-feature__more { margin-top: var(--space-2); }
   .posts { display: grid; border-top: 1px solid var(--line); }
   .posts__item { border-bottom: 1px solid var(--line); }
   .posts__link { display: grid; gap: var(--space-4); padding-block: var(--space-7); text-decoration: none; max-width: 76ch; }

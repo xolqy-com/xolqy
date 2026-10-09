@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import PromoBanner from '@/components/ui/PromoBanner.astro';
+import { insightHref } from '@/lib/insights';
+import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
+
+const pieces = (await getCollection('insights', ({ data }) => !data.draft && data.type === 'research'))
+  .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+
+const seriesIds = [...new Set(pieces.map((p) => p.data.series).filter((s): s is string => Boolean(s)))];
+const series = seriesIds.map((id) => {
+  const items = pieces.filter((p) => p.data.series === id);
+  return {
+    id,
+    hub: items.find((p) => p.data.researchRole === 'hub'),
+    spokes: items.filter((p) => p.data.researchRole === 'spoke'),
+  };
+});
+
+const description = 'Long-form research from Xolqy. The first series maps the edge cloud landscape: Cloudflare against hyperscalers, edge networks, application hosts and backend-as-a-service platforms.';
+---
+
+<Base
+  title="Research"
+  description={description}
+  path="/insights/research/"
+  ogImage="/og/insights-research.png"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Insights', href: '/insights/' }, { name: 'Research', href: '/insights/research/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Insights / Research" title="Comparisons, with the limits written down." id="research-title" level="h1">
+        <p class="lead">Research is a format inside Insights: a flagship page, then a page per comparison. Figures come from primary sources and are dated. Where a number could not be verified, the page says so.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container insights-layout">
+      <div class="insights-main">
+        {series.map((group) => (
+          <article class="series">
+            {group.hub && (
+              <a href={insightHref(group.hub)} class="series__hub">
+                <div class="posts__meta mono faint">
+                  <span class="badge badge--research">Research</span>
+                  <time datetime={group.hub.data.publishedAt.toISOString()}>{formatDate(group.hub.data.publishedAt)}</time>
+                  <span>{group.hub.data.readingMinutes} min</span>
+                </div>
+                <h2 class="h-2xl series__title">{group.hub.data.title}</h2>
+                <p class="muted">{group.hub.data.description}</p>
+              </a>
+            )}
+            <ol class="list-reset series__spokes">
+              {group.spokes.map((spoke, i) => (
+                <li>
+                  <a href={insightHref(spoke)} class="series__spoke">
+                    <span class="mono faint">0{i + 1}</span>
+                    <span class="series__spoke-title">{spoke.data.title}</span>
+                    <span class="muted series__spoke-desc">{spoke.data.description}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </article>
+        ))}
+        {pieces.length === 0 && <p class="muted">No research is published yet.</p>}
+      </div>
+      <aside class="insights-ad">
+        <PromoBanner />
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .series { border-top: 1px solid var(--line); }
+  .series__hub {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-7);
+    text-decoration: none;
+    max-width: 76ch;
+  }
+  .series__hub:hover .series__title { color: var(--signal); }
+  .series__title { transition: color var(--dur-fast); }
+  .posts__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .series__spokes { border-top: 1px solid var(--line); }
+  .series__spoke {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    max-width: 76ch;
+  }
+  .series__spoke .mono { grid-row: span 2; padding-top: 0.35rem; }
+  .series__spoke-title { font-weight: 600; letter-spacing: var(--tracking-snug); }
+  .series__spoke:hover .series__spoke-title { color: var(--signal); }
+  .insights-ad { display: none; }
+  @media (min-width: 80em) {
+    .insights-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: var(--gutter);
+      align-items: start;
+    }
+    .insights-ad {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      justify-self: end;
+    }
+  }
+</style>

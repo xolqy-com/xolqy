@@ -45,8 +45,28 @@ const insights = defineCollection({
     topics: z.array(z.string()).min(1),
     readingMinutes: z.number().int().positive(),
     relatedServices: z.array(z.string()).default([]),
+    /**
+     * article: a normal insight at /insights/<slug>/.
+     * research: long-form work at /insights/research/<slug>/.
+     * No language field. Pages stay English.
+     */
+    type: z.enum(['article', 'research']).default('article'),
+    /** Hub is the flagship page of a series. Spokes are the individual comparisons. */
+    researchRole: z.enum(['hub', 'spoke']).optional(),
+    /** Groups a hub and its spokes. */
+    series: z.string().optional(),
+    /** Order within a series. The hub is 0. */
+    seriesOrder: z.number().int().nonnegative().optional(),
     /** Drafts are excluded from routes, the index, the sitemap and the finder. */
     draft: z.boolean().default(false),
+  }).superRefine((data, ctx) => {
+    if (data.type !== 'research') return;
+    if (!data.researchRole) {
+      ctx.addIssue({ code: 'custom', message: 'Research pieces need researchRole.', path: ['researchRole'] });
+    }
+    if (!data.series) {
+      ctx.addIssue({ code: 'custom', message: 'Research pieces need a series.', path: ['series'] });
+    }
   }),
 });
 
