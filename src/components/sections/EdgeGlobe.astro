@@ -1,0 +1,125 @@
+---
+/**
+ * Homepage section: a live, dotted globe. The pin marks the Cloudflare location
+ * that served this visitor's request (from /api/edge). Network figures are
+ * Cloudflare's own published numbers; keep the source line below in sync if
+ * they change (cloudflare.com, checked October 2026).
+ */
+interface Props { theme?: 'dark' | 'light' }
+const { theme = 'dark' } = Astro.props;
+
+const POINTS = [
+  {
+    kicker: '335+ cities',
+    title: 'Runs everywhere',
+    body: 'Code, cache and security run in every Cloudflare location. There is no region to choose and nothing to replicate by hand.',
+  },
+  {
+    kicker: '≈50 ms',
+    title: 'Close to your customers',
+    body: 'Cloudflare reports its network is within about 50 ms of 95% of the world’s internet users. Requests are answered nearby, not in one distant data centre.',
+  },
+  {
+    kicker: 'Pay per use',
+    title: 'Nothing to size',
+    body: 'Traffic spikes are absorbed by the network instead of a server we have to provision. You pay for usage, not for machines waiting idle.',
+  },
+];
+---
+
+<section class="section globe" data-theme={theme} aria-labelledby="globe-title" data-globe>
+  <div class="container">
+    <div class="globe__head reveal">
+      <p class="eyebrow">Global by default</p>
+      <h2 id="globe-title" class="h-3xl">One network, next to every customer.</h2>
+      <p class="muted globe__lead">What we build runs on Cloudflare’s network, so pages, APIs and protection sit close to the people using them.</p>
+    </div>
+
+    <div class="globe__stage">
+      <canvas class="globe__canvas" data-globe-canvas role="img" aria-label="Dotted globe showing Cloudflare locations, with a pin on the location that served this page."></canvas>
+
+      <aside class="globe__live" aria-live="polite">
+        <p class="mono globe__live-label"><span class="globe__dot" aria-hidden="true"></span> Live, this page</p>
+        <dl>
+          <div><dt>Served from</dt><dd data-globe-f="colo">Locating…</dd></div>
+          <div><dt>Round trip</dt><dd data-globe-f="rtt">…</dd></div>
+        </dl>
+        <p class="faint globe__live-note">One request from your browser just now. Not a benchmark.</p>
+      </aside>
+    </div>
+
+    <ul class="list-reset globe__points">
+      {POINTS.map((p, i) => (
+        <li class="reveal" style={`--reveal-delay:${i * 80}ms`}>
+          <p class="mono globe__kicker">{p.kicker}</p>
+          <h3 class="h-xl">{p.title}</h3>
+          <p class="muted">{p.body}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="faint globe__source">Network figures as published by Cloudflare. Orange dots show a subset of its locations; arcs are illustrative.</p>
+  </div>
+</section>
+<script src="../../scripts/globe.ts"></script>
+
+<style>
+  .globe__head { display: grid; gap: var(--space-4); justify-items: center; text-align: center; max-width: 52rem; margin-inline: auto; }
+  .globe__lead { max-width: 52ch; }
+
+  .globe__stage { position: relative; margin-top: var(--space-6); }
+  .globe__canvas {
+    display: block;
+    width: 100%;
+    height: clamp(340px, 62vw, 640px);
+    touch-action: pan-y;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity var(--dur-slow) var(--ease-out);
+    -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  }
+  .globe__canvas:active { cursor: grabbing; }
+  [data-globe-ready] .globe__canvas { opacity: 1; }
+
+  .globe__live {
+    display: grid;
+    gap: var(--space-3);
+    width: min(100%, 22rem);
+    margin: calc(var(--space-6) * -1) auto 0;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line-strong);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    position: relative;
+  }
+  .globe__live-label { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--accent-text); margin: 0; }
+  .globe__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: globe-blink 2.2s var(--ease-in-out) infinite; }
+  .globe__live dl { display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-4); margin: 0; }
+  .globe__live dt { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--fg-muted); }
+  .globe__live dd { margin: var(--space-1) 0 0; font-weight: 600; font-size: var(--text-lg); white-space: nowrap; }
+  .globe__live-note { font-size: var(--text-xs); margin: 0; }
+
+  .globe__points { display: grid; margin-top: var(--space-8); border-top: 1px solid var(--line); }
+  .globe__points li { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+  .globe__kicker { color: var(--accent-text); font-size: var(--text-sm); margin: 0; }
+  .globe__source { margin-top: var(--space-5); font-size: var(--text-xs); }
+  /* Sits directly above the dark "Built on Cloudflare" section: no double padding */
+  .globe { padding-bottom: calc(var(--section-y) * 0.5); }
+
+  @media (min-width: 60em) {
+    .globe__live { position: absolute; left: 0; bottom: 18%; margin: 0; }
+    .globe__points { grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
+    .globe__points li { border-bottom: 0; padding: var(--space-6); }
+    .globe__points li:first-child { padding-left: 0; }
+    .globe__points li + li { border-left: 1px solid var(--line); }
+  }
+
+  @keyframes globe-blink { 50% { opacity: 0.25; } }
+  @media (prefers-reduced-motion: reduce) {
+    .globe__dot { animation: none; }
+    .globe__canvas { transition: none; }
+  }
+</style>
