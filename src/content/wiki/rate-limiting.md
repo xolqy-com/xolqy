@@ -7,7 +7,7 @@ useWhen: "Login and form endpoints, APIs, search, anything an abusive client cou
 pricing: "Rate limiting rules are part of the WAF, with more rules on higher plans. The Workers rate limiting binding is free to use."
 limits: "The Workers binding counts per Cloudflare location, not globally, so it is an abuse brake rather than a precise quota. Precise global quotas belong in a Durable Object."
 pillars: ["security-and-zero-trust", "websites-and-applications"]
-insights: []
+insights: ["what-a-cloudflare-audit-covers", "zero-trust-without-a-vpn"]
 related: ["waf", "durable-objects", "turnstile", "bot-management"]
 updatedAt: 2026-10-06
 ---

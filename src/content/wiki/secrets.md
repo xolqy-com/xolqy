@@ -7,7 +7,7 @@ useWhen: "API keys, tokens, signing keys and anything that must not appear in Gi
 avoidWhen: "Committing a .env or .dev.vars file, pasting a secret into a ticket or chat, or reusing a production secret for local development."
 pricing: "Included with Workers."
 pillars: ["security-and-zero-trust", "managed-cloudflare"]
-insights: []
+insights: ["your-cloudflare-account-should-be-yours"]
 related: ["wrangler", "bindings", "ai-gateway", "zero-trust-access"]
 updatedAt: 2026-10-06
 ---

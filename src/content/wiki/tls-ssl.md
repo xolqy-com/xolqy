@@ -7,7 +7,7 @@ useWhen: "Every site: Full (strict) with a valid origin certificate, or no origi
 avoidWhen: "Flexible mode in production. It encrypts the browser-to-Cloudflare leg only and is the most common cause of redirect loops and false security."
 pricing: "Universal SSL certificates are free on every plan. Advanced certificates with custom options are a paid add-on."
 pillars: ["security-and-zero-trust", "cloudflare-migration"]
-insights: ["cloudflare-migration-runbook"]
+insights: ["cloudflare-migration-runbook", "what-a-cloudflare-audit-covers"]
 related: ["dns", "ddos-protection", "cloudflare-tunnel", "waf"]
 updatedAt: 2026-10-06
 ---

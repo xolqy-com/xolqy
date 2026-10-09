@@ -11,8 +11,9 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
         <p class="eyebrow">Services</p>
         <h2 id="services-title" class="h-3xl measure">Six ways we put Cloudflare to work.</h2>
       </div>
-      <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
-    </div>
+        <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <p class="muted ledger__os reveal">The umbrella is <a href="/cloudflare-os/">Cloudflare OS</a>: compute, data, security, AI and delivery as one system.</p>
 
     <ol class="list-reset ledger__list">
       {services.map((s, i) => (
@@ -39,7 +40,10 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
 </section>
 
 <style>
-  .ledger__list { margin-top: var(--space-8); border-top: 1px solid var(--line); }
+  .ledger__os { margin-top: var(--space-5); max-width: 54ch; font-size: var(--text-sm); }
+  .ledger__os a { color: inherit; font-weight: 600; }
+  .ledger__os a:hover { color: var(--signal); }
+  .ledger__list { margin-top: var(--space-6); border-top: 1px solid var(--line); }
   .ledger__row { border-bottom: 1px solid var(--line); }
   .ledger__link {
     display: grid;

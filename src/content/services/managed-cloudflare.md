@@ -85,3 +85,5 @@ Dashboard changes are quick and invisible. We export what can be exported to Wra
 ## Keeping up with the platform
 
 Cloudflare ships constantly: new compatibility dates, deprecations, services that replace workarounds you built last year. Part of every month is spent deciding which of those matter for you, applying the ones that do, and ignoring the rest.
+
+The thing being looked after is the whole estate, which is what [Cloudflare OS](/cloudflare-os/) means: one system, in your account, with a person who knows it.

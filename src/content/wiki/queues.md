@@ -8,7 +8,7 @@ avoidWhen: "Strict ordering across all messages, very large payloads (store them
 pricing: "A daily free allowance of operations on the free plan and a per-million-operations price on the paid plan. Each message is written, read and acknowledged, so count roughly three operations per message."
 limits: "Message size is capped at a modest number of kilobytes, batches at a hundred messages, and retention at a few days by default. Throughput per queue is high but finite; shard across queues for extreme volumes."
 pillars: ["ai-and-automation", "websites-and-applications"]
-insights: []
+insights: ["queues-versus-workflows"]
 related: ["workflows", "workers", "durable-objects"]
 updatedAt: 2026-10-06
 ---

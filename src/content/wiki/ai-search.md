@@ -7,7 +7,7 @@ useWhen: "Search or question answering over documents when you want the result w
 avoidWhen: "Cases where you need control over chunking, metadata and ranking, or where the things you search are not documents. Build on Vectorize directly instead."
 pricing: "Available on all plans. Usage is charged through the underlying services it drives, such as Workers AI, Vectorize and R2."
 pillars: ["ai-and-automation"]
-insights: ["cloudflare-vectorize-explained"]
+insights: ["cloudflare-vectorize-explained", "which-cloudflare-products-a-business-needs"]
 related: ["vectorize", "workers-ai", "rag", "r2"]
 updatedAt: 2026-10-06
 ---

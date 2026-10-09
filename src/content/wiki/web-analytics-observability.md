@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/workers/observability/"
 useWhen: "Every site for Web Analytics; every Worker for observability. Both are on by the time we hand a project over."
 pricing: "Web Analytics is free. Workers observability includes a monthly allowance of log events on both plans, with additional volume priced per million on the paid plan."
 pillars: ["managed-cloudflare", "performance-and-delivery"]
-insights: ["cookieless-analytics-cloudflare"]
+insights: ["cookieless-analytics-cloudflare", "what-a-cloudflare-audit-covers", "where-cloudflare-keeps-your-data"]
 related: ["workers", "ai-gateway", "cache"]
 updatedAt: 2026-10-06
 ---

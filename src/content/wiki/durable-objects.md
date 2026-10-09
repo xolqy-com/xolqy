@@ -8,7 +8,7 @@ avoidWhen: "Data that many users read and nobody coordinates (use KV or D1), lar
 pricing: "Available on both plans. Billed by requests, active duration and storage on the paid plan, with the SQLite-backed storage API as the default and recommended option."
 limits: "One instance per id runs at a time, with the same memory limit as a Worker. Storage per object is large but not unbounded, and throughput is bounded by the single instance, so design keys so that load spreads across many objects."
 pillars: ["websites-and-applications", "ai-and-automation"]
-insights: ["d1-vs-kv-vs-r2"]
+insights: ["d1-vs-kv-vs-r2", "where-cloudflare-keeps-your-data", "queues-versus-workflows"]
 related: ["workers", "workflows", "d1", "rate-limiting"]
 updatedAt: 2026-10-06
 ---

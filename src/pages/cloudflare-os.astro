@@ -1,0 +1,516 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Faq from '@/components/ui/Faq.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { LABS, ENGAGEMENTS } from '@/data/content';
+import { CTA } from '@/data/site';
+import {
+  OS_PATH,
+  OS_TOPIC,
+  OS_DESCRIPTION,
+  LAYERS,
+  BENEFITS,
+  VERSUS,
+  NOT_THIS,
+  OS_FAQS,
+} from '@/data/cloudflare-os';
+import { breadcrumbJsonLd, faqJsonLd, serviceJsonLd, formatDate } from '@/lib/seo';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const cluster = posts.filter((p) => p.data.topics.includes(OS_TOPIC));
+const further = posts.filter((p) => !p.data.topics.includes(OS_TOPIC));
+
+const jumps = [
+  { href: '#what', label: 'What it is' },
+  { href: '#layers', label: 'Five layers' },
+  { href: '#benefits', label: 'Benefits' },
+  { href: '#versus', label: 'Xolqy vs DIY' },
+  { href: '#services', label: 'Services' },
+  { href: '#reading', label: 'Reading' },
+];
+---
+
+<Base
+  title="Cloudflare OS"
+  description={OS_DESCRIPTION}
+  path={OS_PATH}
+  ogImage="/og/cloudflare-os.png"
+  jsonLd={[
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Cloudflare OS', href: OS_PATH }]),
+    serviceJsonLd({
+      name: 'Cloudflare OS',
+      description: OS_DESCRIPTION,
+      path: OS_PATH,
+      serviceType: 'Cloudflare platform design, build and operations',
+    }),
+    faqJsonLd([...OS_FAQS]),
+  ]}
+>
+  <section class="section os-hero" data-theme="dark" aria-labelledby="os-title">
+    <div class="container os-hero__grid">
+      <div class="os-hero__copy">
+        <p class="eyebrow fade-in">Cloudflare OS / the umbrella</p>
+        <h1 id="os-title" class="display shade os-hero__title">
+          <span class="hero-line"><span style="--d:60ms">Cloudflare,</span></span>
+          <span class="hero-line"><span style="--d:180ms">as the <em>operating</em></span></span>
+          <span class="hero-line"><span style="--d:300ms">system.</span></span>
+        </h1>
+        <p class="lead fade-in" style="--d:420ms">
+          Compute, data, security, AI and delivery, designed as one system for the business. In your account. With a written plan for what moves, what stays, and how you leave.
+        </p>
+        <div class="cluster fade-in" style="--d:540ms">
+          <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a href="#versus" class="btn btn--ghost">Xolqy vs doing it yourself</a>
+        </div>
+        <nav class="os-jumps fade-in" style="--d:660ms" aria-label="On this page">
+          {jumps.map((j) => <a href={j.href}>{j.label}</a>)}
+        </nav>
+      </div>
+
+      <ol class="list-reset os-board fade-in" style="--d:280ms" aria-label="The five layers, delivery on top of compute">
+        {LAYERS.map((layer) => (
+          <li class="os-board__row">
+            <a href={`#layer-${layer.id}`} class="os-board__link">
+              <span class="mono os-board__index">{layer.index}</span>
+              <span class="os-board__name">{layer.name}</span>
+              <span class="os-board__products">
+                {layer.products.map((p) => <span>{p.name}</span>)}
+              </span>
+            </a>
+          </li>
+        ))}
+        <li class="os-board__foot mono">One account · your code · your bill from Cloudflare</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" id="what" aria-labelledby="what-title">
+    <div class="container os-split">
+      <div class="flow reveal">
+        <p class="eyebrow">What it is</p>
+        <h2 id="what-title" class="h-3xl">The layer the business runs on.</h2>
+      </div>
+      <div class="flow reveal" style="--reveal-delay:80ms">
+        <p class="lead">An operating system is the layer everything else assumes: process, storage, identity, and a way to configure them. Cloudflare is unusual because the network, the runtime, the data stores, the firewall and the models are one platform.</p>
+        <p>Cloudflare OS is our name for using that platform as the system a business runs on, rather than as a CDN bolted onto a server nobody wants to own. The <a href="/stack/">stack page</a> is the same idea applied to this website, with each integration marked live, waiting or planned. The <a href="/services/">services</a> are how a piece of it gets delivered. The <a href="/labs/">labs</a> are the pieces you can watch work.</p>
+        <p>It is a way of scoping work. It is not a SKU, a certification, or a requirement to enable every product in the catalogue.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="layers" aria-labelledby="layers-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">The system</p>
+          <h2 id="layers-title" class="h-3xl measure">Five layers. Each product earns its place.</h2>
+        </div>
+        <p class="muted os-aside">Names link to the wiki: what the product is, when to use it, and what it costs in plain language. The stack page shows which of these run xolqy.com.</p>
+      </div>
+      <ol class="list-reset os-layers">
+        {LAYERS.map((layer, i) => (
+          <li class="os-layer reveal" id={`layer-${layer.id}`} style={`--reveal-delay:${i * 70}ms`}>
+            <div class="os-layer__id">
+              <span class="mono accent">{layer.index}</span>
+              <h3 class="h-2xl">{layer.name}</h3>
+            </div>
+            <p class="os-layer__summary">{layer.summary}</p>
+            <ul class="list-reset os-layer__products">
+              {layer.products.map((p) => (
+                <li><a href={p.href} class="os-chip">{p.name}</a></li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" id="benefits" aria-labelledby="benefits-title">
+    <div class="container">
+      <div class="flow reveal">
+        <p class="eyebrow">Benefits</p>
+        <h2 id="benefits-title" class="h-3xl measure">What changes when the platform is the system.</h2>
+      </div>
+      <ol class="list-reset os-benefits">
+        {BENEFITS.map((b, i) => (
+          <li class="os-benefit reveal" style={`--reveal-delay:${i * 60}ms`}>
+            <span class="mono accent">{b.index}</span>
+            <h3 class="h-xl">{b.title}</h3>
+            <p class="muted">{b.body}</p>
+          </li>
+        ))}
+      </ol>
+      <ul class="list-reset os-not reveal">
+        {NOT_THIS.map((item) => (
+          <li>
+            <span class="mono faint">Not this</span>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="versus" aria-labelledby="versus-title">
+    <div class="container">
+      <div class="os-split reveal">
+        <div class="flow">
+          <XMark size={36} class="os-mark" />
+          <p class="eyebrow">Xolqy vs doing it yourself</p>
+          <h2 id="versus-title" class="h-3xl">Same four stages. The difference is the output you can hold.</h2>
+        </div>
+        <p class="muted">Every engagement runs Audit, Architect, Build &amp; Migrate, then Optimize &amp; Support. Each stage leaves something you keep even if the next one never happens. If your team already runs Cloudflare well, the case for handing it over is weaker. The audit is how both sides find out.</p>
+      </div>
+
+      <ol class="list-reset os-versus">
+        {VERSUS.map((row, i) => (
+          <li class="os-versus__row reveal" style={`--reveal-delay:${i * 80}ms`}>
+            <div class="os-versus__stage">
+              <span class="mono accent">{row.index}</span>
+              <h3 class="h-xl">{row.stage}</h3>
+              <p>{row.summary}</p>
+              <p class="mono faint">{row.duration}</p>
+            </div>
+            <div class="os-versus__col">
+              <p class="mono faint">On your own</p>
+              <p>{row.alone}</p>
+            </div>
+            <div class="os-versus__col os-versus__col--us">
+              <p class="mono accent">With Xolqy</p>
+              <p>{row.withUs}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="os-own reveal">
+        <div class="flow">
+          <p class="eyebrow">Account</p>
+          <h3 class="h-2xl">The account stays yours.</h3>
+        </div>
+        <div class="flow">
+          <p>We work inside your Cloudflare account with scoped permissions. Zones, Workers, databases and buckets belong to you. The repository does too, with Wrangler configuration and migrations in it, not in a dashboard only one person can find.</p>
+          <p>Billing and account ownership stay with you. If a monthly engagement ends, leaving is a handover, not a migration. That is also why <a href="/insights/your-cloudflare-account-should-be-yours/">the account should be yours</a> from the first day, including if you build it yourself.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" id="services" aria-labelledby="services-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">How it is delivered</p>
+          <h2 id="services-title" class="h-3xl measure">Six services, one system.</h2>
+        </div>
+        <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <ol class="list-reset os-services">
+        {services.map((s) => (
+          <li>
+            <a href={`/services/${s.id}/`} class="os-services__link">
+              <span class="mono faint">{s.data.eyebrow}</span>
+              <span class="h-lg">{s.data.shortTitle}</span>
+              <span class="muted">{s.data.outcome}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      <div class="os-engage reveal">
+        <div class="flow">
+          <p class="eyebrow">Ways to start</p>
+          <h3 class="h-2xl">Audit, a project, or a named engineer.</h3>
+          <p class="muted">Three shapes of engagement. Scope and fees are in the proposal, or as a fixed package in the <a href="/shop/">shop</a>. Platform cost is estimated separately, from your usage.</p>
+        </div>
+        <ul class="list-reset os-engage__list">
+          {ENGAGEMENTS.map((e) => (
+            <li>
+              <p class="mono faint">{e.tag}</p>
+              <h4 class="h-lg">{e.name}</h4>
+              <p class="muted">{e.summary}</p>
+              <a href={`/contact/?interest=${e.service}`} class="link">{e.cta} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="labs" aria-labelledby="labs-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">See it running</p>
+          <h2 id="labs-title" class="h-3xl">The labs are this system, in public.</h2>
+        </div>
+        <a href="/labs/" class="link">All labs <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <ul class="list-reset os-labs">
+        {LABS.map((lab, i) => (
+          <li class="reveal" style={`--reveal-delay:${i * 70}ms`}>
+            <a href={lab.href} class="os-labs__link">
+              <span class="mono faint">{lab.kind}</span>
+              <span class="h-lg">{lab.name}</span>
+              <span class="muted">{lab.summary}</span>
+              <span class="os-labs__uses">
+                {lab.uses.map((u) => <span class="badge">{u}</span>)}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" id="reading" aria-labelledby="reading-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">Reading</p>
+          <h2 id="reading-title" class="h-3xl measure">The operating-system series.</h2>
+        </div>
+        <p class="muted os-aside">Each article takes one decision a business actually faces, and links back here. Definitions of the products live in the <a href="/wiki/">wiki</a>.</p>
+      </div>
+      <ol class="list-reset os-posts">
+        {cluster.map((p, i) => (
+          <li class="reveal" style={`--reveal-delay:${i * 40}ms`}>
+            <a href={`/insights/${p.id}/`} class="os-posts__link">
+              <span class="mono faint os-posts__meta">
+                <time datetime={p.data.publishedAt.toISOString()}>{formatDate(p.data.publishedAt)}</time>
+                <span>{p.data.readingMinutes} min</span>
+              </span>
+              <span class="h-lg">{p.data.title}</span>
+              <span class="muted">{p.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      {further.length > 0 && (
+        <div class="os-further reveal">
+          <h3 class="mono faint">Also on Insights</h3>
+          <ul class="ticks">
+            {further.map((p) => (
+              <li><a href={`/insights/${p.id}/`}>{p.data.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="faqs" aria-labelledby="faq-title">
+    <div class="container os-split">
+      <div class="flow reveal">
+        <p class="eyebrow">FAQs</p>
+        <h2 id="faq-title" class="h-3xl">Before you treat it as a platform decision.</h2>
+      </div>
+      <Faq items={[...OS_FAQS]} id="os-faq" />
+    </div>
+  </section>
+
+  <section class="section os-cta" data-theme="light">
+    <div class="container os-cta__grid">
+      <div class="flow reveal">
+        <p class="eyebrow">Next</p>
+        <h2 class="h-3xl">Start with the layer that hurts.</h2>
+        <p class="lead">A slow site, a renewal you resent, an admin panel on the public internet, or a question your team answers by hand. Send a short brief. We reply with questions, then a proposal with scope, deliverables and a platform cost estimate.</p>
+        <div class="cluster">
+          <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a href="/health-check/" class="btn btn--ghost">Run the free health check</a>
+        </div>
+      </div>
+      <aside class="os-cta__aside reveal" style="--reveal-delay:100ms">
+        <p class="mono faint">Or read the decision first</p>
+        <ul class="list-reset">
+          <li><a href="/insights/which-cloudflare-products-a-business-needs/">Which products you actually need</a></li>
+          <li><a href="/insights/cloudflare-in-front-or-rebuild-on-workers/">In front, or a rebuild</a></li>
+          <li><a href="/insights/what-a-cloudflare-audit-covers/">What an audit covers</a></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .os-hero { padding-block: clamp(3rem, 7vw, 6rem); overflow: hidden; }
+  .os-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
+  .os-hero__copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .os-hero__title { font-size: clamp(2.6rem, 1rem + 5.4vw, 5.75rem); max-width: 11ch; }
+  .os-hero__title em { font-style: normal; }
+  .os-jumps { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; padding-top: var(--space-4); border-top: 1px solid var(--line); width: 100%; }
+  .os-jumps a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-mono); text-transform: uppercase; text-decoration: none; color: var(--fg-muted); }
+  .os-jumps a:hover { color: var(--signal); }
+
+  .os-board {
+    display: grid;
+    border: 1px solid var(--line-strong);
+    background:
+      radial-gradient(circle at 1px 1px, var(--grid-dot) 1px, transparent 0) 0 0 / 22px 22px,
+      var(--bg-raised);
+  }
+  .os-board__row { border-bottom: 1px solid var(--line); }
+  .os-board__link {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    grid-template-areas: 'index name' 'index products';
+    gap: 0.15rem var(--space-3);
+    padding: var(--space-4) var(--space-4);
+    text-decoration: none;
+    position: relative;
+  }
+  .os-board__link::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--signal);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .os-board__link:hover::before, .os-board__link:focus-visible::before { transform: scaleY(1); }
+  .os-board__index { grid-area: index; color: var(--accent-text); padding-top: 0.2rem; }
+  .os-board__name { grid-area: name; font-weight: 650; letter-spacing: var(--tracking-snug); }
+  .os-board__products { grid-area: products; display: flex; flex-wrap: wrap; gap: 0.35rem 0.7rem; color: var(--fg-faint); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; }
+  .os-board__products span + span::before { content: '· '; color: var(--line-strong); }
+  .os-board__foot {
+    padding: var(--space-3) var(--space-4);
+    color: var(--fg-faint);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .os-split { display: grid; gap: var(--space-6); align-items: start; }
+  .os-split p { max-width: 62ch; }
+  .os-aside { max-width: 36ch; font-size: var(--text-sm); }
+  .os-aside a { color: inherit; }
+
+  .os-layers { margin-top: var(--space-7); display: grid; border-top: 1px solid var(--line); }
+  .os-layer {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: 5.5rem;
+  }
+  .os-layer__id { display: flex; align-items: baseline; gap: var(--space-4); }
+  .os-layer__summary { max-width: 62ch; font-size: var(--text-lg); }
+  .os-layer__products { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .os-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 550;
+  }
+  .os-chip:hover { border-color: var(--signal); color: var(--signal); }
+
+  .os-benefits { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .os-benefit { display: grid; gap: var(--space-3); padding: var(--space-5); background: var(--bg); align-content: start; }
+  .os-not { margin-top: var(--space-7); display: grid; gap: var(--space-5); }
+  .os-not li { display: grid; gap: var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+
+  .os-versus { margin-top: var(--space-8); display: grid; gap: var(--space-6); }
+  .os-versus__row {
+    display: grid;
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line-strong);
+  }
+  .os-versus__stage { display: grid; gap: var(--space-2); align-content: start; }
+  .os-versus__col { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-4); background: var(--bg-raised); border-radius: var(--radius-md); }
+  .os-versus__col--us { box-shadow: inset 2px 0 0 var(--signal); }
+  .os-own {
+    margin-top: var(--space-8);
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid var(--line-strong);
+    background: var(--bg-raised);
+  }
+  .os-own :global(.os-mark) { color: var(--signal); }
+
+  .os-services { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .os-services__link {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--bg);
+    text-decoration: none;
+    height: 100%;
+    align-content: start;
+  }
+  .os-services__link:hover { background: var(--bg-raised); }
+  .os-services__link:hover .h-lg { color: var(--signal); }
+  .os-engage { margin-top: var(--space-8); display: grid; gap: var(--space-6); }
+  .os-engage__list { display: grid; gap: var(--space-5); }
+  .os-engage__list li { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--line); align-content: start; }
+
+  .os-labs { margin-top: var(--space-7); display: grid; gap: var(--space-4); }
+  .os-labs__link {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    background: var(--bg-raised);
+    height: 100%;
+    align-content: start;
+  }
+  .os-labs__link:hover { border-color: var(--signal); }
+  .os-labs__uses { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+  .os-posts { margin-top: var(--space-7); display: grid; border-top: 1px solid var(--line); }
+  .os-posts__link {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  .os-posts__link:hover .h-lg { color: var(--signal); }
+  .os-posts__meta { display: flex; gap: var(--space-4); }
+  .os-further { margin-top: var(--space-7); display: grid; gap: var(--space-4); max-width: 70ch; }
+  .os-further a { color: inherit; }
+  .os-further a:hover { color: var(--accent-hover); }
+
+  .os-cta__grid { display: grid; gap: var(--space-7); align-items: start; }
+  .os-cta__aside { display: grid; gap: var(--space-4); padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg-raised); align-content: start; }
+  .os-cta__aside ul { display: grid; gap: var(--space-3); }
+  .os-cta__aside a { text-decoration: none; font-weight: 600; }
+  .os-cta__aside a:hover { color: var(--signal); }
+
+  @media (min-width: 48em) {
+    .os-benefits { grid-template-columns: repeat(6, 1fr); }
+    .os-benefit:nth-child(-n + 3) { grid-column: span 2; }
+    .os-benefit:nth-child(n + 4) { grid-column: span 3; }
+    .os-not { grid-template-columns: 1fr 1fr; }
+    .os-services { grid-template-columns: repeat(2, 1fr); }
+    .os-engage__list { grid-template-columns: repeat(3, 1fr); gap: var(--gutter); }
+    .os-labs { grid-template-columns: 1fr 1fr; }
+    .os-posts { grid-template-columns: 1fr 1fr; column-gap: var(--gutter); }
+  }
+  @media (min-width: 60em) {
+    .os-hero__grid { grid-template-columns: minmax(0, 7fr) minmax(18rem, 5fr); gap: var(--gutter); }
+    .os-hero__title { max-width: none; }
+    .os-split { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); }
+    .os-split > .flow:first-child { position: sticky; top: 6rem; }
+    .os-layer { grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr); gap: var(--gutter); align-items: start; }
+    .os-versus__row { grid-template-columns: minmax(0, 3.2fr) minmax(0, 4.4fr) minmax(0, 4.4fr); gap: var(--gutter); }
+    .os-own { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .os-services { grid-template-columns: repeat(3, 1fr); }
+    .os-engage { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); align-items: start; }
+    .os-cta__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--gutter); }
+  }
+</style>

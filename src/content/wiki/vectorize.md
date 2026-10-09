@@ -8,7 +8,7 @@ avoidWhen: "Results that must be visible immediately after a write (indexing is 
 pricing: "Billed by vector dimensions stored and queried, with a free allowance on the free plan and a larger one on the paid plan. A small knowledge base typically costs nothing; a large catalogue search costs single-digit dollars a month."
 limits: "Up to 1,536 dimensions, 20 million vectors per index, 10 KiB of metadata per vector, 10 metadata indexes for filtering, and namespaces to partition an index. Writes become searchable after an asynchronous indexing step."
 pillars: ["ai-and-automation"]
-insights: ["cloudflare-vectorize-explained"]
+insights: ["cloudflare-vectorize-explained", "which-cloudflare-products-a-business-needs"]
 related: ["workers-ai", "embeddings", "rag", "ai-gateway", "ai-search"]
 updatedAt: 2026-10-06
 ---

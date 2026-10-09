@@ -8,7 +8,7 @@ avoidWhen: "Anything that needs transactions, counters, or an exact current valu
 pricing: "Daily free allowances of reads, writes and storage on the free plan; per-million reads and writes and per-gigabyte storage on the paid plan, with reads an order of magnitude cheaper than writes."
 limits: "Values up to 25 MiB, keys up to 512 bytes, eventual consistency of roughly a minute, and a limit of one write per second to the same key."
 pillars: ["performance-and-delivery", "websites-and-applications"]
-insights: ["d1-vs-kv-vs-r2"]
+insights: ["d1-vs-kv-vs-r2", "where-cloudflare-keeps-your-data", "which-cloudflare-products-a-business-needs"]
 related: ["d1", "r2", "cache", "workers"]
 updatedAt: 2026-10-06
 ---

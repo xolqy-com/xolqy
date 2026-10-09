@@ -8,7 +8,7 @@ avoidWhen: "Long-running CPU-heavy work such as video transcoding or large batch
 pricing: "A free tier with a daily request allowance and a short CPU budget per request, and a Workers Paid plan at a small monthly fee that includes millions of requests and CPU time, with usage priced per million beyond that. Static assets served next to a Worker are not charged per request."
 limits: "128 MB of memory per isolate, a CPU-time limit per request that is configurable on the paid plan, a maximum compressed script size, and no local filesystem. Outbound subrequests and open connections are capped per request."
 pillars: ["websites-and-applications", "cloudflare-migration", "performance-and-delivery"]
-insights: ["websites-on-cloudflare-workers"]
+insights: ["websites-on-cloudflare-workers", "cloudflare-as-an-operating-system", "cloudflare-in-front-or-rebuild-on-workers", "which-cloudflare-products-a-business-needs"]
 related: ["static-assets", "bindings", "wrangler", "durable-objects", "edge-and-pops"]
 updatedAt: 2026-10-06
 ---

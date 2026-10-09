@@ -7,7 +7,7 @@ useWhen: "Any form or endpoint that bots abuse: contact and signup forms, login,
 avoidWhen: "Relying on the widget alone. A token that is not verified server-side, with the hostname and action checked, protects nothing."
 pricing: "Free, with a cap on the number of widgets on the free tier and higher limits on Enterprise."
 pillars: ["security-and-zero-trust", "websites-and-applications"]
-insights: []
+insights: ["what-a-cloudflare-audit-covers", "zero-trust-without-a-vpn"]
 related: ["waf", "bot-management", "rate-limiting", "workers"]
 updatedAt: 2026-10-06
 ---

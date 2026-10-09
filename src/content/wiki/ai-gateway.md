@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/ai-gateway/"
 useWhen: "Any application that calls an AI model in production. The visibility alone pays for the fifteen minutes it takes to set up."
 pricing: "The core features are free. Extended log storage and some advanced features are paid."
 pillars: ["ai-and-automation", "managed-cloudflare"]
-insights: []
+insights: ["which-cloudflare-products-a-business-needs"]
 related: ["workers-ai", "vectorize", "rag", "secrets"]
 updatedAt: 2026-10-06
 ---

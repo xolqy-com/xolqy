@@ -98,3 +98,5 @@ A common mistake is to trust that the edge did its job. We implement Turnstile S
 ## Logs you will read
 
 Security events, Access logs and rate-limit hits are routed to where your team already looks, with notification policies for the few things that need a human now. The quarterly review turns those logs into rule updates.
+
+Security is a layer of [Cloudflare OS](/cloudflare-os/), in front of the compute and the data, not a product installed at the end.

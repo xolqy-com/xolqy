@@ -8,7 +8,7 @@ avoidWhen: "Tasks that need a specific frontier model from another provider; use
 pricing: "Billed in neurons, a unit that normalises across models, with a free daily allowance on the free plan and a per-thousand-neurons price on the paid plan. Embeddings are cheap; large text models cost more per request."
 limits: "A catalogue of supported models rather than any model, rate limits per model, and context-length limits per model. Model availability changes often; check the catalogue before designing around one."
 pillars: ["ai-and-automation"]
-insights: ["cloudflare-vectorize-explained"]
+insights: ["cloudflare-vectorize-explained", "cloudflare-as-an-operating-system", "which-cloudflare-products-a-business-needs"]
 related: ["vectorize", "ai-gateway", "embeddings", "rag", "ai-search"]
 updatedAt: 2026-10-06
 ---

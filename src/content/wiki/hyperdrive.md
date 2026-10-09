@@ -7,7 +7,7 @@ useWhen: "Applications that must keep their database where it is (an existing Po
 avoidWhen: "New applications with no existing database: D1 is simpler and cheaper to operate."
 pricing: "Included with Workers on both plans. You still pay your database provider."
 pillars: ["cloudflare-migration", "websites-and-applications"]
-insights: []
+insights: ["where-cloudflare-keeps-your-data", "cloudflare-in-front-or-rebuild-on-workers"]
 related: ["d1", "workers", "cloudflare-tunnel"]
 updatedAt: 2026-10-06
 ---

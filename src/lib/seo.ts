@@ -33,7 +33,7 @@ export function organizationJsonLd() {
     },
     description: SITE.description,
     slogan: SITE.tagline,
-    knowsAbout: ['Cloudflare', 'Cloudflare Workers', 'Edge computing', 'Web performance', 'Zero Trust', 'Cloudflare migration'],
+    knowsAbout: ['Cloudflare', 'Cloudflare Workers', 'Cloudflare OS', 'Edge computing', 'Web performance', 'Zero Trust', 'Cloudflare migration'],
   };
 }
 

@@ -90,9 +90,10 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   .site-header__brand:hover { color: var(--signal); }
 
   .site-header__nav { display: none; }
-  .site-header__links { display: flex; gap: clamp(1rem, 2.4vw, 2.25rem); }
+  .site-header__links { display: flex; gap: clamp(0.7rem, 1.15vw, 1.35rem); }
   .site-header__links a {
-    font-size: var(--text-sm);
+    font-size: 0.8125rem;
+    white-space: nowrap;
     font-weight: 500;
     text-decoration: none;
     color: rgba(245, 245, 240, 0.78);
@@ -132,7 +133,9 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
   [aria-expanded='true'] .burger i:first-child { top: 5px; transform: rotate(45deg); }
   [aria-expanded='true'] .burger i:last-child { top: 5px; transform: rotate(-45deg); }
 
-  @media (min-width: 60em) {
+  /* Nine items plus the project button need about 1280px before they sit
+     on one line. Below that, the full-height menu is the navigation. */
+  @media (min-width: 80em) {
     .site-header__nav { display: block; }
     .site-header__cta { display: inline-flex; }
     .site-header__toggle { display: none; }
@@ -175,5 +178,5 @@ const isCurrent = (href: string) => (href === '/' ? current === '/' : current.st
     .mobile-menu:not([hidden]) .mobile-menu__links li { animation: menu-in 0.5s var(--ease-out) both; animation-delay: var(--d, 0ms); }
     @keyframes menu-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
   }
-  @media (min-width: 60em) { .mobile-menu { display: none !important; } }
+  @media (min-width: 80em) { .mobile-menu { display: none !important; } }
 </style>

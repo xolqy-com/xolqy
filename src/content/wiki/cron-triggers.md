@@ -7,7 +7,7 @@ useWhen: "Nightly reports, cleanups, cache warming, polling an external system, 
 pricing: "Scheduled invocations are billed as ordinary Worker requests. There is no separate charge for the schedule itself."
 limits: "A handful of schedules per Worker, minute granularity, and the same CPU limits as any invocation. For long jobs the trigger should start a Workflow rather than do the work itself."
 pillars: ["managed-cloudflare", "ai-and-automation"]
-insights: []
+insights: ["queues-versus-workflows"]
 related: ["workflows", "workers", "wrangler"]
 updatedAt: 2026-10-06
 ---

@@ -21,6 +21,12 @@ const description = 'Websites and applications, Cloudflare migration, performanc
       <SectionIntro eyebrow="Services" title="Six ways we put Cloudflare to&nbsp;work." id="services-title" level="h1">
         <p class="lead">Every service is scoped to an outcome, has a named set of deliverables, uses specific Cloudflare products, and ends with a clear next step. Pick the one that matches your situation, or <a href="/labs/#solution-finder">ask the solution finder</a>.</p>
       </SectionIntro>
+      <a href="/cloudflare-os/" class="os-banner reveal">
+        <span class="mono os-banner__kicker">Umbrella</span>
+        <span class="os-banner__title">Cloudflare OS</span>
+        <span class="muted">Compute, data, security, AI and delivery as one system, and why doing it with us is different from doing it yourself.</span>
+        <span class="link">Read the overview <span class="arrow" aria-hidden="true">&rarr;</span></span>
+      </a>
     </div>
   </section>
 
@@ -73,6 +79,20 @@ const description = 'Websites and applications, Cloudflare migration, performanc
 </Base>
 
 <style>
+  .os-banner {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-7);
+    padding: var(--space-5);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    max-width: 72ch;
+    background: var(--bg-raised);
+  }
+  .os-banner:hover { border-color: var(--signal); }
+  .os-banner__kicker { color: var(--accent-text); }
+  .os-banner__title { font-size: var(--text-xl); font-weight: 650; letter-spacing: var(--tracking-snug); }
   .svc__grid { display: grid; gap: var(--space-7); }
   .svc__head { display: grid; gap: var(--space-5); justify-items: start; align-content: start; }
   .svc__title-link { text-decoration: none; }

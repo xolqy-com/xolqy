@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/dns/"
 useWhen: "Every domain on Cloudflare. Proxied records for websites and APIs, DNS-only for mail, verification records and services that must see the client IP directly."
 pricing: "Free on every plan, including DNSSEC and unlimited records within reason."
 pillars: ["cloudflare-migration", "managed-cloudflare"]
-insights: ["cloudflare-migration-runbook", "dnssec-on-cloudflare"]
+insights: ["cloudflare-migration-runbook", "dnssec-on-cloudflare", "what-a-cloudflare-audit-covers"]
 related: ["tls-ssl", "cache", "email", "cloudflare-tunnel"]
 updatedAt: 2026-10-06
 ---

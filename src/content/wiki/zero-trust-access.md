@@ -7,7 +7,7 @@ useWhen: "Admin areas, staging sites, internal dashboards, SSH and RDP to server
 avoidWhen: "Public pages, and as the only control on an application: the application should verify the Access token itself so that a misconfigured policy fails closed."
 pricing: "Free for up to a set number of users, then per user per month on the Zero Trust plans. A Zero Trust plan must be selected in the dashboard before Access can be used."
 pillars: ["security-and-zero-trust", "managed-cloudflare"]
-insights: []
+insights: ["zero-trust-without-a-vpn"]
 related: ["cloudflare-tunnel", "waf", "secrets", "bot-management"]
 updatedAt: 2026-10-06
 ---

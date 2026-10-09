@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/workers/runtime-apis/bindings/"
 useWhen: "Every resource a Worker uses. Declared in wrangler.jsonc, typed with `wrangler types`, and emulated locally by `wrangler dev`."
 pricing: "Free. The resources behind them are billed on their own terms."
 pillars: ["websites-and-applications"]
-insights: []
+insights: ["your-cloudflare-account-should-be-yours"]
 related: ["workers", "wrangler", "secrets", "d1", "kv", "r2"]
 updatedAt: 2026-10-06
 ---

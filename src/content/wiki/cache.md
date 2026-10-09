@@ -7,7 +7,7 @@ useWhen: "Every site. Static files are cached by default; HTML and API responses
 avoidWhen: "Personalised or authenticated responses, which must either bypass the cache or be cached with a key that includes the user."
 pricing: "Caching is included on every plan. Cache Reserve, a persistent layer that keeps objects cached far longer, is a paid add-on billed by storage and operations."
 pillars: ["performance-and-delivery", "cloudflare-migration"]
-insights: ["cloudflare-migration-runbook"]
+insights: ["cloudflare-migration-runbook", "cloudflare-in-front-or-rebuild-on-workers", "which-cloudflare-products-a-business-needs", "where-cloudflare-keeps-your-data"]
 related: ["static-assets", "kv", "r2", "argo-smart-routing", "edge-and-pops"]
 updatedAt: 2026-10-06
 ---

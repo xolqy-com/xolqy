@@ -7,7 +7,7 @@ useWhen: "Any website or application frontend built with Astro, Next.js, SvelteK
 pricing: "Requests for static assets are free and not counted against Workers request limits. You pay only for requests that reach your Worker code."
 limits: "A per-file size limit and a total file-count limit per deployment, both generous for websites. Routing options cover trailing slashes, 404 pages, single-page applications and which paths should run the Worker first."
 pillars: ["websites-and-applications", "cloudflare-migration", "performance-and-delivery"]
-insights: ["websites-on-cloudflare-workers"]
+insights: ["websites-on-cloudflare-workers", "cloudflare-in-front-or-rebuild-on-workers", "cloudflare-as-an-operating-system"]
 related: ["workers", "pages", "cache", "workers-builds"]
 updatedAt: 2026-10-06
 ---

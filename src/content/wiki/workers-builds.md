@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/workers/ci-cd/builds/"
 useWhen: "Any project where more than one person deploys, or where you want a deploy history tied to commits and previews for review before production."
 pricing: "A monthly allowance of build minutes on both plans, with additional minutes priced per minute on the paid plan."
 pillars: ["websites-and-applications", "managed-cloudflare"]
-insights: []
+insights: ["cloudflare-in-front-or-rebuild-on-workers"]
 related: ["wrangler", "pages", "static-assets"]
 updatedAt: 2026-10-06
 ---

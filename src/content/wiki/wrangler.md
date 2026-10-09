@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/workers/wrangler/"
 useWhen: "Every Workers project. Install it as a dev dependency so the whole team runs the same version."
 pricing: "Free, open source."
 pillars: ["websites-and-applications", "managed-cloudflare"]
-insights: []
+insights: ["your-cloudflare-account-should-be-yours"]
 related: ["workers", "workers-builds", "bindings", "secrets", "compatibility-date"]
 updatedAt: 2026-10-06
 ---

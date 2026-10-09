@@ -8,7 +8,7 @@ avoidWhen: "Simple fire-and-forget tasks that a queue consumer handles in one st
 pricing: "Billed like Workers, by requests and CPU time, plus a small charge for stored state. Included allowances on both plans."
 limits: "Caps on steps per instance, payload sizes and concurrent instances, all documented and generous for business processes. Steps must be idempotent because they can run more than once."
 pillars: ["ai-and-automation", "websites-and-applications"]
-insights: []
+insights: ["queues-versus-workflows"]
 related: ["queues", "durable-objects", "workers", "cron-triggers"]
 updatedAt: 2026-10-06
 ---

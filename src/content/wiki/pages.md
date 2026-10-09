@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/pages/"
 useWhen: "Existing sites already on Pages that are stable. New projects should start on Workers with Static Assets, which has the same Git integration through Workers Builds and more platform features."
 pricing: "Free unlimited bandwidth and requests for static content, with a monthly allowance of builds on the free plan. Pages Functions are billed as Workers."
 pillars: ["cloudflare-migration", "websites-and-applications"]
-insights: []
+insights: ["cloudflare-in-front-or-rebuild-on-workers", "which-cloudflare-products-a-business-needs"]
 related: ["static-assets", "workers-builds", "workers"]
 updatedAt: 2026-10-06
 ---

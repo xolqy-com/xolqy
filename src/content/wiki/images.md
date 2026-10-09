@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/images/"
 useWhen: "Sites with many user-uploaded or catalogue images, and any site that wants responsive, correctly sized images without a build step or an image CDN from another vendor."
 pricing: "Priced per images stored and per images delivered, and transformations per unique transformation beyond a free monthly allowance. Images already in R2 can be transformed without being stored twice."
 pillars: ["performance-and-delivery", "websites-and-applications"]
-insights: []
+insights: ["which-cloudflare-products-a-business-needs", "cloudflare-in-front-or-rebuild-on-workers"]
 related: ["r2", "cache", "workers"]
 updatedAt: 2026-10-06
 ---

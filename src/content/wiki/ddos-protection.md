@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/ddos-protection/"
 useWhen: "Nothing to do beyond putting the site behind Cloudflare. Managed HTTP DDoS rules can be tuned for sensitivity if a legitimate traffic pattern looks like an attack."
 pricing: "Included on all plans, unmetered. Advanced features and dedicated support are part of Enterprise."
 pillars: ["security-and-zero-trust", "cloudflare-migration"]
-insights: []
+insights: ["zero-trust-without-a-vpn", "cloudflare-as-an-operating-system"]
 related: ["waf", "bot-management", "rate-limiting", "tls-ssl"]
 updatedAt: 2026-10-06
 ---

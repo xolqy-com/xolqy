@@ -6,7 +6,7 @@ docs: "https://developers.cloudflare.com/cloudflare-one/connections/connect-netw
 useWhen: "Hiding origin servers behind Cloudflare, exposing an internal application through Access, reaching a private database from Workers through Hyperdrive, and giving remote staff access to private networks."
 pricing: "Free. Related Zero Trust features are priced per user."
 pillars: ["security-and-zero-trust", "cloudflare-migration"]
-insights: []
+insights: ["zero-trust-without-a-vpn", "cloudflare-in-front-or-rebuild-on-workers", "where-cloudflare-keeps-your-data"]
 related: ["zero-trust-access", "ddos-protection", "hyperdrive", "dns"]
 updatedAt: 2026-10-06
 ---

@@ -98,3 +98,5 @@ The runbook is rehearsed on staging. Redirect tests run as code against the full
 ## After cutover
 
 Two and six weeks after launch we review Search Console, analytics and cache hit ratios, tune WAF rules against real traffic, and only then decommission the old hosting. The old environment stays available until the rollback window closes.
+
+Fronting an origin and rebuilding on Workers are two layers of the same system. The map is [Cloudflare OS](/cloudflare-os/).
