@@ -17,3 +17,6 @@
 
 /og/*
   Cache-Control: public, max-age=86400
+
+/globe/*
+  Cache-Control: public, max-age=604800
