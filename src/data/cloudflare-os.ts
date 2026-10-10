@@ -12,7 +12,7 @@ export const OS_PATH = '/cloudflare-os/';
 export const OS_TOPIC = 'Cloudflare OS';
 
 export const OS_DESCRIPTION =
-  'Cloudflare OS Implementation by Xolqy deploys Cloudflare’s open-source AI workspace and designs compute, data, security, AI and delivery as one system, in an account you own. Xolqy is an independent implementation partner.';
+  'Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. Cloudflare OS Implementation by Xolqy is the expertise to fix, set up and configure them for your stack: Cloudflare-first, not Cloudflare-only. Xolqy is an independent implementation partner.';
 
 export interface OsProduct {
   name: string;
@@ -148,7 +148,7 @@ export const VERSUS = PROCESS.map((p) => {
 
 export const NOT_THIS = [
   'Not a Cloudflare endorsement, plan or certification. Cloudflare OS is Cloudflare’s open-source product. Xolqy is an independent implementation partner and is not affiliated with, endorsed by or certified by Cloudflare, Inc.',
-  'Not a requirement to turn every product on. A brochure site does not need Vectorize. An existing Postgres does not have to move to D1 on day one.',
+  'Not Cloudflare-only. The framing is Cloudflare-first: a brochure site does not need Vectorize, and an existing Postgres does not have to move to D1 on day one.',
   'Not a promise of a latency figure, a ranking, or a percentage off the hosting bill. Those are measured per project from your data, or not claimed.',
   'Not a lock-in designed by us. The repository and the Cloudflare account are yours. Leaving is a handover, not a migration of the account.',
 ] as const;
@@ -156,11 +156,11 @@ export const NOT_THIS = [
 export const OS_FAQS = [
   {
     q: 'Is Cloudflare OS something Cloudflare sells?',
-    a: 'Cloudflare OS is Cloudflare’s open-source AI workspace: a browser workspace, gadgets, and Gatekeepers that connect agents to company systems. You can deploy it into your own Cloudflare account. A fully managed dashboard version is a waitlist, not something this page can switch on for you. Cloudflare OS Implementation by Xolqy is our work on top of that: the pilot, and compute, data, security, AI and delivery designed together in an account you own. Cloudflare and Cloudflare OS are trademarks of Cloudflare, Inc. Xolqy is an independent implementation partner. Cloudflare does not endorse Xolqy.',
+    a: 'Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. Cloudflare OS is Cloudflare’s open-source AI workspace: a browser workspace, gadgets, and Gatekeepers that connect agents to company systems. You can deploy it into your own Cloudflare account. A fully managed dashboard version is a waitlist, not something this page can switch on for you. Cloudflare OS Implementation by Xolqy is the expertise to fix, set up and configure those products for your stack: the pilot, and a Cloudflare-first build of compute, data, security, AI and delivery in an account you own. It is not a Cloudflare-only programme. Cloudflare and Cloudflare OS are trademarks of Cloudflare, Inc. Xolqy is an independent implementation partner. Cloudflare does not endorse Xolqy.',
   },
   {
     q: 'Do we have to adopt the whole platform?',
-    a: 'No. The architecture stage names each product and why, including the ones you do not need yet. Many engagements start with Cloudflare in front of an existing site, or with one application on Workers, and add layers when there is a reason.',
+    a: 'No. The aim is Cloudflare-first, not Cloudflare-only. The architecture stage names each product and why, including the ones you do not need yet. Many engagements start with Cloudflare in front of an existing site, or with one application on Workers, and add layers when there is a reason.',
   },
   {
     q: 'Who owns the Cloudflare account?',

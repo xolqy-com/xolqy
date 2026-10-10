@@ -1,6 +1,6 @@
 ---
 title: "Can a company run on Cloudflare OS?"
-description: Cloudflare OS is Cloudflare’s open-source AI workspace. A company can be Cloudflare-first. It should not try to be Cloudflare-only. Sources read on 10 October 2026.
+description: Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. A company can be Cloudflare-first, not Cloudflare-only. Sources read on 10 October 2026.
 publishedAt: 2026-10-10T12:00:00.000Z
 audience: both
 topics: ["Research", "Cloudflare OS", Architecture]
@@ -13,7 +13,7 @@ seriesOrder: 0
 sourcesAt: 2026-10-10
 ---
 
-This is for a CTO, or for the owner who will have to live with the choice. Cloudflare OS is Cloudflare’s open-source AI workspace. The Cloudflare platform around it can hold a large part of a digital company. “Exclusive” is the wrong target.
+This is for a CTO, or for the owner who will have to live with the choice. Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. Cloudflare OS is the open-source AI workspace. The platform around it can hold a large part of a digital company. “Exclusive” is the wrong target. Where Xolqy is involved, the value is the expertise to fix, set up and configure those products for the client’s stack: Cloudflare-first, not Cloudflare-only.
 
 The platform comparison is [the edge cloud landscape](/insights/research/edge-cloud-landscape/). The database split, PostgreSQL through [Hyperdrive](/wiki/hyperdrive/) and [D1](/wiki/d1/) only where an edge copy earns it, is [the hybrid architecture](/insights/research/cloudflare-postgresql-d1-hybrid/). This page is the question those two leave open: can the company itself run on Cloudflare OS?
 
@@ -259,9 +259,9 @@ Can it operate Cloudflare-first, with Cloudflare OS as the AI work layer and Clo
 
 ## Cloudflare OS Implementation by Xolqy
 
-Cloudflare OS is Cloudflare’s open-source platform. Xolqy is an independent implementation partner. Cloudflare’s announcement names Presidio and Happy Cog. It does not name Xolqy, and this is not an endorsement.
+Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. Cloudflare OS is the open-source AI workspace. The platform around it is the rest of Cloudflare: DNS, compute, data, security and delivery. Xolqy’s value is the expertise to fix, set up and configure those products for the client’s stack. Xolqy is an independent implementation partner. Cloudflare’s announcement names Presidio and Happy Cog. It does not name Xolqy, and this is not an endorsement.
 
-Xolqy runs the pilot in phases 1 to 3 above, and the Cloudflare-first build around it. The page is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). Prices on the shop are unchanged: the [package](/shop/#cloudflare-os) is $2,500, and the [introduction](/shop/#os-introduction) is €600. This page does not add one.
+The framing is Cloudflare-first, not Cloudflare-only. Xolqy runs the pilot in phases 1 to 3 above, and the Cloudflare-first build around it. The page is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). Prices on the shop are unchanged: the [package](/shop/#cloudflare-os) is $2,500, and the [introduction](/shop/#os-introduction) is €600. This page does not add one.
 
 ## Also in this research
 

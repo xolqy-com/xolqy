@@ -6,7 +6,7 @@ import { SHOP, SHOP_CATEGORIES, shopByCategory, formatPrice, formatCompare, isPu
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
 import { SITE } from '@/data/site';
 
-const description = 'Fixed-scope Cloudflare packages. Cloudflare OS Implementation by Xolqy at the pre-Black Friday price, and a €600 introduction: one counselling session and a written recommendation, not the build.';
+const description = 'Fixed-scope Cloudflare packages. Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. Cloudflare OS Implementation by Xolqy is the expertise to fix, set up and configure them: Cloudflare-first, not Cloudflare-only. The €600 introduction is counselling, not the build.';
 
 const requestHref = (item: ShopItem) =>
   `/contact/?interest=${encodeURIComponent(item.interest)}&package=${encodeURIComponent(item.name)}#enquiry`;
@@ -17,7 +17,7 @@ const faqs = [
   { q: 'Do I need to be on Cloudflare already?', a: 'No. The Migration Sprint moves you there. The other packages assume the domain is on Cloudflare or will be by the time the work starts; the free plan is enough for most of them.' },
   { q: 'Who owns the result?', a: 'You do. Configuration lives in your Cloudflare account, code in your repository, and you receive the documentation. Nothing of ours keeps running in your account after we hand over.' },
   { q: 'How do I pay?', a: 'Packages with a price shown can be paid by card through Stripe Checkout; an invoice follows within one working day. Anything else is paid by card or bank transfer against an invoice. Subscriptions are billed monthly in advance and can be cancelled with 30 days notice.' },
-  { q: 'What is the €600 introduction?', a: 'Counselling, not a build. You pay €600 by card. We introduce Cloudflare OS, which is Cloudflare’s open-source workspace, and Cloudflare OS Implementation by Xolqy against the mix you run today, then send a written recommendation: stay as you are, a staged transition, or the full implementation package. The build, if you want it, is that separate package. Xolqy is an independent implementation partner. Cloudflare does not endorse Xolqy.' },
+  { q: 'What is the €600 introduction?', a: 'Counselling, not a build. You pay €600 by card. Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. The session introduces them, and whether Xolqy should fix, set up and configure them for your stack: Cloudflare-first, not Cloudflare-only. You then get a written recommendation: stay as you are, a staged transition, or the full implementation package. The build, if you want it, is that separate package. Xolqy is an independent implementation partner. Cloudflare does not endorse Xolqy.' },
 ];
 
 const offerCatalog = {
@@ -62,12 +62,12 @@ const offerCatalog = {
   <section class="section intro-promo" data-theme="light" aria-labelledby="intro-promo-title">
     <div class="container intro-promo__grid">
       <a class="intro-promo__banner" href="#os-introduction">
-        <img src="/banners/xolqy-ai-wave-300x700.png" width="300" height="700" alt="xolqy.com, the tool for the next web. Cloudflare OS by Xolqy, €600 introduction. One counselling session and a written recommendation." />
+        <img src="/banners/xolqy-ai-wave-300x700.png" width="300" height="700" alt="xolqy.com. €600 introduction to Cloudflare OS Implementation by Xolqy. Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. One counselling session and a written recommendation. Cloudflare-first, not Cloudflare-only." />
       </a>
       <div class="flow">
         <p class="eyebrow">€600 introduction</p>
         <h2 id="intro-promo-title" class="h-3xl measure">How this works.</h2>
-        <p class="lead">The €600 session introduces Cloudflare OS Implementation by Xolqy: Cloudflare’s open-source workspace, and the platform around it, when AI, the site and the data should be one system. €600 is the counselling session. It is not the build.</p>
+        <p class="lead">The €600 session introduces Cloudflare OS Implementation by Xolqy. Cloudflare and Cloudflare OS are Cloudflare’s products, not Xolqy’s. The question is whether Xolqy should fix, set up and configure them for your stack: Cloudflare-first, not Cloudflare-only. €600 is the counselling session. It is not the build.</p>
         <ol class="list-reset intro-promo__steps">
           <li>
             <span class="mono faint">01</span>
@@ -75,7 +75,7 @@ const offerCatalog = {
           </li>
           <li>
             <span class="mono faint">02</span>
-            <p>One session. We introduce Cloudflare OS, Cloudflare’s product, and the implementation Xolqy would run. We look at the mix you run now: what stays, what moves, and what a transition would actually change.</p>
+            <p>One session. We introduce Cloudflare and Cloudflare OS as Cloudflare’s products, not Xolqy’s, and the implementation Xolqy would run: the expertise to fix, set up and configure them for your stack. We look at the mix you run now: what stays, what moves, and what a Cloudflare-first, not Cloudflare-only, transition would actually change.</p>
           </li>
           <li>
             <span class="mono faint">03</span>
