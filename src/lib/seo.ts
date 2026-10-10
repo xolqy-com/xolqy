@@ -25,7 +25,7 @@ export function organizationJsonLd() {
     '@id': `${SITE.url}/#organization`,
     name: SITE.name,
     url: `${SITE.url}/`,
-    sameAs: ['https://www.tiktok.com/@xolqy.com'],
+    sameAs: ['https://www.tiktok.com/@xolqy.com', 'https://www.youtube.com/@xolqychanel'],
     logo: {
       '@type': 'ImageObject',
       url: absolute('/og/logo.png'),
