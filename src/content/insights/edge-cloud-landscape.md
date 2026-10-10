@@ -271,6 +271,8 @@ Each spoke is a decision against one class of rival, including where Cloudflare 
 
 The database row has its own page. [Cloudflare, PostgreSQL and D1](/insights/research/cloudflare-postgresql-d1-hybrid/) is the architecture for a shared system of record: PostgreSQL through Hyperdrive, and D1 only where an edge copy earns its place.
 
+Whether a company can run on Cloudflare OS itself, rather than on the Cloudflare platform with a database beside it, is [Can a company run on Cloudflare OS?](/insights/research/can-a-company-run-on-cloudflare-os/).
+
 For the product definitions rather than the comparison, start with the [wiki](/wiki/): [Workers](/wiki/workers/), [R2](/wiki/r2/), [D1](/wiki/d1/), [Hyperdrive](/wiki/hyperdrive/), [Durable Objects](/wiki/durable-objects/), [edge locations](/wiki/edge-and-pops/), [Workers AI](/wiki/workers-ai/). The essay [Cloudflare as an operating system](/insights/cloudflare-as-an-operating-system/) is the argument for treating the platform as one system. [Which products a business needs](/insights/which-cloudflare-products-a-business-needs/) is the buying guide. This series is the “against whom”.
 
 ## References
