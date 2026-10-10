@@ -179,6 +179,7 @@ const pages = [
   { file: 'insight-cloudflare-vs-vercel-netlify', eyebrow: 'Research', title: 'Cloudflare vs Vercel and Netlify.', subtitle: 'A framework host, or the network the host is not.' },
   { file: 'insight-cloudflare-vs-fastly-akamai', eyebrow: 'Research', title: 'Cloudflare vs Fastly and Akamai.', subtitle: 'Three edge networks. Density is not the only axis.' },
   { file: 'insight-cloudflare-vs-supabase-firebase', eyebrow: 'Research', title: 'Cloudflare vs Supabase and Firebase.', subtitle: 'A database with auth, or a network with a small database.' },
+  { file: 'insight-cloudflare-postgresql-d1-hybrid', eyebrow: 'Research', title: 'The hybrid architecture.', subtitle: 'Cloudflare around the product. PostgreSQL holds the truth.' },
   { file: 'wiki', eyebrow: 'Wiki', title: 'Cloudflare, one term at a time.', subtitle: 'What each product is, when to use it, what it costs, and where it fits.' },
   { file: 'work', eyebrow: 'Work', title: 'Real projects on Cloudflare.', subtitle: 'Case studies: sites on Pages and Workers, a photo-proofing SaaS on R2, an anonymous-letters app on D1, a sailing-tours site and Cloudflare in front of a classic host.' },
   { file: 'work-la-house-of-pulse', eyebrow: 'Case study', title: 'La House of Pulse', subtitle: 'Bilingual studio site on Cloudflare Pages with its own analytics dashboard.' },

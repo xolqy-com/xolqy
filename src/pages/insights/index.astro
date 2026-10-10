@@ -10,7 +10,12 @@ import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
 const published = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const posts = published.filter((p) => p.data.type !== 'research');
 const research = published.filter((p) => p.data.type === 'research').sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
-const hub = research.find((p) => p.data.researchRole === 'hub');
+const hubs = research
+  .filter((p) => p.data.researchRole === 'hub')
+  .sort((a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime() || a.id.localeCompare(b.id));
+const hub = hubs[0];
+const seriesCount = hub ? research.filter((p) => p.data.series === hub.data.series).length : 0;
+const laterHubs = hubs.slice(1);
 const description = 'Technical and business articles on running a business on Cloudflare, plus long-form research. The first research series compares Cloudflare with the rest of the edge-cloud landscape.';
 ---
 
@@ -36,13 +41,18 @@ const description = 'Technical and business articles on running a business on Cl
         <article class="research-feature reveal">
           <div class="research-feature__meta">
             <a class="badge badge--research" href="/insights/research/">Research</a>
-            <span class="mono faint">{research.length} {research.length === 1 ? 'piece' : 'pieces'} in the series</span>
+            <span class="mono faint">{seriesCount} {seriesCount === 1 ? 'piece' : 'pieces'} in the series</span>
           </div>
           <h2 class="h-2xl"><a href={insightHref(hub)}>{hub.data.title}</a></h2>
           <p class="muted">{hub.data.description}</p>
           <p class="research-feature__more">
             <a href="/insights/research/" class="link">The research index <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </p>
+          {laterHubs.map((item) => (
+            <p class="research-feature__more">
+              <a href={insightHref(item)} class="link">{item.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </p>
+          ))}
         </article>
       )}
       <ol class="list-reset posts">

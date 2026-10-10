@@ -269,6 +269,8 @@ Each spoke is a decision against one class of rival, including where Cloudflare 
 5. [Cloudflare vs Fastly and Akamai](/insights/research/cloudflare-vs-fastly-akamai/)
 6. [Cloudflare vs Supabase and Firebase](/insights/research/cloudflare-vs-supabase-firebase/)
 
+The database row has its own page. [Cloudflare, PostgreSQL and D1](/insights/research/cloudflare-postgresql-d1-hybrid/) is the architecture for a shared system of record: PostgreSQL through Hyperdrive, and D1 only where an edge copy earns its place.
+
 For the product definitions rather than the comparison, start with the [wiki](/wiki/): [Workers](/wiki/workers/), [R2](/wiki/r2/), [D1](/wiki/d1/), [Hyperdrive](/wiki/hyperdrive/), [Durable Objects](/wiki/durable-objects/), [edge locations](/wiki/edge-and-pops/), [Workers AI](/wiki/workers-ai/). The essay [Cloudflare as an operating system](/insights/cloudflare-as-an-operating-system/) is the argument for treating the platform as one system. [Which products a business needs](/insights/which-cloudflare-products-a-business-needs/) is the buying guide. This series is the “against whom”.
 
 ## References

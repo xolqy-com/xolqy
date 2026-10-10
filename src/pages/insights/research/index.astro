@@ -17,9 +17,13 @@ const series = seriesIds.map((id) => {
     hub: items.find((p) => p.data.researchRole === 'hub'),
     spokes: items.filter((p) => p.data.researchRole === 'spoke'),
   };
+}).sort((a, b) => {
+  const at = a.hub?.data.publishedAt.getTime() ?? 0;
+  const bt = b.hub?.data.publishedAt.getTime() ?? 0;
+  return at - bt || a.id.localeCompare(b.id);
 });
 
-const description = 'Long-form research from Xolqy. The first series maps the edge cloud landscape: Cloudflare against hyperscalers, edge networks, application hosts and backend-as-a-service platforms.';
+const description = 'Long-form research from Xolqy. The edge cloud landscape compares Cloudflare with the alternatives. The hybrid architecture places PostgreSQL at the core and D1 at the edge.';
 ---
 
 <Base
@@ -32,7 +36,7 @@ const description = 'Long-form research from Xolqy. The first series maps the ed
   <section class="section" data-theme="dark">
     <div class="container">
       <SectionIntro eyebrow="Insights / Research" title="Comparisons, with the limits written down." id="research-title" level="h1">
-        <p class="lead">Research is a format inside Insights: a flagship page, then a page per comparison. Figures come from primary sources and are dated. Where a number could not be verified, the page says so.</p>
+        <p class="lead">Research is a format inside Insights: a flagship page, and further pages when the question needs them. Figures come from primary sources and are dated. Where a number could not be verified, the page says so.</p>
       </SectionIntro>
     </div>
   </section>
@@ -53,17 +57,19 @@ const description = 'Long-form research from Xolqy. The first series maps the ed
                 <p class="muted">{group.hub.data.description}</p>
               </a>
             )}
-            <ol class="list-reset series__spokes">
-              {group.spokes.map((spoke, i) => (
-                <li>
-                  <a href={insightHref(spoke)} class="series__spoke">
-                    <span class="mono faint">0{i + 1}</span>
-                    <span class="series__spoke-title">{spoke.data.title}</span>
-                    <span class="muted series__spoke-desc">{spoke.data.description}</span>
-                  </a>
-                </li>
-              ))}
-            </ol>
+            {group.spokes.length > 0 && (
+              <ol class="list-reset series__spokes">
+                {group.spokes.map((spoke, i) => (
+                  <li>
+                    <a href={insightHref(spoke)} class="series__spoke">
+                      <span class="mono faint">0{i + 1}</span>
+                      <span class="series__spoke-title">{spoke.data.title}</span>
+                      <span class="muted series__spoke-desc">{spoke.data.description}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            )}
           </article>
         ))}
         {pieces.length === 0 && <p class="muted">No research is published yet.</p>}

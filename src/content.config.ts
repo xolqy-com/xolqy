@@ -57,6 +57,8 @@ const insights = defineCollection({
     series: z.string().optional(),
     /** Order within a series. The hub is 0. */
     seriesOrder: z.number().int().nonnegative().optional(),
+    /** Day the references were read. Printed on the research page. Pieces without it keep the original series date. */
+    sourcesAt: z.coerce.date().optional(),
     /** Drafts are excluded from routes, the index, the sitemap and the finder. */
     draft: z.boolean().default(false),
   }).superRefine((data, ctx) => {
