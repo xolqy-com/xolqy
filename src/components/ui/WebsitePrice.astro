@@ -1,0 +1,55 @@
+---
+/**
+ * Website package price. During the pre-Black Friday sale the server renders
+ * the struck regular price and the sale price. `public/website-sale.js` marks
+ * the document after the deadline so the regular price replaces that treatment
+ * without a rebuild.
+ */
+import { formatCompare, formatPrice, shopItem } from '@/data/shop';
+import {
+  WEBSITE_ITEM_ID,
+  WEBSITE_REGULAR_CENTS,
+  WEBSITE_SALE_CENTS,
+  websiteSaleActive,
+} from '@/data/website-sale';
+
+const item = shopItem(WEBSITE_ITEM_ID);
+if (!item) throw new Error(`Missing shop item ${WEBSITE_ITEM_ID}`);
+
+const active = websiteSaleActive();
+const regular = formatPrice(item);
+const sale = formatPrice({ ...item, amount: WEBSITE_SALE_CENTS });
+const was = formatCompare({ ...item, compareAt: WEBSITE_REGULAR_CENTS });
+if (!regular || !sale || !was) throw new Error('Website price could not be formatted');
+---
+
+{
+  active ? (
+    <div class="website-offer" data-website-price>
+      <span class="mono faint website-price__sale-label">Pre-Black Friday</span>
+      <span class="mono faint website-price__regular-label">Price</span>
+      <span class="website-offer__amount">
+        <s class="website-offer__was website-price__was">
+          <span class="visually-hidden">Regular price </span>{was}
+        </s>
+        <span class="h-lg website-price__sale">
+          <span class="visually-hidden">Sale price </span>{sale}
+        </span>
+        <span class="h-lg website-price__regular">{regular}</span>
+      </span>
+    </div>
+  ) : (
+    <div class="website-offer">
+      <span class="mono faint">Price</span>
+      <span class="website-offer__amount">
+        <span class="h-lg">{regular}</span>
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .website-offer { display: grid; gap: 0.2rem; }
+  .website-offer__amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.7rem; }
+  .website-offer__was { color: var(--fg-muted); font-size: var(--text-base); text-decoration-thickness: 2px; }
+</style>

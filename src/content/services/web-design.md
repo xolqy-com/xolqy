@@ -13,7 +13,7 @@ problems:
   - Reliability and security were left to a server and a pile of plugins.
 deliverables:
   - Fast, reliable, secure websites
-  - From $1,200, the starting price, which is the amount checkout charges
+  - From $1,200, the regular starting price. Until Black Friday, 27 Nov 2026, 00:00 Athens, checkout charges the pre-Black Friday price of $700
   - Shipped worldwide
   - Hosting for the agreed site included, on Cloudflare, in an account you own
   - "On delivery, the agreed pages score 100 for performance in Lighthouse, as reported by PageSpeed Insights, or Xolqy fixes them at no cost"
@@ -38,7 +38,7 @@ faqs:
   - q: Does the score stay at 100 after we change the site?
     a: No. The guarantee is at delivery, for the agreed pages as handed over. Changes you make after that are outside it.
   - q: What does from $1,200 mean at checkout?
-    a: "$1,200 is the starting price. Buy now charges that amount for this package. A larger set of pages is quoted before any further work. The shop lists it as Website from $1,200."
+    a: "$1,200 is the regular starting price. Until Black Friday, 27 Nov 2026, 00:00 Athens, the pre-Black Friday price is $700 and checkout charges $700. At and after that time, checkout charges $1,200. A larger set of pages is quoted before any further work. The shop lists it as Website from $1,200."
   - q: Who owns the hosting?
     a: You do. Hosting for the agreed site is included in the package. The site is hosted on Cloudflare, in an account you own. Xolqy is an independent agency. Cloudflare does not endorse Xolqy.
   - q: Is this Cloudflare OS, or websites and applications?
@@ -66,7 +66,7 @@ relatedLabs: []
 
 Web design & development by Xolqy is a website for the agreed pages. It is fast, reliable and secure. It starts at $1,200. It is shipped worldwide. Hosting for the agreed site is included, on Cloudflare, in an account you own.
 
-[$1,200 is the starting price](/shop/#web-design-starter), and checkout charges that amount. A larger set of pages is quoted before that work starts. Nothing is added to the scope without agreement.
+[$1,200 is the regular starting price](/shop/#web-design-starter). Until Black Friday, 27 Nov 2026, 00:00 Athens, the pre-Black Friday price is $700 and checkout charges $700. At and after that time, checkout charges $1,200. A larger set of pages is quoted before that work starts. Nothing is added to the scope without agreement.
 
 ## The performance guarantee
 

@@ -6,9 +6,11 @@
  *   STRIPE_WEBHOOK_SECRET  whsec_... from the webhook endpoint in the Stripe dashboard
  *
  * Prices live in src/data/shop.ts and are sent as inline price_data, so there
- * is nothing to keep in sync in the Stripe dashboard.
+ * is nothing to keep in sync in the Stripe dashboard. The website package is
+ * the exception: its unit_amount comes from websiteChargeCents() at request time.
  */
 import type { ShopItem } from '@/data/shop';
+import { WEBSITE_ITEM_ID, WEBSITE_REGULAR_DISPLAY, WEBSITE_SALE_DISPLAY, websiteChargeCents, websiteSaleActive } from '@/data/website-sale';
 
 export type StripeEnv = Env & { STRIPE_SECRET_KEY?: string; STRIPE_WEBHOOK_SECRET?: string };
 
@@ -33,6 +35,12 @@ export async function createCheckoutSession(env: StripeEnv, item: ShopItem, site
   if (!item.amount || !item.currency) throw new Error('ITEM_NOT_PURCHASABLE');
   const subscription = item.billing === 'monthly';
   const metadata = { item_id: item.id, item_name: item.name };
+  /* Request time, not the price baked into a prerendered page. */
+  const unitAmount = item.id === WEBSITE_ITEM_ID ? websiteChargeCents() : item.amount;
+  const description =
+    item.id === WEBSITE_ITEM_ID && websiteSaleActive()
+      ? `Pre-Black Friday: a website by Xolqy for ${WEBSITE_SALE_DISPLAY} instead of ${WEBSITE_REGULAR_DISPLAY}. Hosting included, 100 PageSpeed guarantee.`
+      : item.tagline;
 
   const params: Record<string, unknown> = {
     mode: subscription ? 'subscription' : 'payment',
@@ -41,8 +49,8 @@ export async function createCheckoutSession(env: StripeEnv, item: ShopItem, site
         quantity: 1,
         price_data: {
           currency: item.currency,
-          unit_amount: item.amount,
-          product_data: { name: item.name, description: item.tagline },
+          unit_amount: unitAmount,
+          product_data: { name: item.name, description },
           ...(subscription ? { recurring: { interval: 'month' } } : {}),
         },
       },

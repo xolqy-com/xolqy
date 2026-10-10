@@ -108,12 +108,14 @@ export const SHOP: ShopItem[] = [
   },
   {
     id: 'web-design-starter',
+    /* Regular starting price. Checkout charges websiteChargeCents() in
+       src/data/website-sale.ts: 70000 before the deadline, 120000 at and after it. */
     amount: 120000,
     currency: 'usd',
     pricePrefix: 'from',
     name: 'Website from $1,200',
     category: 'packages',
-    tagline: 'A fast, reliable, secure website, shipped worldwide, with hosting included on Cloudflare. $1,200 is the starting price, and checkout charges it.',
+    tagline: 'A fast, reliable, secure website, shipped worldwide, with hosting included on Cloudflare. $1,200 is the regular starting price.',
     includes: [
       'A fast, reliable, secure website for the agreed pages',
       'Shipped worldwide',

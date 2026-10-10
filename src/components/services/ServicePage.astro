@@ -3,7 +3,10 @@ import { render, type CollectionEntry } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Faq from '@/components/ui/Faq.astro';
 import XMark from '@/components/brand/XMark.astro';
+import WebsitePrice from '@/components/ui/WebsitePrice.astro';
 import { LABS } from '@/data/content';
+import { SITE } from '@/data/site';
+import { WEBSITE_ITEM_ID, websiteChargeCents } from '@/data/website-sale';
 import { breadcrumbJsonLd, serviceJsonLd, faqJsonLd } from '@/lib/seo';
 import { serviceHref } from '@/lib/service-href';
 
@@ -26,7 +29,21 @@ const labs = LABS.filter((l) => service.data.relatedLabs.includes(l.id));
   ogImage={`/og/${service.id}.png`}
   jsonLd={[
     breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }, { name: service.data.title, href: path }]),
-    serviceJsonLd({ name: service.data.title, description: service.data.summary, path, serviceType: service.data.title }),
+    serviceJsonLd({
+      name: service.data.title,
+      description: service.data.summary,
+      path,
+      serviceType: service.data.title,
+      ...(service.id === 'web-design'
+        ? {
+            offer: {
+              price: websiteChargeCents() / 100,
+              priceCurrency: 'USD',
+              url: `${SITE.url}/shop/#${WEBSITE_ITEM_ID}`,
+            },
+          }
+        : {}),
+    }),
     faqJsonLd(service.data.faqs),
   ]}
 >
@@ -48,6 +65,7 @@ const labs = LABS.filter((l) => service.data.relatedLabs.includes(l.id));
       </div>
       <aside class="sv-hero__outcome fade-in" style="--d:500ms" aria-label="Outcome">
         <XMark size={28} class="sv-hero__mark" />
+        {service.id === 'web-design' && <WebsitePrice />}
         <p class="mono faint">The outcome</p>
         <p class="h-xl">{service.data.outcome}</p>
       </aside>

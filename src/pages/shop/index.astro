@@ -3,6 +3,8 @@ import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
 import Faq from '@/components/ui/Faq.astro';
 import { SHOP, SHOP_CATEGORIES, shopByCategory, formatPrice, formatCompare, isPurchasable, type ShopItem } from '@/data/shop';
+import { WEBSITE_ITEM_ID, websiteChargeCents } from '@/data/website-sale';
+import WebsitePrice from '@/components/ui/WebsitePrice.astro';
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/seo';
 import { SITE } from '@/data/site';
 
@@ -25,10 +27,15 @@ const offerCatalog = {
   '@type': 'OfferCatalog',
   name: `${SITE.name} packages`,
   url: `${SITE.url}/shop/`,
-  itemListElement: SHOP.map((i) => ({
-    '@type': 'Offer',
-    itemOffered: { '@type': 'Service', name: i.name, description: i.tagline, provider: { '@type': 'Organization', name: SITE.name, url: SITE.url } },
-  })),
+  itemListElement: SHOP.map((i) => {
+    const cents = i.id === WEBSITE_ITEM_ID ? websiteChargeCents() : i.amount;
+    const price = cents && i.currency ? { price: cents / 100, priceCurrency: i.currency.toUpperCase() } : {};
+    return {
+      '@type': 'Offer',
+      ...price,
+      itemOffered: { '@type': 'Service', name: i.name, description: i.tagline, provider: { '@type': 'Organization', name: SITE.name, url: SITE.url } },
+    };
+  }),
 };
 ---
 
@@ -114,21 +121,25 @@ const offerCatalog = {
                 <div><dt class="mono faint">For</dt><dd>{item.forWho}</dd></div>
               </dl>
               <div class="shop-card__foot">
-                <div class="shop-card__price">
-                  <span class="mono faint">{item.compareAt ? 'Pre-Black Friday, half price' : 'Price'}</span>
-                  <span class="shop-card__amount">
-                    {formatCompare(item) && (
-                      <s class="shop-card__was"><span class="visually-hidden">Regular price </span>{formatCompare(item)}</s>
-                    )}
-                    <span class="h-lg">
-                      {formatPrice(item) ? (
-                        <>{formatCompare(item) && <span class="visually-hidden">Sale price </span>}{formatPrice(item)}</>
-                      ) : (
-                        'Fixed, quoted on request'
+                {item.id === WEBSITE_ITEM_ID ? (
+                  <WebsitePrice />
+                ) : (
+                  <div class="shop-card__price">
+                    <span class="mono faint">{item.compareAt ? 'Pre-Black Friday, half price' : 'Price'}</span>
+                    <span class="shop-card__amount">
+                      {formatCompare(item) && (
+                        <s class="shop-card__was"><span class="visually-hidden">Regular price </span>{formatCompare(item)}</s>
                       )}
+                      <span class="h-lg">
+                        {formatPrice(item) ? (
+                          <>{formatCompare(item) && <span class="visually-hidden">Sale price </span>}{formatPrice(item)}</>
+                        ) : (
+                          'Fixed, quoted on request'
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </div>
+                  </div>
+                )}
                 {isPurchasable(item) ? (
                   <form method="post" action="/api/checkout" class="shop-card__buy">
                     <input type="hidden" name="itemId" value={item.id} />

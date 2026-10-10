@@ -63,7 +63,13 @@ export function breadcrumbJsonLd(crumbs: Crumb[]) {
   };
 }
 
-export function serviceJsonLd(input: { name: string; description: string; path: string; serviceType: string }) {
+export function serviceJsonLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType: string;
+  offer?: { price: number; priceCurrency: string; url: string };
+}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -77,6 +83,16 @@ export function serviceJsonLd(input: { name: string; description: string; path: 
       '@type': 'ServiceChannel',
       serviceUrl: canonical('/contact/'),
     },
+    ...(input.offer
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price: input.offer.price,
+            priceCurrency: input.offer.priceCurrency,
+            url: input.offer.url,
+          },
+        }
+      : {}),
   };
 }
 

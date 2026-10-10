@@ -1,8 +1,11 @@
 /**
  * Live countdown to Black Friday 2026, 00:00 in Athens (UTC+2).
+ * The instant is WEBSITE_SALE_END in src/data/website-sale.ts.
  * No cookies, storage or network calls. The deadline is also written in the banner HTML.
  */
-const END = Date.parse('2026-11-27T00:00:00+02:00');
+import { WEBSITE_SALE_END } from '../data/website-sale';
+
+const END = WEBSITE_SALE_END;
 const node = document.querySelector<HTMLElement>('[data-sale-countdown]');
 if (node && Number.isFinite(END)) {
   const pad = (n: number) => String(n).padStart(2, '0');

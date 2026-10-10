@@ -47,8 +47,16 @@ const ld = [organizationJsonLd(), websiteJsonLd(), ...jsonLd];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline src="/sale-banner.js"></script>
+    <script is:inline src="/website-sale.js"></script>
     <style is:inline>
       html[data-sale-banner='closed'] [data-sale-banner] { display: none; }
+      [data-website-price] .website-price__regular,
+      [data-website-price] .website-price__regular-label { display: none; }
+      html[data-website-sale='ended'] [data-website-price] .website-price__sale,
+      html[data-website-sale='ended'] [data-website-price] .website-price__was,
+      html[data-website-sale='ended'] [data-website-price] .website-price__sale-label { display: none; }
+      html[data-website-sale='ended'] [data-website-price] .website-price__regular,
+      html[data-website-sale='ended'] [data-website-price] .website-price__regular-label { display: inline; }
     </style>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
