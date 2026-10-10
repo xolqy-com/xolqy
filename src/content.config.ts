@@ -24,6 +24,8 @@ const services = defineCollection({
     process: z.array(z.object({ stage: z.string(), output: z.string() })).length(4),
     faqs: z.array(faq).min(3),
     nextStep: z.object({ label: z.string(), href: z.string() }),
+    /** Optional second action, used when a service also has a shop package. */
+    extraCta: z.object({ label: z.string(), href: z.string() }).optional(),
     /** Enquiry form option this service maps to. */
     interest: z.string(),
     /** Terms used by the rule-based finder fallback and for embedding chunks. */

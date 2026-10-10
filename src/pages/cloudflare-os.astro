@@ -17,9 +17,12 @@ import {
   OS_FAQS,
 } from '@/data/cloudflare-os';
 import { insightHref } from '@/lib/insights';
+import { serviceHref } from '@/lib/service-href';
 import { breadcrumbJsonLd, faqJsonLd, serviceJsonLd, formatDate } from '@/lib/seo';
 
-const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const services = (await getCollection('services', ({ data }) => !data.draft))
+  .filter((s) => s.id !== 'web-design')
+  .sort((a, b) => a.data.order - b.data.order);
 const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const cluster = posts.filter((p) => p.data.topics.includes(OS_TOPIC));
 const further = posts.filter((p) => !p.data.topics.includes(OS_TOPIC) && p.data.type !== 'research');
@@ -210,13 +213,14 @@ const jumps = [
         <div class="flow">
           <p class="eyebrow">How it is delivered</p>
           <h2 id="services-title" class="h-3xl measure">Six services, one system.</h2>
+          <p class="muted">A website for the agreed pages, from $1,200, is <a href="/web-design/">Web design & development by Xolqy</a>. It is not this package.</p>
         </div>
         <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
       <ol class="list-reset os-services">
         {services.map((s) => (
           <li>
-            <a href={`/services/${s.id}/`} class="os-services__link">
+            <a href={serviceHref(s.id)} class="os-services__link">
               <span class="mono faint">{s.data.eyebrow}</span>
               <span class="h-lg">{s.data.shortTitle}</span>
               <span class="muted">{s.data.outcome}</span>

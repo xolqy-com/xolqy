@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import PromoBanner from '@/components/ui/PromoBanner.astro';
 import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
+import { serviceHref } from '@/lib/service-href';
 
 export async function getStaticPaths() {
   // Drafts get no route at all.
@@ -66,7 +67,7 @@ const toc = headings.filter((h) => h.depth === 2);
           <p class="eyebrow">Related services</p>
           <ul class="list-reset post-foot__services">
             {services.map((s) => (
-              <li><a href={`/services/${s.id}/`} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+              <li><a href={serviceHref(s.id)} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
             ))}
           </ul>
         </div>

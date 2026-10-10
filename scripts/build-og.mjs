@@ -39,16 +39,18 @@ const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>
 
 /** Wrap text into lines that fit a rough character budget. */
 function wrap(text, max) {
-  const words = text.split(' ');
   const lines = [];
-  let line = '';
-  for (const w of words) {
-    if ((line + ' ' + w).trim().length > max) {
-      lines.push(line.trim());
-      line = w;
-    } else line = `${line} ${w}`;
+  for (const paragraph of text.split('\n')) {
+    const words = paragraph.split(' ');
+    let line = '';
+    for (const w of words) {
+      if ((line + ' ' + w).trim().length > max) {
+        lines.push(line.trim());
+        line = w;
+      } else line = `${line} ${w}`;
+    }
+    if (line.trim()) lines.push(line.trim());
   }
-  if (line.trim()) lines.push(line.trim());
   return lines;
 }
 
@@ -133,15 +135,22 @@ async function writeBanner() {
   console.log('banner: public/banners/xolqy-ai-wave-300x700.png');
 }
 
-await writeBanner();
-if (process.argv.includes('--banner')) process.exit(0);
+const only = process.argv.find((a) => a.startsWith('--only='))?.slice('--only='.length);
+
+if (process.argv.includes('--banner')) {
+  await writeBanner();
+  process.exit(0);
+}
+
+if (!only) await writeBanner();
 
 const pages = [
   { file: 'default', eyebrow: 'The Cloudflare-focused agency', title: 'Your business. At the edge.', subtitle: 'Fast websites, scalable applications and secure infrastructure on Cloudflare.' },
   { file: 'home', eyebrow: 'The Cloudflare-focused agency', title: 'Your business. At the edge.', subtitle: 'Fast websites, scalable applications and secure infrastructure on Cloudflare.' },
-  { file: 'services', eyebrow: 'Services', title: 'Six ways we put Cloudflare to work.', subtitle: 'Websites, migration, performance, security, AI and managed engineering.' },
+  { file: 'services', eyebrow: 'Services', title: 'Seven ways we put Cloudflare to work.', subtitle: 'Web design, websites, migration, performance, security, AI and managed engineering.' },
   { file: 'cloudflare-os', eyebrow: 'Cloudflare OS', title: 'Cloudflare as the operating system.', subtitle: 'Compute, data, security, AI and delivery, designed as one system in your account.' },
   { file: 'websites-and-applications', eyebrow: 'Service 01', title: 'Websites and applications that start at the edge.', subtitle: 'Astro, Workers, D1, R2 and Durable Objects, in your own account.' },
+  { file: 'web-design', eyebrow: 'Web design', title: 'Web design &\ndevelopment\nby Xolqy.', subtitle: 'Fast, reliable, secure websites from $1,200. Hosting included, on Cloudflare.' },
   { file: 'cloudflare-migration', eyebrow: 'Service 02', title: 'Move to Cloudflare without losing rankings.', subtitle: 'Assessment, DNS and TLS, redirect maps, rehearsed cutover, rollback.' },
   { file: 'performance-and-delivery', eyebrow: 'Service 03', title: 'Measured speed, not guessed speed.', subtitle: 'Caching, images, Core Web Vitals and application tuning from field data.' },
   { file: 'security-and-zero-trust', eyebrow: 'Service 04', title: 'Protection in front of everything.', subtitle: 'WAF, bots, rate limiting, Turnstile, Access, Gateway and Tunnel.' },
@@ -191,8 +200,19 @@ const pages = [
   { file: 'work-11knots', eyebrow: 'Case study', title: '11 Knots', subtitle: 'Sailing-day booking site on Cloudflare Pages with a video hero.' },
 ];
 
-for (const p of pages) {
+const selected = only ? pages.filter((p) => p.file === only) : pages;
+if (only && selected.length !== 1) {
+  console.error(`og: no page named ${only}`);
+  process.exit(1);
+}
+
+for (const p of selected) {
   await render(ogSvg(p), 1200, path.join(out, `${p.file}.png`));
+}
+
+if (only) {
+  console.log(`og: wrote ${selected.length} image to public/og/`);
+  process.exit(0);
 }
 
 // Icons

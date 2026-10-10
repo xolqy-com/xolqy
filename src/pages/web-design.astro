@@ -3,15 +3,9 @@ import { getCollection } from 'astro:content';
 import ServicePage from '@/components/services/ServicePage.astro';
 import { serviceHref } from '@/lib/service-href';
 
-export async function getStaticPaths() {
-  const services = await getCollection('services', ({ data }) => !data.draft);
-  return services
-    .filter((s) => s.id !== 'web-design')
-    .map((s) => ({ params: { slug: s.id }, props: { service: s } }));
-}
-
-const { service } = Astro.props;
 const all = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const service = all.find((s) => s.id === 'web-design');
+if (!service) throw new Error('Missing services collection entry: web-design');
 const idx = all.findIndex((s) => s.id === service.id);
 const prev = all[(idx - 1 + all.length) % all.length]!;
 const next = all[(idx + 1) % all.length]!;

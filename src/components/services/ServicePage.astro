@@ -1,0 +1,225 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Faq from '@/components/ui/Faq.astro';
+import XMark from '@/components/brand/XMark.astro';
+import { LABS } from '@/data/content';
+import { breadcrumbJsonLd, serviceJsonLd, faqJsonLd } from '@/lib/seo';
+import { serviceHref } from '@/lib/service-href';
+
+interface Props {
+  service: CollectionEntry<'services'>;
+  prev: CollectionEntry<'services'>;
+  next: CollectionEntry<'services'>;
+  path: string;
+}
+
+const { service, prev, next, path } = Astro.props;
+const { Content } = await render(service);
+const labs = LABS.filter((l) => service.data.relatedLabs.includes(l.id));
+---
+
+<Base
+  title={service.data.title}
+  description={service.data.summary}
+  path={path}
+  ogImage={`/og/${service.id}.png`}
+  jsonLd={[
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }, { name: service.data.title, href: path }]),
+    serviceJsonLd({ name: service.data.title, description: service.data.summary, path, serviceType: service.data.title }),
+    faqJsonLd(service.data.faqs),
+  ]}
+>
+  <section class="section sv-hero" data-theme="dark">
+    <div class="container sv-hero__grid">
+      <div class="flow-lg">
+        <p class="eyebrow fade-in">{service.data.eyebrow} / <a href="/services/" class="sv-hero__crumb">All services</a></p>
+        <h1 class="display shade sv-hero__title">
+          <span class="hero-line"><span style="--d:60ms">{service.data.headline}</span></span>
+        </h1>
+        <p class="lead fade-in" style="--d:300ms">{service.data.summary}</p>
+        <div class="cluster fade-in" style="--d:420ms">
+          <a href={service.data.nextStep.href} class="btn btn--primary">{service.data.nextStep.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          {service.data.extraCta && (
+            <a href={service.data.extraCta.href} class="btn btn--ghost">{service.data.extraCta.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          )}
+          <a href="#deliverables" class="btn btn--ghost">See deliverables</a>
+        </div>
+      </div>
+      <aside class="sv-hero__outcome fade-in" style="--d:500ms" aria-label="Outcome">
+        <XMark size={28} class="sv-hero__mark" />
+        <p class="mono faint">The outcome</p>
+        <p class="h-xl">{service.data.outcome}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="problems-title">
+    <div class="container sv-split">
+      <div class="flow reveal">
+        <p class="eyebrow">Sound familiar?</p>
+        <h2 id="problems-title" class="h-3xl">The problems this solves.</h2>
+      </div>
+      <ol class="list-reset sv-problems reveal" style="--reveal-delay:100ms">
+        {service.data.problems.map((p, i) => (
+          <li class="sv-problems__item">
+            <span class="mono accent" aria-hidden="true">0{i + 1}</span>
+            <p>{p}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" id="deliverables" aria-labelledby="deliverables-title">
+    <div class="container sv-split">
+      <div class="flow reveal">
+        <p class="eyebrow">Deliverables</p>
+        <h2 id="deliverables-title" class="h-3xl">What you get.</h2>
+        <p class="muted">Named in the proposal, checked off at handover.</p>
+      </div>
+      <ul class="ticks sv-deliverables reveal" style="--reveal-delay:100ms">
+        {service.data.deliverables.map((d) => <li>{d}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light" aria-labelledby="stack-title">
+    <div class="container">
+      <div class="between reveal">
+        <div class="flow">
+          <p class="eyebrow">Relevant stack</p>
+          <h2 id="stack-title" class="h-3xl">The Cloudflare products we reach for.</h2>
+        </div>
+        <a href="/stack/" class="link">How we use them ourselves <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <ul class="list-reset sv-stack reveal" style="--reveal-delay:100ms">
+        {service.data.stack.map((t) => (
+          <li class="sv-stack__item">
+            <h3 class="h-lg">{t.name}</h3>
+            <p class="muted">{t.role}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="process-title">
+    <div class="container">
+      <div class="flow reveal">
+        <p class="eyebrow">Process</p>
+        <h2 id="process-title" class="h-3xl">How a {service.data.shortTitle.toLowerCase()} engagement runs.</h2>
+      </div>
+      <ol class="list-reset sv-process">
+        {service.data.process.map((p, i) => (
+          <li class="sv-process__step reveal" style={`--reveal-delay:${i * 80}ms`}>
+            <p class="mono accent">0{i + 1}</p>
+            <h3 class="h-xl">{p.stage}</h3>
+            <p class="muted">{p.output}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container sv-split">
+      <div class="flow reveal">
+        <p class="eyebrow">Approach</p>
+        <h2 class="h-3xl">How we think about it.</h2>
+      </div>
+      <div class="prose reveal" style="--reveal-delay:100ms">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-theme="dark" aria-labelledby="faq-title">
+    <div class="container sv-split">
+      <div class="flow reveal">
+        <p class="eyebrow">FAQs</p>
+        <h2 id="faq-title" class="h-3xl">Questions about {service.data.shortTitle.toLowerCase()}.</h2>
+      </div>
+      <Faq items={service.data.faqs} id={`faq-${service.id}`} />
+    </div>
+  </section>
+
+  {labs.length > 0 && (
+    <section class="section" data-theme="light" aria-labelledby="labs-title">
+      <div class="container">
+        <div class="between reveal">
+          <div class="flow">
+            <p class="eyebrow">See it working</p>
+            <h2 id="labs-title" class="h-3xl">Related demonstrations.</h2>
+          </div>
+        </div>
+        <ul class="list-reset sv-labs reveal">
+          {labs.map((l) => (
+            <li>
+              <a href={l.href} class="sv-labs__link">
+                <span class="mono faint">{l.kind}</span>
+                <span class="h-lg">{l.name}</span>
+                <span class="muted">{l.summary}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section sv-cta" data-theme="dark">
+    <div class="container sv-cta__grid">
+      <div class="flow reveal">
+        <h2 class="h-3xl">Ready when you are.</h2>
+        <p class="lead">Send a short brief. We reply with questions, then a proposal with scope, deliverables and a platform cost estimate.</p>
+        <div class="cluster">
+          <a href={service.data.nextStep.href} class="btn btn--primary">{service.data.nextStep.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          {service.data.extraCta && (
+            <a href={service.data.extraCta.href} class="btn btn--ghost">{service.data.extraCta.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          )}
+        </div>
+      </div>
+      <nav class="sv-cta__nav reveal" aria-label="Other services">
+        <a href={serviceHref(prev.id)} class="sv-cta__nav-link"><span class="mono faint">Previous</span><span>{prev.data.title}</span></a>
+        <a href={serviceHref(next.id)} class="sv-cta__nav-link"><span class="mono faint">Next</span><span>{next.data.title}</span></a>
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sv-hero { padding-block: clamp(3rem, 7vw, 6rem); }
+  .sv-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
+  .sv-hero__crumb { color: inherit; }
+  .sv-hero__title { font-size: var(--text-3xl); max-width: 18ch; }
+  .sv-hero__outcome { display: grid; gap: var(--space-3); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg-raised); max-width: 36ch; }
+  .sv-hero__outcome :global(.sv-hero__mark) { color: var(--signal); }
+  .sv-split { display: grid; gap: var(--space-6); align-items: start; }
+  .sv-problems { display: grid; border-top: 1px solid var(--line); }
+  .sv-problems__item { display: grid; grid-template-columns: 2.5rem 1fr; gap: var(--space-3); padding-block: var(--space-5); border-bottom: 1px solid var(--line); font-size: var(--text-lg); }
+  .sv-deliverables { font-size: var(--text-base); gap: var(--space-4); }
+  .sv-stack { margin-top: var(--space-7); display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sv-stack__item { background: var(--bg); padding: var(--space-5); display: grid; gap: var(--space-2); }
+  .sv-process { margin-top: var(--space-7); display: grid; gap: var(--space-6); }
+  .sv-process__step { display: grid; gap: var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--line-strong); }
+  .sv-labs { margin-top: var(--space-6); display: grid; gap: var(--space-4); }
+  .sv-labs__link { display: grid; gap: var(--space-2); padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); text-decoration: none; background: var(--bg-raised); }
+  .sv-labs__link:hover { border-color: var(--accent); }
+  .sv-cta__grid { display: grid; gap: var(--space-7); }
+  .sv-cta__nav { display: grid; gap: var(--space-3); align-content: end; }
+  .sv-cta__nav-link { display: grid; gap: 0.25rem; padding: var(--space-4) 0; border-top: 1px solid var(--line); text-decoration: none; font-weight: 600; }
+  .sv-cta__nav-link:hover { color: var(--signal); }
+  @media (min-width: 48em) {
+    .sv-split { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gutter); }
+    .sv-split > .flow { position: sticky; top: 6rem; }
+    .sv-stack { grid-template-columns: repeat(2, 1fr); }
+    .sv-process { grid-template-columns: repeat(4, 1fr); gap: var(--gutter); }
+    .sv-labs { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 60em) {
+    .sv-hero__grid { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--gutter); }
+    .sv-stack { grid-template-columns: repeat(3, 1fr); }
+    .sv-cta__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--gutter); }
+  }
+</style>

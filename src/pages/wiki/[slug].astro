@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
 import { insightHref } from '@/lib/insights';
+import { serviceHref } from '@/lib/service-href';
 import { breadcrumbJsonLd, definedTermJsonLd, formatDate } from '@/lib/seo';
 
 export async function getStaticPaths() {
@@ -85,7 +86,7 @@ const title = `${entry.data.term}: what it is, when to use it, what it costs`;
             <ul class="list-reset wk-services">
               {services.map((s) => (
                 <li class="wk-services__item">
-                  <a href={`/services/${s.id}/`} class="wk-services__link">
+                  <a href={serviceHref(s.id)} class="wk-services__link">
                     <span class="mono faint">{s.data.eyebrow}</span>
                     <span class="h-lg wk-services__title">{s.data.title}</span>
                     <span class="muted wk-services__summary">{s.data.summary}</span>

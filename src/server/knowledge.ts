@@ -6,6 +6,7 @@
  */
 import { getCollection } from 'astro:content';
 import { HOME_FAQS } from '@/data/content';
+import { serviceHref } from '@/lib/service-href';
 
 export interface KnowledgeChunk {
   /** Stable id: <slug>:<section>:<n> */
@@ -57,7 +58,7 @@ export async function loadKnowledge(): Promise<{ chunks: KnowledgeChunk[]; servi
 
   for (const s of services) {
     const slug = s.id;
-    const url = `/services/${slug}/`;
+    const url = serviceHref(slug);
     const title = s.data.title;
     const keywords = s.data.keywords.map((k) => k.toLowerCase());
     cards.push({ slug, title, summary: s.data.summary, url, keywords });

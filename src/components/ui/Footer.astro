@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Wordmark from '@/components/brand/Wordmark.astro';
 import XMark from '@/components/brand/XMark.astro';
 import { SITE, CTA } from '@/data/site';
+import { serviceHref } from '@/lib/service-href';
 
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const year = new Date().getUTCFullYear();
@@ -35,7 +36,7 @@ const year = new Date().getUTCFullYear();
           <ul class="list-reset site-footer__list">
             <li><a href="/cloudflare-os/">Cloudflare OS by Xolqy</a></li>
             {services.map((s) => (
-              <li><a href={`/services/${s.id}/`}>{s.data.shortTitle}</a></li>
+              <li><a href={serviceHref(s.id)}>{s.data.shortTitle}</a></li>
             ))}
             <li><a href="/services/">All services</a></li>
           </ul>

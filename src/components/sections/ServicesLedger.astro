@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { serviceHref } from '@/lib/service-href';
 
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 ---
@@ -9,7 +10,7 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
     <div class="between reveal">
       <div class="flow">
         <p class="eyebrow">Services</p>
-        <h2 id="services-title" class="h-3xl measure">Six ways we put Cloudflare to work.</h2>
+        <h2 id="services-title" class="h-3xl measure">Seven ways we put Cloudflare to work.</h2>
       </div>
         <a href="/services/" class="link">All services <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
@@ -18,7 +19,7 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
     <ol class="list-reset ledger__list">
       {services.map((s, i) => (
         <li class="ledger__row reveal" style={`--reveal-delay:${i * 60}ms`}>
-          <a href={`/services/${s.id}/`} class="ledger__link">
+          <a href={serviceHref(s.id)} class="ledger__link">
             <span class="mono ledger__index" aria-hidden="true">0{s.data.order}</span>
             <span class="ledger__main">
               <span class="h-xl ledger__title">{s.data.title}</span>

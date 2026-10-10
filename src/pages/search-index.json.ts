@@ -5,6 +5,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SHOP } from '@/data/shop';
 import { insightHref } from '@/lib/insights';
+import { serviceHref } from '@/lib/service-href';
 
 export const prerender = true;
 
@@ -55,7 +56,7 @@ export const GET: APIRoute = async () => {
     items.push({
       title: service.data.title,
       kind: 'Service',
-      href: `/services/${service.id}/`,
+      href: serviceHref(service.id),
       text: service.data.summary,
     });
   }

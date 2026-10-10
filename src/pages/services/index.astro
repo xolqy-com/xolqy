@@ -4,9 +4,10 @@ import Base from '@/layouts/Base.astro';
 import SectionIntro from '@/components/ui/SectionIntro.astro';
 import { PROCESS } from '@/data/content';
 import { breadcrumbJsonLd } from '@/lib/seo';
+import { serviceHref } from '@/lib/service-href';
 
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
-const description = 'Websites and applications, Cloudflare migration, performance, security and Zero Trust, AI and automation, and managed Cloudflare. Each service has an outcome, deliverables, a stack and a next step.';
+const description = 'Web design and development from $1,200, websites and applications, Cloudflare migration, performance, security and Zero Trust, AI and automation, and managed Cloudflare. Each service has an outcome, deliverables, a stack and a next step.';
 ---
 
 <Base
@@ -18,7 +19,7 @@ const description = 'Websites and applications, Cloudflare migration, performanc
 >
   <section class="section" data-theme="dark">
     <div class="container">
-      <SectionIntro eyebrow="Services" title="Six ways we put Cloudflare to&nbsp;work." id="services-title" level="h1">
+      <SectionIntro eyebrow="Services" title="Seven ways we put Cloudflare to&nbsp;work." id="services-title" level="h1">
         <p class="lead">Every service is scoped to an outcome, has a named set of deliverables, uses specific Cloudflare products, and ends with a clear next step. Pick the one that matches your situation, or <a href="/labs/#solution-finder">ask the solution finder</a>.</p>
       </SectionIntro>
       <a href="/cloudflare-os/" class="os-banner reveal">
@@ -35,9 +36,9 @@ const description = 'Websites and applications, Cloudflare migration, performanc
       <div class="container svc__grid">
         <div class="svc__head reveal">
           <p class="eyebrow">{s.data.eyebrow}</p>
-          <h2 id={`svc-${s.id}`} class="h-3xl"><a href={`/services/${s.id}/`} class="svc__title-link">{s.data.title}</a></h2>
+          <h2 id={`svc-${s.id}`} class="h-3xl"><a href={serviceHref(s.id)} class="svc__title-link">{s.data.title}</a></h2>
           <p class="lead">{s.data.summary}</p>
-          <a href={`/services/${s.id}/`} class="btn btn--ghost">Explore {s.data.shortTitle} <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a href={serviceHref(s.id)} class="btn btn--ghost">Explore {s.data.shortTitle} <span class="arrow" aria-hidden="true">&rarr;</span></a>
         </div>
         <div class="svc__cols reveal" style="--reveal-delay:100ms">
           <div class="svc__col">

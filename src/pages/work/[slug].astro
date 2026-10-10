@@ -4,6 +4,7 @@ import Base from '@/layouts/Base.astro';
 import XMark from '@/components/brand/XMark.astro';
 import Screenshot from '@/components/ui/Screenshot.astro';
 import { breadcrumbJsonLd } from '@/lib/seo';
+import { serviceHref } from '@/lib/service-href';
 
 export async function getStaticPaths() {
   const work = await getCollection('work', ({ data }) => !data.draft);
@@ -108,7 +109,7 @@ const host = new URL(entry.data.url).hostname.replace(/^www\./, '');
         <p class="eyebrow">Related services</p>
         <ul class="list-reset cs-foot__services">
           {services.map((s) => (
-            <li><a href={`/services/${s.id}/`} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+            <li><a href={serviceHref(s.id)} class="link">{s.data.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
           ))}
         </ul>
       </div>
