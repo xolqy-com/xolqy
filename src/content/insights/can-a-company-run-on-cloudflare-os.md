@@ -267,6 +267,7 @@ The framing is Cloudflare-first, not Cloudflare-only. Xolqy runs the pilot in ph
 
 - [The edge cloud landscape](/insights/research/edge-cloud-landscape/)
 - [Cloudflare, PostgreSQL and D1](/insights/research/cloudflare-postgresql-d1-hybrid/)
+- [The negatives of the Cloudflare ecosystem](/insights/research/cloudflare-ecosystem-negatives/)
 - [D1](/wiki/d1/), [Hyperdrive](/wiki/hyperdrive/), [R2](/wiki/r2/), [Workers](/wiki/workers/), [Durable Objects](/wiki/durable-objects/)
 - [Access](/wiki/zero-trust-access/), [AI Gateway](/wiki/ai-gateway/), [Queues](/wiki/queues/), [Workflows](/wiki/workflows/)
 

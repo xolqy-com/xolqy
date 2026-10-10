@@ -313,6 +313,7 @@ The wider argument for treating the platform as one system is [Cloudflare as an 
 
 - [The edge cloud landscape](/insights/research/edge-cloud-landscape/) (hub of the comparison series)
 - [Can a company run on Cloudflare OS?](/insights/research/can-a-company-run-on-cloudflare-os/)
+- [The negatives of the Cloudflare ecosystem](/insights/research/cloudflare-ecosystem-negatives/)
 - [Cloudflare vs Supabase and Firebase](/insights/research/cloudflare-vs-supabase-firebase/)
 - [D1, KV or R2](/insights/d1-vs-kv-vs-r2/)
 - [Where Cloudflare keeps your data](/insights/where-cloudflare-keeps-your-data/)
