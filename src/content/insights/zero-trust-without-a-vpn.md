@@ -10,7 +10,7 @@ relatedServices: [security-and-zero-trust]
 
 A VPN made sense when the office was a network and the applications lived inside it. The applications moved. The VPN stayed, and it still means the same thing: a device joins a private network, and from there it can often see more than the one tool the person opened a laptop to use. When the VPN is down, the tool is down. When a contractor needs a single dashboard for a week, someone builds them a full tunnel and hopes they remember to revoke it.
 
-[Cloudflare OS](/cloudflare-os/) puts identity at the edge of each application instead. Two products do most of the work. [Access](/wiki/zero-trust-access/) decides who may open it. [Tunnel](/wiki/cloudflare-tunnel/) makes sure there is no public address to walk around the decision.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) puts identity at the edge of each application instead. Two products do most of the work. [Access](/wiki/zero-trust-access/) decides who may open it. [Tunnel](/wiki/cloudflare-tunnel/) makes sure there is no public address to walk around the decision.
 
 ## What Access actually checks
 
@@ -56,4 +56,4 @@ Gateway, the DNS and HTTP filtering for team devices, is a further step. It is i
 4. If the origin still has a public IP, put a tunnel in front of it and remove the address from DNS except as a proxied name.
 5. Write down who the policies allow. Review it when someone leaves.
 
-That list is a few hours for a single admin panel and a real design for a company with a dozen internal tools. Either way it is part of the security layer of [Cloudflare OS](/cloudflare-os/), not a separate religion. The public site, the data stores and the account ownership stay where they were. You have removed the VPN as the thing the business depends on to open its own tools.
+That list is a few hours for a single admin panel and a real design for a company with a dozen internal tools. Either way it is part of the security layer of [Cloudflare OS Implementation by Xolqy](/cloudflare-os/), not a separate religion. The public site, the data stores and the account ownership stay where they were. You have removed the VPN as the thing the business depends on to open its own tools.

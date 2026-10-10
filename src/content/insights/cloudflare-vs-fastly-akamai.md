@@ -49,7 +49,7 @@ A media or commerce team whose problem is purge, hit ratio and a cache configura
 
 A global enterprise already inside an Akamai contract, with delivery and a security bundle negotiated together, should not rip that out because Workers are pleasant. The bar is a specific failure of the current network, not a preference for a dashboard.
 
-A team that wants the edge to be where the application lives, with storage and access in the same account, is the Cloudflare buyer. That is [Cloudflare OS](/cloudflare-os/), and it is a different purchase from a CDN renewal. Performance work that stays on the current network is the [performance and delivery](/services/performance-and-delivery/) service, not a forced migration.
+A team that wants the edge to be where the application lives, with storage and access in the same account, is the Cloudflare buyer. That is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/), and it is a different purchase from a CDN renewal. Performance work that stays on the current network is the [performance and delivery](/services/performance-and-delivery/) service, not a forced migration.
 
 ## The rest of this series
 

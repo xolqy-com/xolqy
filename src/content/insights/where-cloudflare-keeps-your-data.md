@@ -8,7 +8,7 @@ readingMinutes: 6
 relatedServices: [websites-and-applications, cloudflare-migration]
 ---
 
-“Can the data stay in the EU?” is a yes-or-no question that the platform does not answer with a yes-or-no. Some stores take a location hint or a jurisdiction. The code that handles the request runs near the visitor, which is the point of the edge and also the thing a residency conversation has to include. [Cloudflare OS](/cloudflare-os/) treats that as an architecture constraint, written down in the audit, not as a slogan on the proposal.
+“Can the data stay in the EU?” is a yes-or-no question that the platform does not answer with a yes-or-no. Some stores take a location hint or a jurisdiction. The code that handles the request runs near the visitor, which is the point of the edge and also the thing a residency conversation has to include. [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) treats that as an architecture constraint, written down in the audit, not as a slogan on the proposal.
 
 This article stays inside what we already publish. Where a control exists, it is named. Where the platform does not pin something, that is named too.
 
@@ -53,4 +53,4 @@ We ask which data has a location rule, who imposed it, and what “location” m
 
 The output is a sentence per store: this data lives here, this control applies, this limit remains. If the limit means the workload should not move, the audit says that. [Websites and applications](/services/websites-and-applications/) and [migrations](/services/cloudflare-migration/) inherit the sentence. They do not rediscover it during the build.
 
-[Cloudflare OS](/cloudflare-os/) includes this because a system that is silent about where bytes rest is not a system a regulated business can adopt. The platform can do a precise version of “stay in this region”. It cannot do a vague one. The work is deciding which version you actually need before the first binding is declared.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) includes this because a system that is silent about where bytes rest is not a system a regulated business can adopt. The platform can do a precise version of “stay in this region”. It cannot do a vague one. The work is deciding which version you actually need before the first binding is declared.

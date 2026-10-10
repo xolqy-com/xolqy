@@ -51,7 +51,7 @@ So the saving is real when bytes leave S3 straight to the internet. It is not au
 
 Move the hostname, the cache and the small dynamic handlers when the Workers limits fit, and move public objects when the S3-to-internet line is the one you pay. Leave IAM, the regional database, and any job that needs Lambda’s memory. Reach the database with Hyperdrive if the code moves and the rows must not. [5](#r5)
 
-That staged shape is also the one in [which Cloudflare products a business needs](/insights/which-cloudflare-products-a-business-needs/) and in the [Workers](/wiki/workers/), [R2](/wiki/r2/) and [Hyperdrive](/wiki/hyperdrive/) entries. If the outcome of the comparison is “yes, design it as one Cloudflare system”, the offer is [Cloudflare OS](/cloudflare-os/), not a new price invented for this page.
+That staged shape is also the one in [which Cloudflare products a business needs](/insights/which-cloudflare-products-a-business-needs/) and in the [Workers](/wiki/workers/), [R2](/wiki/r2/) and [Hyperdrive](/wiki/hyperdrive/) entries. If the outcome of the comparison is “yes, design it as one Cloudflare system”, the offer is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/), not a new price invented for this page.
 
 ## The rest of this series
 

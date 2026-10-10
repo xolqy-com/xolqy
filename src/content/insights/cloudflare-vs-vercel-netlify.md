@@ -49,7 +49,7 @@ It is a spoke of [the edge cloud landscape](/insights/research/edge-cloud-landsc
 
 Choose Vercel or Netlify when the deliverable is the site, the team lives in the framework, and nobody has asked for a WAF policy, a private admin network, or a storage bill dominated by egress.
 
-Choose Cloudflare when those asks have arrived, or when you would rather the application, the cache and the files were one account. The offer for designing that account is [Cloudflare OS](/cloudflare-os/). The introduction, if you want the decision in writing before a build, is the [€600 session](/shop/#os-introduction) already on the shop.
+Choose Cloudflare when those asks have arrived, or when you would rather the application, the cache and the files were one account. The offer for designing that account is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). The introduction, if you want the decision in writing before a build, is the [€600 session](/shop/#os-introduction) already on the shop.
 
 ## The rest of this series
 

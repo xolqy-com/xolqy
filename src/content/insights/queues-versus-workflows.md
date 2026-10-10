@@ -10,7 +10,7 @@ relatedServices: [websites-and-applications, ai-and-automation]
 
 The request that sends the email, calls the model, and writes three systems before it responds is the request that times out on the afternoon you can least afford it. Workers have a CPU-time limit per request. That limit is generous for rendering a page and hostile to anything that must eventually finish even if a dependency is down.
 
-Two products exist for the work that should outlive the click. [Queues](/wiki/queues/) accept it. [Workflows](/wiki/workflows/) complete it. [Cloudflare OS](/cloudflare-os/) uses both, for different reasons, and so does the enquiry form on this website.
+Two products exist for the work that should outlive the click. [Queues](/wiki/queues/) accept it. [Workflows](/wiki/workflows/) complete it. [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) uses both, for different reasons, and so does the enquiry form on this website.
 
 ## What a queue is for
 
@@ -54,4 +54,4 @@ You can watch that sequence on the [pipeline tracer](/labs/#enquiry-pipeline) wi
 
 The [AI and automation](/services/ai-and-automation/) service uses the same split. A document that must be classified, extracted, routed and sometimes approved is a workflow. The event that says “a document arrived” is a message. A chat turn the user is staring at is a request, bounded by a Durable Object, with retrieval from Vectorize. Putting the model call, the inbox write and the human approval in one request is how demos ship and how production pages time out.
 
-[Websites and applications](/services/websites-and-applications/) get the same question in the architecture stage, per endpoint. The output is a sentence in the document: this route responds, this queue accepts, this workflow finishes. [Cloudflare OS](/cloudflare-os/) is that sentence applied to the whole business, not only to the contact form.
+[Websites and applications](/services/websites-and-applications/) get the same question in the architecture stage, per endpoint. The output is a sentence in the document: this route responds, this queue accepts, this workflow finishes. [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is that sentence applied to the whole business, not only to the contact form.

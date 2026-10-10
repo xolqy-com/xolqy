@@ -18,7 +18,7 @@ export const SITE = {
 
 export const NAV = [
   { label: 'Services', href: '/services/' },
-  { label: 'Cloudflare OS', href: '/cloudflare-os/' },
+  { label: 'Cloudflare OS by Xolqy', href: '/cloudflare-os/' },
   { label: 'Work', href: '/work/' },
   { label: 'Our Stack', href: '/stack/' },
   { label: 'Labs', href: '/labs/' },

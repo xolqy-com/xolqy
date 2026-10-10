@@ -93,4 +93,4 @@ A cache strategy answers four questions for every kind of response: can it be ca
 
 Interaction to Next Paint is dominated by main-thread work. We audit every script, third-party ones first, and set a loading policy: what is essential, what loads after interaction, what is removed. On frameworks that hydrate everything, we move to islands or partial hydration where the codebase allows.
 
-Delivery is one layer of [Cloudflare OS](/cloudflare-os/). The cache and the images do not fix a data store or a firewall that was never designed.
+Delivery is one layer of [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). The cache and the images do not fix a data store or a firewall that was never designed.

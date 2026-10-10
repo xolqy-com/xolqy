@@ -47,7 +47,7 @@ This spoke sits under [the edge cloud landscape](/insights/research/edge-cloud-l
 
 A content or product team whose Google Cloud bill is dominated by storage egress to the public internet should price R2 before they buy another committed-use discount. A team whose asset is a regional dataset, a Cloud SQL instance, or a Gemini deployment should keep it there and, if the website in front is the slow or expensive part, put Cloudflare on the hostname. [1](#r1) [4](#r4) [5](#r5)
 
-The designed version of that second step is [Cloudflare OS](/cloudflare-os/). Product definitions for the Cloudflare side are [Workers](/wiki/workers/), [R2](/wiki/r2/) and [Workers AI](/wiki/workers-ai/).
+The designed version of that second step is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). Product definitions for the Cloudflare side are [Workers](/wiki/workers/), [R2](/wiki/r2/) and [Workers AI](/wiki/workers-ai/).
 
 ## The rest of this series
 

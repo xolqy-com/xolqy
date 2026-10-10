@@ -1,6 +1,6 @@
 ---
 title: "Cloudflare as an operating system: what that means for a business"
-description: Cloudflare OS is not a product Cloudflare sells. It is a way of running compute, data, security, AI and delivery as one system, and this is what that changes for a business that is tired of owning servers.
+description: Treating Cloudflare as one system — compute, data, security, AI and delivery — and how that differs from Cloudflare OS, which is Cloudflare’s own open-source workspace.
 publishedAt: 2026-10-09T16:00:00.000Z
 audience: business
 topics: ["Cloudflare OS", Workers, Architecture]
@@ -10,7 +10,7 @@ relatedServices: [websites-and-applications, managed-cloudflare]
 
 Most businesses do not have a cloud strategy. They have a website on a host, a database somewhere near it, a firewall that is really a plugin, and a renewal email that arrives once a year with a larger number on it. Cloudflare often enters that picture as a switch: turn the orange cloud on, hope the site gets faster, leave the server where it is.
 
-That switch is useful. It is also the smallest version of what the platform is. [Cloudflare OS](/cloudflare-os/) is our name for the larger one: treating Cloudflare as the layer the business runs on. Compute, data, security, AI and delivery, designed together, in an account you own.
+That switch is useful. It is also the smallest version of what the platform is. [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is the work of treating Cloudflare as the layer the business runs on: compute, data, security, AI and delivery, designed together, in an account you own. Cloudflare OS itself is Cloudflare’s open-source AI workspace, not a name we coined.
 
 ## What an operating system is doing here
 
@@ -18,7 +18,7 @@ An operating system is the layer other software assumes. It runs programs, store
 
 Cloudflare is unusual in the same way. [Workers](/wiki/workers/) run your code in every Cloudflare location. [D1](/wiki/d1/), [KV](/wiki/kv/) and [R2](/wiki/r2/) store records, configuration and files. The [WAF](/wiki/waf/), DDoS protection and [Access](/wiki/zero-trust-access/) sit in front. [Workers AI](/wiki/workers-ai/) and Vectorize run models next to the data. DNS, TLS and the cache deliver it. One account, one bill from Cloudflare, and the same behaviour in every location.
 
-The phrase is ours, not Cloudflare’s. Xolqy is an independent agency. Cloudflare OS is not a plan, a certification or a SKU. It is the scoping decision: design the system, then buy the piece you need, instead of collecting products that do not know about each other.
+The phrase “Cloudflare OS” is Cloudflare’s, for that open-source workspace. Xolqy is an independent implementation partner. The offering is not a certification, and it is not an endorsement. The scoping decision is unchanged: design the system, then buy the piece you need, instead of collecting products that do not know about each other.
 
 ## What actually changes
 
@@ -50,6 +50,6 @@ That is compute, data, security, AI and delivery in one deployment, configured i
 
 ## How the work is actually done
 
-The map is [Cloudflare OS](/cloudflare-os/). The delivery is the six services: a website or application, a migration, a performance pass, security and Zero Trust, AI and automation, or a named engineer each month. The sequence is always the same. Audit, Architect, Build & Migrate, Optimize & Support. Each stage leaves a document you keep even if the next stage never happens.
+The map is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). The delivery is the six services: a website or application, a migration, a performance pass, security and Zero Trust, AI and automation, or a named engineer each month. The sequence is always the same. Audit, Architect, Build & Migrate, Optimize & Support. Each stage leaves a document you keep even if the next stage never happens.
 
 The [labs](/labs/) let you watch an edge request, an enquiry moving through a queue and a workflow, and a finder that answers only from our own pages. If you want the outside view of a domain before any of that, the [health check](/health-check/) scores HTTPS, DNSSEC and email authentication in a few seconds. It is not an audit. The [audit article](/insights/what-a-cloudflare-audit-covers/) explains the difference.

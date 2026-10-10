@@ -1,7 +1,8 @@
 /**
- * Cloudflare OS: the umbrella offering. Facts here are restatements of the
- * process, services, stack and FAQs already published on the site. No prices,
- * customer names or measured results.
+ * Cloudflare OS Implementation by Xolqy. Cloudflare OS is Cloudflare's
+ * open-source product. Facts here are restatements of the process, services,
+ * stack and FAQs already published on the site. No prices, customer names
+ * or measured results.
  */
 import { PROCESS } from '@/data/content';
 
@@ -11,7 +12,7 @@ export const OS_PATH = '/cloudflare-os/';
 export const OS_TOPIC = 'Cloudflare OS';
 
 export const OS_DESCRIPTION =
-  'Cloudflare OS is how Xolqy runs a business on Cloudflare: compute, data, security, AI and delivery as one system, in an account you own, from audit through ongoing support.';
+  'Cloudflare OS Implementation by Xolqy deploys Cloudflare’s open-source AI workspace and designs compute, data, security, AI and delivery as one system, in an account you own. Xolqy is an independent implementation partner.';
 
 export interface OsProduct {
   name: string;
@@ -146,7 +147,7 @@ export const VERSUS = PROCESS.map((p) => {
 });
 
 export const NOT_THIS = [
-  'Not a Cloudflare product, plan or certification. Xolqy is independent and is not affiliated with, endorsed by or certified by Cloudflare, Inc.',
+  'Not a Cloudflare endorsement, plan or certification. Cloudflare OS is Cloudflare’s open-source product. Xolqy is an independent implementation partner and is not affiliated with, endorsed by or certified by Cloudflare, Inc.',
   'Not a requirement to turn every product on. A brochure site does not need Vectorize. An existing Postgres does not have to move to D1 on day one.',
   'Not a promise of a latency figure, a ranking, or a percentage off the hosting bill. Those are measured per project from your data, or not claimed.',
   'Not a lock-in designed by us. The repository and the Cloudflare account are yours. Leaving is a handover, not a migration of the account.',
@@ -155,7 +156,7 @@ export const NOT_THIS = [
 export const OS_FAQS = [
   {
     q: 'Is Cloudflare OS something Cloudflare sells?',
-    a: 'No. It is Xolqy’s name for running a business on Cloudflare as one system: compute, data, security, AI and delivery, designed together. Cloudflare sells the products. We design, build, migrate and look after how they fit your business. Xolqy is not affiliated with Cloudflare, Inc.',
+    a: 'Cloudflare OS is Cloudflare’s open-source AI workspace: a browser workspace, gadgets, and Gatekeepers that connect agents to company systems. You can deploy it into your own Cloudflare account. A fully managed dashboard version is a waitlist, not something this page can switch on for you. Cloudflare OS Implementation by Xolqy is our work on top of that: the pilot, and compute, data, security, AI and delivery designed together in an account you own. Cloudflare and Cloudflare OS are trademarks of Cloudflare, Inc. Xolqy is an independent implementation partner. Cloudflare does not endorse Xolqy.',
   },
   {
     q: 'Do we have to adopt the whole platform?',
@@ -171,7 +172,7 @@ export const OS_FAQS = [
   },
   {
     q: 'How is this different from hiring you for one service?',
-    a: 'Each service is a scoped outcome: a website, a migration, a performance pass, a security configuration, an assistant, or a monthly retainer. Cloudflare OS is the map those services sit on, so a migration does not ignore the firewall, and an assistant is not designed without a place for the data. You can still buy one service.',
+    a: 'Each service is a scoped outcome: a website, a migration, a performance pass, a security configuration, an assistant, or a monthly retainer. Cloudflare OS Implementation by Xolqy is the map those services sit on, so a migration does not ignore the firewall, and an assistant is not designed without a place for the data. You can still buy one service.',
   },
   {
     q: 'Our data must stay in a specific region. Can this do that?',

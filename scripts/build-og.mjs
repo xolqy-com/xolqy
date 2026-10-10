@@ -112,14 +112,14 @@ function bannerSvg() {
     <text x="24" y="154" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">The tool</text>
     <text x="24" y="206" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">for the</text>
     <text x="24" y="258" font-family="Bricolage Grotesque Variable" font-size="46" font-weight="700" letter-spacing="-1.6" fill="${PAPER}">AI wave.</text>
-    <text x="24" y="312" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="500" fill="${PAPER}" fill-opacity="0.78">Cloudflare OS, introduced.</text>
+    <text x="24" y="312" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="500" fill="${PAPER}" fill-opacity="0.78">Cloudflare OS by Xolqy.</text>
     <text x="24" y="336" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.62">Counselling. Not the build.</text>
     <line x1="24" y1="368" x2="276" y2="368" stroke="${PAPER}" stroke-opacity="0.2"/>
     <text x="24" y="430" font-family="Bricolage Grotesque Variable" font-size="56" font-weight="700" letter-spacing="-2" fill="${PAPER}">€600</text>
     <text x="24" y="462" font-family="JetBrains Mono Variable" font-size="12" font-weight="500" letter-spacing="1.6" fill="${SIGNAL}">ONE SESSION</text>
     <text x="24" y="508" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="500" fill="${PAPER}">A written recommendation:</text>
     <text x="24" y="534" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.78">stay, transition, or the</text>
-    <text x="24" y="558" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.78">full Cloudflare OS package.</text>
+    <text x="24" y="558" font-family="Bricolage Grotesque Variable" font-size="16" font-weight="400" fill="${PAPER}" fill-opacity="0.78">full implementation package.</text>
     <rect x="0" y="620" width="300" height="80" fill="${SIGNAL}"/>
     <text x="24" y="654" font-family="Bricolage Grotesque Variable" font-size="20" font-weight="700" fill="${INK}">xolqy.com</text>
     <text x="24" y="678" font-family="JetBrains Mono Variable" font-size="12" font-weight="500" letter-spacing="0.6" fill="${INK}">€600 introduction</text>

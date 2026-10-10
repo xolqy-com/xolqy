@@ -32,7 +32,7 @@ Three rules kept the writing honest.
 
 **Do not collapse different counts.** AWS’s infrastructure page says 39 regions and 124 Availability Zones, and also “750+” CloudFront points of presence. The regions documentation, on the same day, says an account is provided 34 regions. Azure’s infrastructure page says “80+” regions; Microsoft Learn says “over 70”. Cloudflare’s network page says 348 cities and, elsewhere on the same page, “330+”. Those are reported as published, not averaged.
 
-**No invented results.** There are no customer names, no before-and-after percentages, and no “typical saving”. The only Xolqy prices mentioned are ones already on the [shop](/shop/#cloudflare-os): the Cloudflare OS package at $2,500 (compare-at $5,000) and the [€600 introduction](/shop/#os-introduction).
+**No invented results.** There are no customer names, no before-and-after percentages, and no “typical saving”. The only Xolqy prices mentioned are ones already on the [shop](/shop/#cloudflare-os): the Cloudflare OS Implementation by Xolqy package at $2,500 (compare-at $5,000) and the [€600 introduction](/shop/#os-introduction).
 
 Where Cloudflare is the weaker fit, the spoke pages say so in their own section, not in a footnote.
 
@@ -202,7 +202,7 @@ AWS lock-in is real too. The difference is that a large part of an AWS estate ca
 
 ### Developer experience
 
-The platform is one account and a CLI, which is the experience [Cloudflare OS](/cloudflare-os/) is built around and which the [Workers](/wiki/workers/) and [Wrangler](/wiki/wrangler/) entries describe. Hyperdrive’s docs set `nodejs_compat` so that Node database drivers can run. That flag is not a promise of an unrestricted Node server: the memory and CPU limits still apply. [2](#r2) [10](#r10)
+The platform is one account and a CLI, which is the experience [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is built around and which the [Workers](/wiki/workers/) and [Wrangler](/wiki/wrangler/) entries describe. Hyperdrive’s docs set `nodejs_compat` so that Node database drivers can run. That flag is not a promise of an unrestricted Node server: the memory and CPU limits still apply. [2](#r2) [10](#r10)
 
 Vercel’s limits page is explicit that Functions run in a single region by default (`iad1`), with full Node.js coverage, and that Pro can add regions. If the team’s daily work is a framework deploy, that default is a feature. If the team’s daily work is a global cache, a WAF and a Worker in the same change, Cloudflare is the tighter loop and Vercel is the extra vendor. The [Vercel and Netlify spoke](/insights/research/cloudflare-vs-vercel-netlify/) holds that comparison.
 
@@ -256,7 +256,7 @@ No dollar price for Akamai delivery or EdgeWorkers. The pages we used do not pri
 
 No claim that Workers never charge for egress. Containers do.
 
-No new Xolqy price. The commercial step, if you want one, is [Cloudflare OS](/cloudflare-os/): the [package on the shop](/shop/#cloudflare-os) and the [introduction](/shop/#os-introduction).
+No new Xolqy price. The commercial step, if you want one, is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/): the [package on the shop](/shop/#cloudflare-os) and the [introduction](/shop/#os-introduction). Xolqy implements Cloudflare’s platform. Cloudflare does not endorse Xolqy.
 
 ## The other pages
 

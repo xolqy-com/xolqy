@@ -10,7 +10,7 @@ relatedServices: [managed-cloudflare, websites-and-applications]
 
 There is a quiet way for a website to become someone else’s property. The domain is in the client’s registrar. The Cloudflare account is in the freelancer’s email. The DNS, the firewall rules, the Worker and the database all live in that account. The site works. The invoice is paid. Then the freelancer is busy, or gone, and the business cannot change a record, export a backup, or end the relationship without asking permission.
 
-[Cloudflare OS](/cloudflare-os/) is built on the opposite arrangement. The account is yours before the first Worker is deployed.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is built on the opposite arrangement. The account is yours before the first Worker is deployed.
 
 ## What “yours” means
 
@@ -64,4 +64,4 @@ Create the Cloudflare account in the company’s name, with a shared billing own
 
 The [stack page](/stack/) on this site is that list for xolqy.com: code on one side, dashboard on the other. Your version will be shorter. Write it anyway.
 
-[Cloudflare OS](/cloudflare-os/) assumes this from the audit onward. The architecture document names resources that will exist in your account. The build puts them there. Support, if you want it, is a named engineer inside that account, not a reason to move it.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) assumes this from the audit onward. The architecture document names resources that will exist in your account. The build puts them there. Support, if you want it, is a named engineer inside that account, not a reason to move it.

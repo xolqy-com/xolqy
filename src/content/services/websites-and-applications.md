@@ -98,4 +98,4 @@ A marketing site with a headless CMS is usually four to eight weeks from kick-of
 
 ## This site is the first example
 
-xolqy.com is built exactly this way: Astro, prerendered pages, a Worker for the enquiry pipeline and the AI finder, D1 for records, R2 for downloads, Queues and Workflows for processing. The [stack page](/stack/) explains each piece and shows which integrations are live. The wider system this service sits inside is [Cloudflare OS](/cloudflare-os/).
+xolqy.com is built exactly this way: Astro, prerendered pages, a Worker for the enquiry pipeline and the AI finder, D1 for records, R2 for downloads, Queues and Workflows for processing. The [stack page](/stack/) explains each piece and shows which integrations are live. The wider system this service sits inside is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/).

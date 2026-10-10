@@ -11,7 +11,7 @@ export const prerender = true;
 type Item = { title: string; kind: string; href: string; text: string };
 
 const PAGES: Item[] = [
-  { title: 'Cloudflare OS', kind: 'Page', href: '/cloudflare-os/', text: 'Cloudflare as the operating system for a business. Compute, data, security, AI and delivery.' },
+  { title: 'Cloudflare OS Implementation by Xolqy', kind: 'Page', href: '/cloudflare-os/', text: 'Cloudflare OS is Cloudflare’s open-source AI workspace. Xolqy implements it, and designs compute, data, security, AI and delivery in an account you own.' },
   { title: 'Services', kind: 'Page', href: '/services/', text: 'Websites, migration, performance, security, AI and managed Cloudflare.' },
   { title: 'Work', kind: 'Page', href: '/work/', text: 'Case studies and client projects.' },
   { title: 'Our stack', kind: 'Page', href: '/stack/', text: 'How this website runs on Cloudflare.' },

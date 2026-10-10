@@ -51,7 +51,7 @@ An organisation whose compliance story is “the data stays in this Azure geogra
 
 A team without that constraint, paying Azure bandwidth on objects that are not going through Front Door, should price R2 against that $0.087 line before they renew. [1](#r1) [6](#r6)
 
-If the conclusion is a designed Cloudflare system rather than a single product, it is [Cloudflare OS](/cloudflare-os/). The published shop offers are unchanged.
+If the conclusion is a designed Cloudflare system rather than a single product, it is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). The published shop offers are unchanged.
 
 ## The rest of this series
 

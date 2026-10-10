@@ -22,7 +22,7 @@ What you lose is not a percentage I am going to invent. You lose the week you sp
 
 ## What you gain tomorrow
 
-[Cloudflare OS](/cloudflare-os/) is our name for a decision, not a product Cloudflare sells. Compute, data, security, AI and delivery, designed as one system, in an account you own.
+Cloudflare OS is Cloudflare’s open-source AI workspace. [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is the decision to run compute, data, security, AI and delivery as one system, in an account you own, and to pilot that workspace on top. Xolqy is an independent implementation partner.
 
 The piece I had been looking for elsewhere fits in there too. Agents.
 
@@ -42,6 +42,6 @@ I will not promise rankings, speed or a platform bill with numbers. Those are me
 
 ## The door
 
-Read what we mean, without a product catalogue, on [Cloudflare OS](/cloudflare-os/).
+Read what the implementation covers, without a product catalogue, on [Cloudflare OS Implementation by Xolqy](/cloudflare-os/).
 
 The pre-Black Friday price for this package is [$2,500](/shop/#cloudflare-os), half price. The account stays yours.

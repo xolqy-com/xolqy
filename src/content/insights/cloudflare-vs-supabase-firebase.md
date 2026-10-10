@@ -25,7 +25,7 @@ This spoke belongs to [the edge cloud landscape](/insights/research/edge-cloud-l
 
 ## Where Cloudflare is stronger
 
-**The network those products do not sell.** A Supabase or Firebase project is an origin. DNS, TLS, cache, WAF and a global isolate are Cloudflare’s job, and they are the job described on [Cloudflare OS](/cloudflare-os/) and in the [cache](/wiki/cache/) and [WAF](/wiki/waf/) entries. Neither backend pricing page is a CDN price list.
+**The network those products do not sell.** A Supabase or Firebase project is an origin. DNS, TLS, cache, WAF and a global isolate are Cloudflare’s job, and they are the job described on [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) and in the [cache](/wiki/cache/) and [WAF](/wiki/waf/) entries. Neither backend pricing page is a CDN price list.
 
 **Object egress, if the files are large and public.** R2 Standard is $0.015 per GB-month with no internet egress fee. Supabase includes storage in the project; this page does not cite a Supabase storage-egress rate, because the pricing page sections we relied on were the database and the edge functions, not a per-gigabyte delivery table. Firebase’s Spark plan includes 10 GiB a month of Firestore network egress and then Google Cloud pricing on Blaze. For media at volume, R2’s published zero is the number you can take to a spreadsheet. For Firestore’s document traffic, the free 10 GiB matters, and beyond it you are on Google’s network rates, which the [Google Cloud spoke](/insights/research/cloudflare-vs-google-cloud/) cites for Cloud Storage rather than re-deriving here. [1](#r1) [8](#r8)
 
@@ -53,7 +53,7 @@ A product whose core is mobile clients, document data and Google’s SDK: Fireba
 
 A brochure site, a member directory that fits in a few gigabytes, a form, an API in front of someone else’s Postgres: Cloudflare, and do not adopt Supabase to feel modern. The [queues and workflows](/insights/queues-versus-workflows/) piece is what background work looks like once you are on this side of the line.
 
-If you want that split designed rather than improvised, the path is [Cloudflare OS](/cloudflare-os/). The database can stay where it is. That is the point of Hyperdrive.
+If you want that split designed rather than improvised, the path is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/). The database can stay where it is. That is the point of Hyperdrive.
 
 ## The rest of this series
 

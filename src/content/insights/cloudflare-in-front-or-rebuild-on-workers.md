@@ -14,7 +14,7 @@ The first puts Cloudflare in front of the site you already have. DNS, TLS, cache
 
 The second moves the workload. Pages are prerendered to [Static Assets](/wiki/static-assets/), dynamic routes run on [Workers](/wiki/workers/), files go to R2, records go to D1 or stay behind [Hyperdrive](/wiki/hyperdrive/). The old server is switched off at the end. That is a project with an architecture stage.
 
-[Cloudflare OS](/cloudflare-os/) treats them as two layers of the same system. You can do the first without the second. You should not do the second without knowing why the first is not enough. Often the honest sequence is both, in that order.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) treats them as two layers of the same system. You can do the first without the second. You should not do the second without knowing why the first is not enough. Often the honest sequence is both, in that order.
 
 ## In front: what you get, and what you do not
 
@@ -46,6 +46,6 @@ The origin can also stay invisible. A tunnel means attackers who try to skip Clo
 
 The audit writes it down per site: front, move, or rebuild. The inventory is domains, DNS, mail, certificates, applications and the things that break quietly (hard-coded IPs, licence-bound software, cron jobs, URLs that bring the traffic). The architecture names the target, the redirect map, and the rollback, before anything moves.
 
-Both paths are [Cloudflare migration](/services/cloudflare-migration/). A rebuild that is really a new product is [websites and applications](/services/websites-and-applications/). [Cloudflare OS](/cloudflare-os/) is the reason they are specified together: the firewall, the cache and the account ownership are part of the fronting project, not an afterthought once the new site is pretty.
+Both paths are [Cloudflare migration](/services/cloudflare-migration/). A rebuild that is really a new product is [websites and applications](/services/websites-and-applications/). [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is the reason they are specified together: the firewall, the cache and the account ownership are part of the fronting project, not an afterthought once the new site is pretty.
 
 Rankings survive either path when every URL that matters is mapped and tested. Content and links do not change because the nameserver did. Broken URLs do. That test is part of the runbook, not a hope.

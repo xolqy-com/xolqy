@@ -35,14 +35,14 @@ const jumps = [
 ---
 
 <Base
-  title="Cloudflare OS"
+  title="Cloudflare OS Implementation by Xolqy"
   description={OS_DESCRIPTION}
   path={OS_PATH}
   ogImage="/og/cloudflare-os.png"
   jsonLd={[
-    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Cloudflare OS', href: OS_PATH }]),
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Cloudflare OS Implementation by Xolqy', href: OS_PATH }]),
     serviceJsonLd({
-      name: 'Cloudflare OS',
+      name: 'Cloudflare OS Implementation by Xolqy',
       description: OS_DESCRIPTION,
       path: OS_PATH,
       serviceType: 'Cloudflare platform design, build and operations',
@@ -53,14 +53,14 @@ const jumps = [
   <section class="section os-hero" data-theme="dark" aria-labelledby="os-title">
     <div class="container os-hero__grid">
       <div class="os-hero__copy">
-        <p class="eyebrow fade-in">Cloudflare OS / the umbrella</p>
+        <p class="eyebrow fade-in">Cloudflare OS by Xolqy</p>
         <h1 id="os-title" class="display shade os-hero__title">
-          <span class="hero-line"><span style="--d:60ms">Cloudflare,</span></span>
-          <span class="hero-line"><span style="--d:180ms">as the <em>operating</em></span></span>
-          <span class="hero-line"><span style="--d:300ms">system.</span></span>
+          <span class="hero-line"><span style="--d:60ms">Cloudflare OS</span></span>
+          <span class="hero-line"><span style="--d:180ms">Implementation</span></span>
+          <span class="hero-line"><span style="--d:300ms">by Xolqy.</span></span>
         </h1>
         <p class="lead fade-in" style="--d:420ms">
-          Compute, data, security, AI and delivery, designed as one system for the business. In your account. With a written plan for what moves, what stays, and how you leave.
+          Cloudflare’s open-source AI workspace, deployed in your account, and the Cloudflare platform around it. Compute, data, security, AI and delivery, with a written plan for what moves, what stays, and how you leave.
         </p>
         <div class="cluster fade-in" style="--d:540ms">
           <a href={CTA.primary.href} class="btn btn--primary">{CTA.primary.label} <span class="arrow" aria-hidden="true">&rarr;</span></a>
@@ -97,9 +97,10 @@ const jumps = [
         <h2 id="what-title" class="h-3xl">The layer the business runs on.</h2>
       </div>
       <div class="flow reveal" style="--reveal-delay:80ms">
-        <p class="lead">An operating system is the layer everything else assumes: process, storage, identity, and a way to configure them. Cloudflare is unusual because the network, the runtime, the data stores, the firewall and the models are one platform.</p>
-        <p>Cloudflare OS is our name for using that platform as the system a business runs on, rather than as a CDN bolted onto a server nobody wants to own. The <a href="/stack/">stack page</a> is the same idea applied to this website, with each integration marked live, waiting or planned. The <a href="/services/">services</a> are how a piece of it gets delivered. The <a href="/labs/">labs</a> are the pieces you can watch work.</p>
-        <p>It is a way of scoping work. It is not a SKU, a certification, or a requirement to enable every product in the catalogue.</p>
+        <p class="lead">Cloudflare OS is Cloudflare’s open-source AI workspace. A person gets a browser workspace grounded in company context. An agent can build a gadget, a small app with its own state. A Gatekeeper connects that agent to a company system without handing over a raw key. Cloudflare published the code so a company can deploy it into its own account. The README still calls the release early access.</p>
+        <p>Cloudflare OS Implementation by Xolqy is the work of putting that workspace in, and of designing the Cloudflare platform around the business: compute, data, security, AI and delivery, in an account you own. The five layers below are that platform. They are not a feature list of the Cloudflare OS repository. The <a href="/stack/">stack page</a> is the same platform applied to this website, with each integration marked live, waiting or planned. The <a href="/services/">services</a> are how a piece of it gets delivered. The <a href="/labs/">labs</a> are the pieces you can watch work.</p>
+        <p>It is a way of scoping work. It is not a certification, and it is not a requirement to enable every product in the catalogue. <a href="/insights/research/can-a-company-run-on-cloudflare-os/">Can a company run on Cloudflare OS?</a> is the sourced version of where the product stops.</p>
+        <p>Cloudflare and Cloudflare OS are trademarks of Cloudflare, Inc. Xolqy is an independent implementation partner.</p>
       </div>
     </div>
   </section>
@@ -344,7 +345,7 @@ const jumps = [
   .os-hero { padding-block: clamp(3rem, 7vw, 6rem); overflow: hidden; }
   .os-hero__grid { display: grid; gap: var(--space-7); align-items: end; }
   .os-hero__copy { display: grid; gap: var(--space-5); justify-items: start; }
-  .os-hero__title { font-size: clamp(2.6rem, 1rem + 5.4vw, 5.75rem); max-width: 11ch; }
+  .os-hero__title { font-size: clamp(2.6rem, 1rem + 5.4vw, 5.75rem); max-width: 16ch; }
   .os-hero__title em { font-style: normal; }
   .os-jumps { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; padding-top: var(--space-4); border-top: 1px solid var(--line); width: 100%; }
   .os-jumps a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-mono); text-transform: uppercase; text-decoration: none; color: var(--fg-muted); }

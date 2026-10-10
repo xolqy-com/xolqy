@@ -97,4 +97,4 @@ A document pipeline (classify, extract, route, notify) built on Queues and Workf
 
 Every assistant ships with an evaluation set: real questions, expected answers, the passages that should be retrieved. Changes to prompts, models or content run against it. It is the difference between "it seemed fine in the demo" and knowing.
 
-AI sits on top of content you already store and a pipeline that can retry. Both are part of [Cloudflare OS](/cloudflare-os/).
+AI sits on top of content you already store and a pipeline that can retry. Both are part of [Cloudflare OS Implementation by Xolqy](/cloudflare-os/).

@@ -303,9 +303,9 @@ If you are the CTO, or the owner who will sign for the system, the default for a
 
 Cloudflare wins the architecture. PostgreSQL strengthens the part that holds the company’s truth.
 
-## Move to Cloudflare OS with Xolqy
+## Cloudflare OS Implementation by Xolqy
 
-The reading stops here. The build is [Cloudflare OS](/cloudflare-os/): compute, data, security, AI and delivery designed as one system, in an account you own. The published offers are unchanged. The [Cloudflare OS package](/shop/#cloudflare-os) is $2,500. The [introduction](/shop/#os-introduction) is €600. This page does not add a price.
+The reading stops here. Cloudflare OS is Cloudflare’s open-source workspace. The build is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/): that workspace, plus compute, data, security, AI and delivery designed as one system, in an account you own. Xolqy is an independent implementation partner. The published offers are unchanged. The [implementation package](/shop/#cloudflare-os) is $2,500. The [introduction](/shop/#os-introduction) is €600. This page does not add a price.
 
 The wider argument for treating the platform as one system is [Cloudflare as an operating system](/insights/cloudflare-as-an-operating-system/).
 

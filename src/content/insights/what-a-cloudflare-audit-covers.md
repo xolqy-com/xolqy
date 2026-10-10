@@ -8,7 +8,7 @@ readingMinutes: 6
 relatedServices: [cloudflare-migration, security-and-zero-trust, performance-and-delivery, managed-cloudflare]
 ---
 
-“Audit” gets used for anything from a homepage scan to a long consulting project. On this site it means a fixed thing. We look at what you have before we touch it, and we hand you a written report: current architecture, DNS and TLS, a performance baseline, security gaps, a cost model from your usage, and a prioritised plan with risks. That is the first stage of [Cloudflare OS](/cloudflare-os/), and it is also a service you can buy on its own.
+“Audit” gets used for anything from a homepage scan to a long consulting project. On this site it means a fixed thing. We look at what you have before we touch it, and we hand you a written report: current architecture, DNS and TLS, a performance baseline, security gaps, a cost model from your usage, and a prioritised plan with risks. That is the first stage of [Cloudflare OS Implementation by Xolqy](/cloudflare-os/), and it is also a service you can buy on its own.
 
 ## What the report contains
 
@@ -54,4 +54,4 @@ You decide the move is not worth it yet. Some workloads do not belong on Workers
 
 [Managed Cloudflare](/services/managed-cloudflare/) starts with the same kind of review, then stays. The audit ends when the report is delivered. If you want a packaged version with a defined list of checks, it is in the [shop](/shop/). The contents of a custom audit are the list above, scoped to the estate you actually have, which is why a custom one is proposed rather than priced in an article.
 
-The umbrella, if you want to see where this stage sits next to the others, is [Cloudflare OS](/cloudflare-os/).
+The umbrella, if you want to see where this stage sits next to the others, is [Cloudflare OS Implementation by Xolqy](/cloudflare-os/).

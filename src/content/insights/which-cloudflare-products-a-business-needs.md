@@ -10,7 +10,7 @@ relatedServices: [websites-and-applications, performance-and-delivery, security-
 
 Cloudflare’s catalogue is large enough to paralyse a sensible person. Workers, Pages, D1, KV, R2, Durable Objects, Queues, Workflows, Hyperdrive, Vectorize, Access, Tunnel, WAF, Images, Email, and a row of buttons in the dashboard that all sound like they should be on. Turning them all on is not an architecture. It is a bill and a surface area.
 
-[Cloudflare OS](/cloudflare-os/) is the map: five layers, and a product only lands in a layer when a job requires it. This article is the shorter version, as questions.
+[Cloudflare OS Implementation by Xolqy](/cloudflare-os/) is the map: five layers, and a product only lands in a layer when a job requires it. Cloudflare OS itself is Cloudflare’s open-source workspace. This article is the shorter version, as questions.
 
 ## What are you publishing?
 
@@ -60,4 +60,4 @@ The [solution finder](/labs/#solution-finder) on the labs page takes a short des
 
 The [Cloudflare Audit](/contact/?interest=audit) looks at what you already run and writes down what to change, in what order. [What an audit covers](/insights/what-a-cloudflare-audit-covers/) is the contents of that document. The free [health check](/health-check/) is the outside view of one domain, and it says so.
 
-If the question is really “should this be one system or a pile of toggles”, start at [Cloudflare OS](/cloudflare-os/) and then pick the row in the table. You can buy one service. The map is there so that service does not ignore the layer next to it.
+If the question is really “should this be one system or a pile of toggles”, start at [Cloudflare OS Implementation by Xolqy](/cloudflare-os/) and then pick the row in the table. You can buy one service. The map is there so that service does not ignore the layer next to it.
