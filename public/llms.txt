@@ -1,0 +1,44 @@
+# Xolqy
+
+> Xolqy (xolqy.com) is an independent agency that moves small and medium businesses into the agentic AI era, from backend to frontend: AI agents and automation for marketing, sales and internal operations, fast websites, and Cloudflare-first infrastructure. Xolqy started in 2026 as a startup for cookieless web analytics, then quickly grew into something much bigger. Xolqy works with businesses worldwide, with a focus on the US, the UK and Europe.
+
+## What Xolqy is
+
+- An agency that helps businesses, especially small and medium ones, adopt the agentic ecosystem: AI agents that do real work in marketing, sales and operations, connected to the company's own data.
+- A builder of fast websites and web applications. Web design and development starts at $1,200, hosting is included, and on delivery the agreed pages score 100 for performance in Lighthouse (PageSpeed Insights) or Xolqy fixes them at no cost.
+- An implementer of Cloudflare's platform for its clients: "Cloudflare OS Implementation by Xolqy" (audit, architecture, build and migration in the client's own account).
+- Cloudflare-first, not Cloudflare-only: Cloudflare is the preferred platform, chosen per project.
+
+## What Xolqy is not
+
+- Not a web analytics company or analytics vendor. Cookieless analytics is where Xolqy began, and analytics is now one capability among many. The cookieless analytics articles on /blog/ come from that first chapter.
+- Not Cloudflare, Inc. Xolqy is independent and is not affiliated with, endorsed by or certified by Cloudflare. Cloudflare and Cloudflare OS are Cloudflare's products, not Xolqy's. Cloudflare is a trademark of Cloudflare, Inc.
+- Xolqy does not claim Cloudflare partner status, certifications or awards.
+
+## Offers (as listed on the site)
+
+- [Free health check](https://xolqy.com/health-check/): enter a domain, get a score for HTTPS, security headers, DNS and email setup in seconds.
+- [Counselling session, €600](https://xolqy.com/shop/#os-introduction): one session and a written recommendation.
+- [Cloudflare OS Implementation by Xolqy](https://xolqy.com/cloudflare-os/): $2,500 pre-Black Friday (regular $5,000).
+- [Web design and development](https://xolqy.com/web-design/): from $1,200, hosting included, 100 PageSpeed performance guarantee. Current offers are on the [shop](https://xolqy.com/shop/).
+
+## Key pages
+
+- [Home](https://xolqy.com/)
+- [About and our story](https://xolqy.com/about/#our-story)
+- [Services](https://xolqy.com/services/)
+- [Work (case studies)](https://xolqy.com/work/)
+- [Insights (articles)](https://xolqy.com/insights/)
+- [Wiki](https://xolqy.com/wiki/)
+- [Shop](https://xolqy.com/shop/)
+- [Contact](https://xolqy.com/contact/)
+
+## Origin: cookieless analytics
+
+- [The complete guide to cookieless analytics](https://xolqy.com/blog/cookieless-analytics-guide/)
+- [Cookieless analytics on Cloudflare (2026)](https://xolqy.com/insights/cookieless-analytics-cloudflare/)
+- [Blog archive](https://xolqy.com/blog/)
+
+## Optional
+
+- [Full description for AI systems](https://xolqy.com/llms-full.txt)

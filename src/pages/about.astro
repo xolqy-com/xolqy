@@ -5,7 +5,7 @@ import XMark from '@/components/brand/XMark.astro';
 import { SITE } from '@/data/site';
 import { breadcrumbJsonLd } from '@/lib/seo';
 
-const description = 'Xolqy is an independent agency focused on one platform: Cloudflare. How we work, what we believe about building on the edge, and what we will not claim.';
+const description = 'Xolqy started in 2026 as a cookieless analytics startup and grew into an independent agency that moves small and medium businesses into the agentic AI era, from backend to frontend. Our story, how we work, and what we will not claim.';
 
 const principles = [
   { title: 'One platform, understood deeply', body: 'Generalist agencies know a little about many clouds. We know Cloudflare: its products, its limits, its pricing, the way it changes month to month. That depth is what makes the work predictable.' },
@@ -33,9 +33,25 @@ const wontClaim = [
 >
   <section class="section" data-theme="dark">
     <div class="container">
-      <SectionIntro eyebrow="About" title="Independent. Cloudflare-focused. Specific." id="about-title" level="h1">
-        <p class="lead">{SITE.name} is an independent agency that designs, builds, migrates, secures and manages businesses on Cloudflare. We work with business owners, ecommerce companies, publishers, SaaS founders and technical teams who want the platform's advantages without becoming experts in it.</p>
+      <SectionIntro eyebrow="About" title="Independent. Agentic. Cloudflare-first." id="about-title" level="h1">
+        <p class="lead">{SITE.name} is an independent agency that moves small and medium businesses into the agentic AI era, from backend to frontend. We design, build, migrate, secure and manage them on Cloudflare-first infrastructure, for owners and teams who want the advantages without becoming experts in them.</p>
       </SectionIntro>
+    </div>
+  </section>
+
+
+  <section class="section" data-theme="light" id="our-story" aria-labelledby="story-title">
+    <div class="container two-col">
+      <div class="flow reveal">
+        <p class="eyebrow">Our story</p>
+        <h2 id="story-title" class="h-3xl">From cookieless analytics to agentic business.</h2>
+      </div>
+      <div class="prose reveal" style="--reveal-delay:100ms">
+        <p>Xolqy started in 2026 as a startup for cookieless web analytics: a tiny tracker that counted visitors without cookies, so sites could measure traffic without a consent banner. Our <a href="/blog/cookieless-analytics-guide/">cookieless analytics guide</a> and the rest of the <a href="/blog/">blog</a> come from that first chapter, and they are still here.</p>
+        <p>Building it taught us something bigger. The same edge platform that counted visitors could run a whole business: the website, the data, the security, and now AI agents that do real work. Most businesses need more than numbers. They need a new way to run the company.</p>
+        <p>So Xolqy quickly grew into what it is today: an independent agency that moves businesses, especially small and medium ones in the US, the UK and Europe, into the agentic ecosystem, from backend to frontend. AI agents and automation for marketing, sales and internal operations. Fast websites, <a href="/web-design/">from $1,200</a>, with hosting included and a 100 PageSpeed performance guarantee on delivery. <a href="/cloudflare-os/">Cloudflare OS Implementation by Xolqy</a> for the infrastructure underneath. Analytics is still one of the things we do. It is no longer the whole story.</p>
+        <p>Cloudflare-first, not Cloudflare-only. Xolqy is independent and is not Cloudflare, Inc. Want to see where your business stands? Start with the <a href="/health-check/">free health check</a>, or <a href="/shop/#os-introduction">book the €600 counselling session</a>.</p>
+      </div>
     </div>
   </section>
 

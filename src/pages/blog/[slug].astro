@@ -1,0 +1,80 @@
+---
+import Base from '@/layouts/Base.astro';
+import OriginNote from '@/components/ui/OriginNote.astro';
+import { LEGACY_POSTS, type LegacyPost } from '@/data/legacy-blog';
+import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
+
+export function getStaticPaths() {
+  return LEGACY_POSTS.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: LegacyPost };
+const path = `/blog/${post.slug}/`;
+const ogImage = `/og/blog-${post.slug}.png`;
+const published = new Date(`${post.date}T00:00:00Z`);
+const related = LEGACY_POSTS.filter((p) => p.slug !== post.slug).slice(0, 4);
+---
+
+<Base
+  title={post.title}
+  description={post.excerpt}
+  path={path}
+  ogImage={ogImage}
+  ogType="article"
+  jsonLd={[
+    breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }, { name: post.title, href: path }]),
+    articleJsonLd({ title: post.title, description: post.excerpt, path, publishedAt: published, image: ogImage }),
+  ]}
+>
+  <article>
+    <header class="section post-head" data-theme="dark">
+      <div class="container">
+        <p class="eyebrow"><a href="/blog/" class="post-head__crumb">Blog</a> / Cookieless analytics</p>
+        <h1 class="h-3xl post-head__title">{post.title}</h1>
+        <p class="lead">{post.excerpt}</p>
+        <p class="mono faint"><time datetime={published.toISOString()}>{formatDate(published)}</time></p>
+      </div>
+    </header>
+
+    <div class="section" data-theme="light">
+      <div class="container post-body">
+        <OriginNote archive />
+        <div class="prose post-prose" set:html={post.body} />
+        <OriginNote />
+      </div>
+    </div>
+
+    <footer class="section" data-theme="dark">
+      <div class="container post-foot">
+        <div class="flow">
+          <p class="eyebrow">More on cookieless analytics</p>
+          <ul class="list-reset post-foot__list">
+            {related.map((p) => <li><a href={`/blog/${p.slug}/`} class="link">{p.title} <span class="arrow" aria-hidden="true">&rarr;</span></a></li>)}
+            <li><a href="/insights/cookieless-analytics-cloudflare/" class="link">Cookieless analytics on Cloudflare, 2026 edition <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+          </ul>
+        </div>
+        <div class="flow">
+          <h2 class="h-2xl">Where does your business stand?</h2>
+          <p class="muted">The free health check scores your domain's HTTPS, security headers, DNS and email setup in a few seconds.</p>
+          <a href="/health-check/" class="btn btn--primary">Run the free health check <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post-head { padding-block: clamp(3rem, 7vw, 6rem); }
+  .post-head .container { display: grid; gap: var(--space-5); max-width: 980px; }
+  .post-head__crumb { color: inherit; }
+  .post-head__title { max-width: 24ch; }
+  .post-body { display: grid; gap: var(--space-7); max-width: 820px; }
+  .post-prose { font-size: var(--text-lg); min-width: 0; }
+  .post-prose :global(.compare-table) { display: block; overflow-x: auto; }
+  .post-prose :global(.yes) { color: var(--accent-text); font-weight: 650; }
+  .post-prose :global(.legal-note) { font-size: var(--text-sm); color: var(--fg-muted); }
+  .post-prose :global(.prose-list) { padding-left: 1.4em; }
+  .post-foot { display: grid; gap: var(--space-7); }
+  .post-foot__list { display: grid; gap: var(--space-3); }
+  @media (min-width: 60em) { .post-foot { grid-template-columns: 1fr 1fr; gap: var(--gutter); } }
+</style>

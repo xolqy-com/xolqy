@@ -1,0 +1,36 @@
+---
+/** Short note on analytics content: where Xolqy started, and what it does now. */
+interface Props {
+  /** Adds a line saying product details describe the early analytics product. */
+  archive?: boolean;
+}
+const { archive = false } = Astro.props;
+---
+<aside class="origin-note" aria-label="About Xolqy">
+  <p class="mono origin-note__label">Our story</p>
+  <p><strong>Xolqy began with cookieless analytics; today we help businesses move into the agentic ecosystem.</strong> AI agents and automation for marketing, sales and operations, fast websites, and Cloudflare-first infrastructure, from backend to frontend.</p>
+  {archive && <p class="origin-note__small">This article is from that first chapter. Mentions of the Xolqy tracker, its pricing and its dashboard describe the early analytics product as it was in mid-2026.</p>}
+  <p class="origin-note__links">
+    <a href="/services/">Services</a>
+    <a href="/health-check/">Free health check</a>
+    <a href="/about/#our-story">Read the story</a>
+  </p>
+</aside>
+
+<style>
+  .origin-note {
+    border: 1px solid var(--line-strong, var(--line));
+    border-left: 4px solid var(--signal, #ff5a1f);
+    border-radius: var(--radius-md, 8px);
+    padding: var(--space-5, 1.25rem);
+    display: grid;
+    gap: var(--space-3, 0.75rem);
+    font-size: var(--text-base);
+    max-width: var(--measure);
+  }
+  .origin-note p { margin: 0; }
+  .origin-note__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-mono); color: var(--fg-muted); }
+  .origin-note__small { font-size: var(--text-sm); color: var(--fg-muted); }
+  .origin-note__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: var(--text-sm); }
+  .origin-note__links a { color: var(--accent-text); text-decoration: underline; }
+</style>

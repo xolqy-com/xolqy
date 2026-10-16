@@ -24,6 +24,12 @@ import { faqJsonLd } from '@/lib/seo';
   jsonLd={[faqJsonLd([...HOME_FAQS])]}
 >
   <Hero />
+  <section class="origin-strip" data-theme="dark" aria-label="Our story">
+    <div class="container origin-strip__inner">
+      <p><span class="mono accent">Our story</span> {SITE.origin}</p>
+      <a href="/about/#our-story" class="link">How we got here <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
   <Outcomes />
   <ServicesLedger />
 
@@ -80,6 +86,10 @@ import { faqJsonLd } from '@/lib/seo';
 </Base>
 
 <style>
+  .origin-strip { border-block: 1px solid var(--line); padding-block: var(--space-5); }
+  .origin-strip__inner { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); align-items: baseline; justify-content: space-between; }
+  .origin-strip__inner p { max-width: 80ch; margin: 0; }
+  .origin-strip .mono { margin-right: 0.5em; text-transform: uppercase; font-size: var(--text-xs); letter-spacing: var(--tracking-mono); }
   .stack-note { max-width: 40ch; font-size: var(--text-sm); }
   .stack-note a { color: inherit; }
   .stack-wrap { margin-top: var(--space-7); }

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import PromoBanner from '@/components/ui/PromoBanner.astro';
+import OriginNote from '@/components/ui/OriginNote.astro';
 import { breadcrumbJsonLd, articleJsonLd, formatDate } from '@/lib/seo';
 import { serviceHref } from '@/lib/service-href';
 
@@ -17,6 +18,8 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).fi
 const path = `/insights/${post.id}/`;
 const ogImage = `/og/insight-${post.id}.png`;
 const toc = headings.filter((h) => h.depth === 2);
+// Analytics was where Xolqy started; those articles carry a short origin note.
+const showOrigin = post.id.includes('cookieless') || post.data.topics.includes('Web Analytics');
 ---
 
 <Base
@@ -53,6 +56,7 @@ const toc = headings.filter((h) => h.depth === 2);
           </ol>
         </aside>
         <div class="prose post-prose">
+          {showOrigin && <OriginNote />}
           <Content />
         </div>
         <aside class="post-ad">

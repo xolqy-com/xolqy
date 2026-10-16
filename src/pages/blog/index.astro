@@ -1,0 +1,57 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionIntro from '@/components/ui/SectionIntro.astro';
+import OriginNote from '@/components/ui/OriginNote.astro';
+import { LEGACY_POSTS, LEGACY_PILLAR } from '@/data/legacy-blog';
+import { breadcrumbJsonLd, formatDate } from '@/lib/seo';
+
+const description = 'The Xolqy blog on cookieless web analytics: what it is, GDPR and cookie banners, alternatives to Google Analytics, and how visitors can be counted without cookies. Where Xolqy started.';
+const pillar = LEGACY_POSTS.find((p) => p.slug === LEGACY_PILLAR);
+const posts = [...LEGACY_POSTS].filter((p) => p.slug !== LEGACY_PILLAR).sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Base
+  title="Blog: cookieless analytics"
+  description={description}
+  path="/blog/"
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }])]}
+>
+  <section class="section" data-theme="dark">
+    <div class="container">
+      <SectionIntro eyebrow="Blog" title="Cookieless analytics, where Xolqy began." id="blog-title" level="h1">
+        <p class="lead">Guides from our first chapter, when Xolqy was a cookieless analytics startup. For current articles, see <a href="/insights/">Insights</a>.</p>
+      </SectionIntro>
+    </div>
+  </section>
+
+  <section class="section" data-theme="light">
+    <div class="container blog-list">
+      <OriginNote />
+      {pillar && (
+        <article class="blog-pillar">
+          <p class="eyebrow">Start here</p>
+          <h2 class="h-2xl"><a href={`/blog/${pillar.slug}/`}>{pillar.title}</a></h2>
+          <p class="muted">{pillar.excerpt}</p>
+        </article>
+      )}
+      <ol class="list-reset blog-posts">
+        {posts.map((p) => (
+          <li>
+            <p class="mono faint">{formatDate(new Date(`${p.date}T00:00:00Z`))}</p>
+            <h2 class="h-xl"><a href={`/blog/${p.slug}/`}>{p.title}</a></h2>
+            <p class="muted">{p.excerpt}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .blog-list { display: grid; gap: var(--space-7); max-width: 860px; }
+  .blog-pillar { display: grid; gap: var(--space-3); padding-bottom: var(--space-6); border-bottom: 1px solid var(--line); }
+  .blog-posts { display: grid; gap: var(--space-6); }
+  .blog-posts li { display: grid; gap: var(--space-2); padding-bottom: var(--space-6); border-bottom: 1px solid var(--line); }
+  .blog-list h2 a { color: inherit; text-decoration: none; }
+  .blog-list h2 a:hover { color: var(--accent-hover); }
+</style>

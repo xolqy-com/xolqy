@@ -33,8 +33,23 @@ export function organizationJsonLd() {
       height: 512,
     },
     description: SITE.description,
+    disambiguatingDescription: `${SITE.origin} Analytics is where Xolqy began and is now one capability among many; Xolqy is not a web analytics vendor. Xolqy is independent and is not Cloudflare, Inc.`,
     slogan: SITE.tagline,
-    knowsAbout: ['Cloudflare', 'Cloudflare Workers', 'Cloudflare OS', 'Edge computing', 'Web performance', 'Zero Trust', 'Cloudflare migration'],
+    knowsAbout: [
+      'Agentic AI for business',
+      'AI agents and automation',
+      'Marketing automation',
+      'Sales automation',
+      'Business process automation',
+      'Web design and development',
+      'Web performance',
+      'Cloudflare',
+      'Cloudflare Workers',
+      'Cloudflare OS implementation',
+      'Edge computing',
+      'Zero Trust security',
+      'Cookieless web analytics',
+    ],
   };
 }
 

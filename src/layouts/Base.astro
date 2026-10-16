@@ -35,7 +35,7 @@ const {
   bodyClass,
 } = Astro.props;
 
-const fullTitle = path === '/' ? `${SITE.name}: the Cloudflare-focused agency` : `${title} | ${SITE.name}`;
+const fullTitle = path === '/' ? `${SITE.name}: move your business into the agentic AI era` : `${title} | ${SITE.name}`;
 const canonicalUrl = canonical(path);
 const ogImageUrl = absolute(ogImage);
 const ld = [organizationJsonLd(), websiteJsonLd(), ...jsonLd];
